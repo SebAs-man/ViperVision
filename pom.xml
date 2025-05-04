@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.github.SebAs-man.game</groupId>
+    <artifactId>viper-vision</artifactId>
+    <version>0.2.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>Viper Vision</name>
+    <description>
+        A classic Snake game implemented in Java using the Processing library.
+        Features human-controlled mode and AI players using pathfinding (Dijkstra) and
+        genetic algorithms. Built with MVP architecture and design patterns.
+    </description>
+    <url>https://github.com/SebAs-man/ViperVision.git</url>
+
+    <developers>
+        <developer>
+            <id>SebAs-man</id>
+            <name>Sebastián Mantilla</name>
+            <email>sebas.mantilla@proton.me</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://choosealicense.com/licenses/mit/</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <properties>
+        <maven.compiler.source>24</maven.compiler.source>
+        <maven.compiler.target>24</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <processing.version>4.4.1</processing.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.processing</groupId>
+            <artifactId>core</artifactId>
+            <version>${processing.version}</version>
+        </dependency>
+    </dependencies>
+</project>
