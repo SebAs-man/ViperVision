@@ -1,10 +1,20 @@
 # ViperVision
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<p align="center">
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/Language-Java-blue.svg" alt="Language: Java">
+  <img src="https://img.shields.io/badge/JDK-24-orange.svg" alt="JDK: 24">
+  <img src="https://img.shields.io/badge/Uses-Processing-blueviolet.svg" alt="Uses: Processing">
+  <img src="https://img.shields.io/badge/Made%20With-Love-orange.svg" alt="Made With Love">
+  </p>
 
-![🐍](./docs/img/logo.png)
+<p align="center">
+  <img src="./docs/img/logo.png" alt="ViperVision Logo" width="640"/>
+</p>
 
-[![Made With Love](https://img.shields.io/badge/Made%20With-Love-orange.svg)](https://github.com/chetanraj/awesome-github-badges)
+<p align="center">
+  <em>A classic Snake game with AI players, built using Java, Processing, and modern design patterns.</em>
+  <br/> </p>
 
 ViperVision is a classic Snake game implementation using Java and the Processing library. It features multiple game modes, including human control and AI players driven by pathfinding and genetic algorithms. Built with the MVP pattern and various design principles.
 
@@ -56,9 +66,13 @@ The goal is to create a maintainable, scalable, and testable codebase, serving a
 
 Here are some diagrams illustrating the project's structure and flow.
 
-**State Diagram:**
+* **Package Diagram:**
 
-![State Diagram](./docs/diagrams/state.png)
+![Package Diagram](./docs/diagrams/package.png)
+
+* **State Diagram:**
+
+![State Diagram](./docs/diagrams/states.png)
 
 ---
 
@@ -87,7 +101,7 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/YOUR_USERNAME/vipervision.git](https://github.com/YOUR_USERNAME/vipervision.git)
+    git clone [https://github.com/SebAs-man/ViperVision.git](https://github.com/SebAs-man/ViperVision.git)
     cd vipervision
     ```
 2.  **Build the project using Maven:** This will compile the code and package it into a JAR file in the `target/` directory.
@@ -111,7 +125,7 @@ When «x.y.z» is the version that you have downloaded.
 
 This project follows a standard Git workflow:
 
-Create feature branches from the main (e.g., feature / new-ai-logic).
+Create feature branches from the main (e.g., develop).
 Make changes and commit frequently on the feature branch.
 Push the feature branch to the remote repository.
 Create a Pull Request (PR) to merge the feature branch back into the main.
@@ -120,7 +134,7 @@ Feel free to fork the repository and submit pull requests for improvements or bu
 
 ## License
 
-This project is distributed under the MIT License. See the [`LICENSE`](./LICENSE) file for more information.
+This project is distributed under the MIT License. See the [`LICENSE`](./LICENSE.md) file for more information.
 
 ## Acknowledgements
 
