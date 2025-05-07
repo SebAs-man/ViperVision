@@ -1,4 +1,4 @@
-# ViperVision
+# ViperVision 🐍
 
 <p align="center">
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
@@ -13,8 +13,9 @@
 </p>
 
 <p align="center">
-  <em>A classic Snake game with AI players, built using Java, Processing, and modern design patterns.</em>
-  <br/> </p>
+  <em>A classic Snake game with AI players, built using Java, Processing, and modern design config.</em>
+  <br/> 
+</p>
 
 ViperVision is a classic Snake game implementation using Java and the Processing library. It features multiple game modes, including human control and AI players driven by pathfinding and genetic algorithms. Built with the MVP pattern and various design principles.
 
@@ -50,7 +51,7 @@ ViperVision is a classic Snake game implementation using Java and the Processing
 
 ## Architecture & Design
 
-This project is developed with a focus on applying software design principles and patterns:
+This project is developed with a focus on applying software design principles and config:
 
 * **Model-View-Presenter (MVP):** Separates concerns between the game logic (Model), the visual representation (View - using Processing), and the user input/game flow control (Presenter).
 * **State Pattern:** Manages the different states of the game (Menu, Playing, Paused, Game Over) and their specific behaviors and transitions.

@@ -146,7 +146,7 @@
 											"top": 119,
 											"width": 71.78271484375,
 											"height": 13,
-											"text": "Inicilizando"
+											"text": "Initializing"
 										},
 										{
 											"_type": "LabelView",
@@ -410,7 +410,7 @@
 											"top": 191,
 											"width": 51,
 											"height": 13,
-											"text": "Menú"
+											"text": "Menu"
 										},
 										{
 											"_type": "LabelView",
@@ -674,7 +674,7 @@
 											"top": 191,
 											"width": 74.4296875,
 											"height": 13,
-											"text": "Terminando"
+											"text": "Ending"
 										},
 										{
 											"_type": "LabelView",
@@ -816,17 +816,17 @@
 									},
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 405,
+									"left": 400,
 									"top": 183,
 									"width": 91.609375,
 									"height": 13,
-									"alpha": 1.5707963267948966,
-									"distance": 15,
+									"alpha": -4.369365673448293,
+									"distance": 14.866068747318506,
 									"hostEdge": {
 										"$ref": "AAAAAAGWmAtPl24ltfc="
 									},
 									"edgePosition": 1,
-									"text": "Seleciona \"Exit\""
+									"text": "Select \"Exit\""
 								},
 								{
 									"_type": "EdgeLabelView",
@@ -1054,7 +1054,7 @@
 											"top": 191,
 											"width": 55.16455078125,
 											"height": 13,
-											"text": "Jugando"
+											"text": "Playing"
 										},
 										{
 											"_type": "LabelView",
@@ -1456,17 +1456,17 @@
 									},
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 48,
-									"top": 264,
+									"left": 56,
+									"top": 255,
 									"width": 59.97900390625,
 									"height": 13,
-									"alpha": -4.532535153925403,
-									"distance": 11.180339887498949,
+									"alpha": -5.819538864846336,
+									"distance": 6.708203932499369,
 									"hostEdge": {
 										"$ref": "AAAAAAGWmAzn6G7LL1k="
 									},
 									"edgePosition": 1,
-									"text": "Reintentar"
+									"text": "Died"
 								},
 								{
 									"_type": "EdgeLabelView",
@@ -1555,17 +1555,17 @@
 									},
 									"font": "Arial;13;0",
 									"parentStyle": false,
-									"left": 211,
-									"top": 196,
+									"left": 208,
+									"top": 183,
 									"width": 90.87939453125,
 									"height": 13,
-									"alpha": -3.4366844419568277,
-									"distance": 3.605551275463989,
+									"alpha": -4.248741942812618,
+									"distance": 15.652475842498529,
 									"hostEdge": {
 										"$ref": "AAAAAAGWmA4MLG71Y0M="
 									},
 									"edgePosition": 1,
-									"text": "Presiona \"ESC\""
+									"text": "Press ESC"
 								},
 								{
 									"_type": "EdgeLabelView",
@@ -1678,7 +1678,7 @@
 											"top": 287,
 											"width": 73.24267578125,
 											"height": 13,
-											"text": "Preparando"
+											"text": "Preparing"
 										},
 										{
 											"_type": "LabelView",
@@ -1830,7 +1830,7 @@
 										"$ref": "AAAAAAGWmA+GVG9mcbA="
 									},
 									"edgePosition": 1,
-									"text": "Selecciona \"Jugar\""
+									"text": "Select \"Play!\""
 								},
 								{
 									"_type": "EdgeLabelView",
@@ -1929,7 +1929,7 @@
 										"$ref": "AAAAAAGWmA+uOG97l8Y="
 									},
 									"edgePosition": 1,
-									"text": "Presiona una telca"
+									"text": "Press any key"
 								},
 								{
 									"_type": "EdgeLabelView",
@@ -2042,7 +2042,7 @@
 											"top": 55,
 											"width": 55.18359375,
 											"height": 13,
-											"text": "Pausado"
+											"text": "Paused"
 										},
 										{
 											"_type": "LabelView",
@@ -2194,7 +2194,7 @@
 										"$ref": "AAAAAAGWmBCmWW+4NQo="
 									},
 									"edgePosition": 1,
-									"text": "Presiona \" \""
+									"text": "Press \" \""
 								},
 								{
 									"_type": "EdgeLabelView",
@@ -2293,7 +2293,7 @@
 										"$ref": "AAAAAAGWmBD4q2/OeaY="
 									},
 									"edgePosition": 1,
-									"text": "Presiona \" \""
+									"text": "Press \" \""
 								},
 								{
 									"_type": "EdgeLabelView",
@@ -2383,16 +2383,16 @@
 									"font": "Arial;13;0",
 									"parentStyle": false,
 									"left": 248,
-									"top": 322,
+									"top": 336,
 									"width": 108.95751953125,
 									"height": 13,
-									"alpha": 1.5513813879433656,
-									"distance": 66,
+									"alpha": 1.7604043615053464,
+									"distance": 67.468511173732,
 									"hostEdge": {
 										"$ref": "AAAAAAGWmBKobG/7cLE="
 									},
 									"edgePosition": 1,
-									"text": "Selecciona \"Menú\""
+									"text": "Select \"Menu\""
 								},
 								{
 									"_type": "EdgeLabelView",
@@ -2485,7 +2485,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGWmAmXt212ykY="
 							},
-							"name": "Inicilizando"
+							"name": "Initializing"
 						},
 						{
 							"_type": "UMLState",
@@ -2493,7 +2493,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGWmAmXt212ykY="
 							},
-							"name": "Menú"
+							"name": "Menu"
 						},
 						{
 							"_type": "UMLState",
@@ -2501,7 +2501,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGWmAmXt212ykY="
 							},
-							"name": "Terminando"
+							"name": "Ending"
 						},
 						{
 							"_type": "UMLFinalState",
@@ -2516,7 +2516,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGWmAmXt212ykY="
 							},
-							"name": "Jugando"
+							"name": "Playing"
 						},
 						{
 							"_type": "UMLState",
@@ -2532,7 +2532,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGWmAmXt212ykY="
 							},
-							"name": "Preparando"
+							"name": "Preparing"
 						},
 						{
 							"_type": "UMLState",
@@ -2540,7 +2540,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGWmAmXt212ykY="
 							},
-							"name": "Pausado"
+							"name": "Paused"
 						}
 					],
 					"transitions": [
@@ -2589,7 +2589,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGWmAtPl24kcLY="
 									},
-									"name": "Seleciona \"Exit\""
+									"name": "Select \"Exit\""
 								}
 							]
 						},
@@ -2648,7 +2648,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGWmAzn6G7KUGo="
 									},
-									"name": "Reintentar"
+									"name": "Died"
 								}
 							]
 						},
@@ -2671,7 +2671,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGWmA4MLG70cis="
 									},
-									"name": "Presiona \"ESC\""
+									"name": "Press ESC"
 								}
 							]
 						},
@@ -2694,7 +2694,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGWmA+GVG9lu98="
 									},
-									"name": "Selecciona \"Jugar\""
+									"name": "Select \"Play!\""
 								}
 							]
 						},
@@ -2717,7 +2717,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGWmA+uOG96cIg="
 									},
-									"name": "Presiona una telca"
+									"name": "Press any key"
 								}
 							]
 						},
@@ -2740,7 +2740,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGWmBCmWG+3DFE="
 									},
-									"name": "Presiona \" \""
+									"name": "Press \" \""
 								}
 							]
 						},
@@ -2763,7 +2763,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGWmBD4q2/N/j0="
 									},
-									"name": "Presiona \" \""
+									"name": "Press \" \""
 								}
 							]
 						},
@@ -2786,7 +2786,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGWmBKobG/6Wdk="
 									},
-									"name": "Selecciona \"Menú\""
+									"name": "Select \"Menu\""
 								}
 							]
 						}

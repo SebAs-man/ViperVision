@@ -12,7 +12,7 @@
     <description>
         A classic Snake game implemented in Java using the Processing library.
         Features human-controlled mode and AI players using pathfinding (Dijkstra) and
-        genetic algorithms. Built with MVP architecture and design patterns.
+        genetic algorithms. Built with MVP architecture and design config.
     </description>
     <url>https://github.com/SebAs-man/ViperVision.git</url>
 
