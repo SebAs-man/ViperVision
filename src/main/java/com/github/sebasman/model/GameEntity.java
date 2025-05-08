@@ -1,35 +1,92 @@
 package com.github.sebasman.model;
 
+import com.github.sebasman.exceptions.EntityException;
+import com.github.sebasman.model.common.EntityType;
 import com.github.sebasman.model.common.Position;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
- * Represents a game entity that exists within a 2D grid system.
- * Game entities are objects with specific positions in the game world
- * that may have an active or inactive state.
+ * Represents an abstract base class for all entities in the game. Game entities are distinct
+ * objects within the game world, each with specific behavior and characteristics defined by
+ * subclasses. This class provides a common structure for all game entities, including a type
+ * identifier and an active status.
+ * Subclasses must implement the abstract methods to define specific behavior and attributes
+ * for their respective entity types.
  */
-public interface GameEntity {
-    /**
-     * Retrieves the list of positions associated with this game entity.
-     * @return a list of {@code Position} objects representing the locations
-     *         of this game entity within the 2D grid system.
-     */
-    List<Position> getPositions();
+public abstract class GameEntity {
+    // Fields common to all game entities
+    protected boolean active;
+    protected final EntityType type;
 
     /**
-     * Checks whether the game entity is currently in an active state.
-     * @return {@code true} if the game entity is active, otherwise {@code false}.
+     * Constructs a new GameEntity with a specified entity type. The type is used to
+     * classify the entity and determine its behavior and interaction within the game world.
+     * This constructor is protected and is intended to be used by subclasses to initialize
+     * the common properties of all game entities.
+     * @param type the type of the entity, specified as an instance of {@code EntityType};
+     *             must not be null
+     * @throws NullPointerException if the provided entity type is null
      */
-    boolean isActive();
+    protected GameEntity(EntityType type) {
+        this.type = Objects.requireNonNull(type, "Entity type cannot be null");
+        this.active = false;
+    }
+
+    // --- Getters ---
 
     /**
-     * Sets the active state of the game entity.
-     * An active game entity can participate in game logic, while an inactive
-     * entity is generally ignored in the game system.
-     * @param active {@code true} to set the game entity as active, {@code false} to set it as inactive.
+     * Determines whether the entity is active in the game.
+     * Active entities are those currently participating in the game world,
+     * whereas inactive entities are not.
+     * @return {@code true} if the entity is active, otherwise {@code false}
      */
-    void setActive(boolean active);
+    public boolean isActive() { return active; }
 
-    // void update();
+    /**
+     * Retrieves the type of the entity, which classifies its role or behavior
+     * in the game world. The entity type is determined during construction and
+     * remains constant throughout the entity's lifecycle.
+     * @return the type of the entity as an {@code EntityType} enumeration constant
+     */
+    public EntityType getType() { return type; }
+
+    // --- Abstract Methods ---
+
+    /**
+     * Sets the active state of the entity. The active state determines
+     * whether the entity is currently participating in the game.
+     * Subclasses may impose additional constraints or logic based on
+     * their specific behavior when activating or deactivating the entity.
+     * @param active a boolean indicating the desired active state of the entity;
+     *               {@code true} to activate the entity, {@code false} to deactivate it
+     * @throws EntityException if activation is invalid based on the specific
+     *                         requirements or internal state of the subclass
+     */
+    public abstract void setActive(boolean active);
+
+    /**
+     * Retrieves a list of positions associated with the current game entity.
+     * The positions represent the locations in the game world relevant to the entity.
+     * For example, a snake entity might return the positions of its body segments,
+     * while a food entity might return a single position corresponding to its location.
+     * @return a list of {@code Position} objects representing the positions of the entity
+     */
+    public abstract List<Position> getPositions();
+
+    // --- Override Methods ---
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GameEntity that = (GameEntity) o;
+        return active == that.active && type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(active, type);
+    }
 }

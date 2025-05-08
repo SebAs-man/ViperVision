@@ -6,7 +6,6 @@ package com.github.sebasman.model.common;
  * can be used to compute relative movement on a 2D grid.
  */
 public enum Direction {
-    // Constant values representing the four cardinal directions
     UP(0, -1),
     DOWN(0, 1),
     LEFT(-1, 0),
@@ -28,7 +27,18 @@ public enum Direction {
 
     // --- Getters ---
 
+    /**
+     * Returns the change in the x-coordinate associated with this direction.
+     * This value determines the horizontal movement on a 2D grid.
+     * @return the change in the x-coordinate as an integer
+     */
     public int getDx() { return dx; }
+
+    /**
+     * Returns the change in the y-coordinate associated with this direction.
+     * This value determines the vertical movement on a 2D grid.
+     * @return the change in the y-coordinate as an integer
+     */
     public int getDy() { return dy; }
 
     // --- Utility Methods ---
