@@ -31,7 +31,7 @@ public abstract class GameEntity {
      */
     protected GameEntity(EntityType type) {
         this.type = Objects.requireNonNull(type, "Entity type cannot be null");
-        this.active = false;
+        this.active = true;
     }
 
     // --- Getters ---

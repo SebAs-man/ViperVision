@@ -73,7 +73,7 @@ public class Food extends GameEntity {
 
     @Override
     public void setActive(boolean active) {
-        if(active && position == null){
+        if(super.active && position == null){
             throw new EntityException("Food cannot be activated without a valid position (internal state error).");
         }
         super.active = active;
