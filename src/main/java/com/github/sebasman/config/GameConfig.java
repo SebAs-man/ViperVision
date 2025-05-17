@@ -21,11 +21,17 @@ public final class GameConfig {
     // Board dimensions (in cells)
     public static final int BOARD_WIDTH_CELLS = 25;
     public static final int BOARD_HEIGHT_CELLS = 25;
-    // Visual configuration (in pixels)
     public static final int CELL_SIZE = 20;
+    public static final int GAME_AREA_WIDTH = BOARD_WIDTH_CELLS * CELL_SIZE;
+    public static final int GAME_AREA_HEIGHT = BOARD_HEIGHT_CELLS * CELL_SIZE;
+    // Game window dimensions (in pixels)
     public static final int CELL_PADDING = 2;
-    public static final int WINDOW_WIDTH = (BOARD_WIDTH_CELLS * CELL_SIZE) + (CELL_PADDING * 2);
-    public static final int WINDOW_HEIGHT = (BOARD_HEIGHT_CELLS * CELL_SIZE) + (CELL_PADDING * 2);
+    public static final int UI_AREA_SCORE = 50;
+    public static final int WINDOW_GAME_WIDTH = GAME_AREA_WIDTH + (CELL_PADDING * 2);
+    public static final int WINDOW_GAME_HEIGHT = GAME_AREA_HEIGHT + (CELL_PADDING * 2) + UI_AREA_SCORE;
+    // Visual configuration (in pixels)
+    public static final int WINDOW_WIDTH = WINDOW_GAME_WIDTH;
+    public static final int WINDOW_HEIGHT = WINDOW_GAME_HEIGHT;
     // Game configuration
     public static final int INITIAL_SNAKE_LENGTH = 3;
     public static final int INITIAL_SNAKE_SPEED_MS = 150;

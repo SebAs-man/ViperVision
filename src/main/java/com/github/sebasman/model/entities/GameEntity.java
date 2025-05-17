@@ -1,6 +1,7 @@
-package com.github.sebasman.model;
+package com.github.sebasman.model.entities;
 
 import com.github.sebasman.exceptions.EntityException;
+import com.github.sebasman.model.Board;
 import com.github.sebasman.model.common.EntityType;
 import com.github.sebasman.model.common.Position;
 

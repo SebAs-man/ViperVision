@@ -1,12 +1,11 @@
-package com.github.sebasman.model;
+package com.github.sebasman.model.entities;
 
 import com.github.sebasman.exceptions.EntityException;
 import com.github.sebasman.model.common.EntityType;
 import com.github.sebasman.model.common.Position;
+import processing.core.PApplet;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Represents a consumable food entity in the game. Food objects are used
@@ -18,21 +17,21 @@ import java.util.Objects;
  * and type classification.
  */
 public class Food extends GameEntity {
-    // Fields
+    // Attributes
     private Position position;
     private final int value;
+    private Random random;
 
     /**
      * Constructs a new Food object that represents a consumable entity in the game.
      * Each food object is assigned a position and a value that determines its benefit
      * when consumed. The value must be greater than zero; otherwise, it defaults to 1.
-     * @param position the position of the food in the game world; must not be null
      * @param value the value of the food; must be greater than 0. If a non-positive value is provided, it defaults to 1
      */
-    public Food(Position position, int value) {
+    public Food(int value) {
         super(EntityType.CONSUMABLE);
-        setPosition(position);
         this.value = value > 0 ? value : 1; // Ensure Value is at least 1
+        this.random = new Random();
     }
 
     // --- Getters ---
@@ -98,5 +97,26 @@ public class Food extends GameEntity {
                 "position=" + position +
                 ", active=" + active +
                 '}';
+    }
+
+    // --- Utility Methods ---
+
+    public void spawn(int boardW, int boardH, Set<Position> occupiedPositions){
+        boolean positionFound = false;
+        while(!positionFound){
+            int x = random.nextInt(boardW);
+            int y = random.nextInt(boardH);
+            Position newPosition = new Position(x, y);
+            if(!occupiedPositions.contains(newPosition)){
+                positionFound = true;
+                setPosition(newPosition);
+                System.out.println("Food spawned at: " + newPosition);
+            }
+        }
+    }
+
+    public void draw(PApplet p){
+        p.fill(255, 0, 0); // Red color
+        p.ellipse(position.x() * 20, position.y() * 20, 20, 20); // Draw food as a circle
     }
 }

@@ -1,12 +1,14 @@
-package com.github.sebasman.model;
+package com.github.sebasman.model.entities;
 
+import com.github.sebasman.config.GameConfig;
 import com.github.sebasman.exceptions.EntityException;
+import com.github.sebasman.model.Board;
 import com.github.sebasman.model.common.Direction;
 import com.github.sebasman.model.common.EntityType;
 import com.github.sebasman.model.common.Position;
+import processing.core.PApplet;
 
 import java.util.*;
-import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * Represents a snake entity in a game. The snake is characterized by its body,
@@ -18,9 +20,9 @@ import java.util.concurrent.LinkedBlockingDeque;
  * setting a new direction for movement. The snake's active status can also be managed
  * following the rules established in the parent {@code GameEntity} class.
  */
-public class Snake extends GameEntity{
+public class Snake extends GameEntity {
     // Attributes
-    private final Deque<Position> body = new LinkedBlockingDeque<>();
+    private final Deque<Position> body = new LinkedList<>();
     private final Set<Position> bodySet = new HashSet<>();
     private Direction direction;
     private boolean growing = false;
@@ -36,7 +38,7 @@ public class Snake extends GameEntity{
      */
     public Snake(Position initialHeadPosition, Direction initialDirection) {
         super(EntityType.SNAKE);
-        addBodySegment(initialHeadPosition);
+        this.addBodySegment(initialHeadPosition);
         this.direction = Objects.requireNonNull(initialDirection, "Initial direction cannot be null");
     }
 
@@ -56,41 +58,22 @@ public class Snake extends GameEntity{
     public Snake(Position initialHeadPosition, int size, Direction initialDirection) {
         super(EntityType.SNAKE);
         Objects.requireNonNull(initialHeadPosition, "Initial head position cannot be null");
+        this.direction = Objects.requireNonNull(initialDirection, "Initial direction cannot be null");
         if(size <= 0) {
             throw new IllegalArgumentException("Size must be a positive integer.");
         } else if(size == 1) {
-            addBodySegment(initialHeadPosition);
-            return;
+            this.addBodySegment(initialHeadPosition);
         } else {
-            for (int i = 0; i < size; i++) {
+            for (int i = size-1; i >= 0; i--) {
                 Position newSegment = new Position(
                         initialHeadPosition.x() - (i * initialDirection.getDx()),
                         initialHeadPosition.y() - (i * initialDirection.getDy()));
-                addBodySegment(newSegment);
+                this.addBodySegment(newSegment);
             }
         }
-        this.direction = Objects.requireNonNull(initialDirection, "Initial direction cannot be null");
     }
 
     // --- Getters ---
-
-    /**
-     * Retrieves a copy of the snake's body as a deque of {@code Position} objects.
-     * The deque represents the positions occupied by the snake, starting with the head
-     * at the first element and progressing to the tail. The returned deque is a defensive
-     * copy, ensuring the internal state of the snake is not directly modifiable.
-     * @return a deque containing the {@code Position} objects representing the snake's body
-     */
-    public Deque<Position> getBody() { return new LinkedBlockingDeque<>(body); }
-
-    /**
-     * Retrieves the current set of positions occupied by the snake's body.
-     * The set represents unique positions where each segment of the snake exists.
-     * This can be useful for collision detection, ensuring no two segments
-     * of the snake occupy the same space.
-     * @return a set of {@code Position} objects representing the snake's body segments
-     */
-    public Set<Position> getBodySet() { return bodySet; }
 
     /**
      * Retrieves the current head position of the snake.
@@ -98,7 +81,7 @@ public class Snake extends GameEntity{
      * tracks the snake's body coordinates.
      * @return the position of the snake's head, or null if the body is empty
      */
-    public Position getHead() { return body.peekFirst(); }
+    public Position getHead() { return this.body.peekFirst(); }
 
     /**
      * Retrieves the current direction of the snake's movement.
@@ -106,7 +89,22 @@ public class Snake extends GameEntity{
      * in the game world, such as UP, DOWN, LEFT, or RIGHT.
      * @return the current {@code Direction} of the snake's movement
      */
-    public Direction getDirection() { return direction; }
+    public Direction getDirection() { return this.direction; }
+
+    /**
+     * Determines if the snake is currently in a growing state.
+     * When the snake is growing, additional segments are appended to its body
+     * during the next movement update.
+     * @return true if the snake is growing, false otherwise
+     */
+    public boolean isGrowing() { return growing; }
+
+    /**
+     * Retrieves the set of positions that make up the body of the snake.
+     * The body set represents a collection of unique positions that the snake currently occupies.
+     * @return a set of {@code Position} objects representing the current positions of the snake's body
+     */
+    public Set<Position> getBodySet() { return bodySet; }
 
     // --- Setters ---
 
@@ -121,9 +119,7 @@ public class Snake extends GameEntity{
      */
     public void setDirection(Direction direction) {
         Objects.requireNonNull(direction, "Direction cannot be null");
-        if(body.size() > 1 && this.direction.opposite() == direction){
-            return;
-        }
+        if(this.body.size() > 1 && this.direction.opposite() == direction) return;
         this.direction = direction;
     }
 
@@ -135,71 +131,6 @@ public class Snake extends GameEntity{
      */
     public void grow() { this.growing = true; }
 
-    // --- Methods ---
-
-    /**
-     * Adds a new body segment to the snake's body at the specified position.
-     * This method verifies that the specified position is valid and not already
-     * occupied by any existing body segment. If the position is occupied, an
-     * {@code EntityException} is thrown.
-     * @param position the {@code Position} where the new body segment should be added;
-     *                 must not be null and must not yet be occupied by another segment
-     * @throws NullPointerException if the provided {@code position} is null
-     * @throws EntityException if the specified {@code position} is already occupied by a body segment
-     */
-    private void addBodySegment(Position position) {
-        Objects.requireNonNull(position, "Position cannot be null");
-        body.addLast(position);
-        bodySet.add(position);
-    }
-
-    /**
-     * Removes the last segment of the snake's body. This method updates the body deque
-     * by removing the last element and ensures that the position of the removed segment
-     * is also removed from the set of occupied positions.
-     * The removal operation maintains the consistency of the body and bodySet fields,
-     * ensuring no stale or incorrect references remain.
-     */
-    private void removeBodySegment() {
-        body.removeFirst();
-        bodySet.remove(body.peekLast());
-    }
-
-    /**
-     * Moves the snake in the current direction by updating the positions of its body segments.
-     * The new head position is calculated based on the current head position and the direction of movement.
-     * This new position is added to the front of the body deque, representing the new head.
-     * If the snake is marked as growing, its body size increases by retaining the tail segment during this move.
-     * Otherwise, the last segment of the body is removed, maintaining the snake's current size.
-     * If the snake is inactive, the method exits without modifying the state.
-     */
-    public void move() {
-        if(!isActive()) return;
-
-        Position currentHead = getHead();
-        Position newHead = new Position(
-                currentHead.x() + direction.getDx(),
-                currentHead.y() + direction.getDy());
-        addBodySegment(newHead);
-        if(growing){
-            this.growing = false;
-        } else{
-            removeBodySegment();
-        }
-    }
-
-    /**
-     * Checks if the snake has collided with itself by determining if any body
-     * segments overlap. A self-collision occurs when the size of the snake's body
-     * is greater than 1 and there are duplicate positions in the body.
-     * @return {@code true} if the snake's body contains overlapping segments indicating
-     *         a self-collision, {@code false} otherwise
-     */
-    public boolean checkSelfCollision() {
-        if(this.body.size() <= 1) return false;
-        return this.bodySet.size() < this.body.size();
-    }
-
     // --- Override Methods ---
 
     @Override
@@ -209,8 +140,9 @@ public class Snake extends GameEntity{
 
     @Override
     public void setActive(boolean active) {
-        if(super.active && body.isEmpty()){
-            throw new EntityException("Snake cannot be activated with an empty body (internal state error).");
+        if(this.body.isEmpty()){
+            super.active = false;
+            return;
         }
         this.active = active;
     }
@@ -240,5 +172,77 @@ public class Snake extends GameEntity{
                 ", length=" + body.size() +
                 ", active=" + isActive() +
                 '}';
+    }
+
+    // --- Utility Methods ---
+
+    public boolean isEating(Food food){
+        return this.getHead().equals(food.getPosition());
+    }
+
+    public void move() {
+        if(!isActive()) return;
+        // Move the snake in the current direction
+        Position currentHead = getHead();
+        Position newHead = new Position(
+                currentHead.x() + direction.getDx(),
+                currentHead.y() + direction.getDy());
+        this.addBodySegment(newHead);
+        if(this.growing){
+            this.growing = false;
+        } else{
+            this.removeBodySegment();
+        }
+    }
+
+    public boolean checkCollision(int boardW, int boardH) {
+        Position head = getHead();
+        // Check if the snake's head collides with board edges
+        if(head.x() < 0 || head.x() >= boardW || head.y() < 0 || head.y() >= boardH) {
+            System.out.println("Snake collided with the wall.");
+            return true;
+        }
+        // Check if the snake's head collides with its own body
+        if(this.body.size() > 3 && this.body.size() != this.bodySet.size()) {
+            System.out.println("Snake collided with itself.");
+            return true;
+        }
+        return false;
+    }
+
+    public void draw(PApplet p) {
+        p.fill(0, 255, 0);
+        for (Position segment : body) {
+            p.rect(segment.x() * GameConfig.CELL_SIZE, segment.y() * GameConfig.CELL_SIZE,
+                    GameConfig.CELL_SIZE, GameConfig.CELL_SIZE);
+        }
+    }
+
+    /**
+     * Adds a new body segment to the snake's body at the specified position.
+     * This method verifies that the specified position is valid and not already
+     * occupied by any existing body segment. If the position is occupied, an
+     * {@code EntityException} is thrown.
+     * @param position the {@code Position} where the new body segment should be added;
+     *                 must not be null and must not yet be occupied by another segment
+     * @throws NullPointerException if the provided {@code position} is null
+     * @throws EntityException if the specified {@code position} is already occupied by a body segment
+     */
+    private void addBodySegment(Position position) {
+        Objects.requireNonNull(position, "Position cannot be null");
+        body.addFirst(position);
+        bodySet.add(position);
+    }
+
+    /**
+     * Removes the last segment of the snake's body. This method updates the body deque
+     * by removing the last element and ensures that the position of the removed segment
+     * is also removed from the set of occupied positions.
+     * The removal operation maintains the consistency of the body and bodySet fields,
+     * ensuring no stale or incorrect references remain.
+     */
+    private void removeBodySegment() {
+        bodySet.remove(body.peekLast());
+        body.removeLast();
     }
 }
