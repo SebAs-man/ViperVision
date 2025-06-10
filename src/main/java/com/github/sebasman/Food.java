@@ -2,8 +2,7 @@ package com.github.sebasman;
 
 import processing.core.PApplet;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Food {
     private final PApplet parent;
@@ -31,15 +30,33 @@ public class Food {
      * Spawns food at a random position on the grid, ensuring it does not overlap with the snake's body.
      * @param snakeBody A list of positions representing the snake's body.
      */
-    public void spawn(List<Position> snakeBody) {
+    public void spawn(Set<Position> snakeBody) {
         int gridWidth = ((Game) this.parent).getGridWidth();
         int gridHeight = ((Game) this.parent).getGridHeight();
-        do{
-            // Generate a random position for the food within the grid
-            int x = (int) this.parent.random(gridWidth);
-            int y = (int) this.parent.random(gridHeight);
-            this.position = new Position(x, y);
-        } while (snakeBody != null && snakeBody.contains(this.position));
+        int totalSpots = gridWidth * gridHeight;
+        int availableSpots = totalSpots - snakeBody.size();
+
+        if(availableSpots <= 0){
+            System.out.println("¡Victory! You have eaten all the food!");
+            this.position = null;
+            return;
+        }
+
+        int targetEmptySpot = (int) this.parent.random(availableSpots);
+        int emptySpotCount = 0;
+
+        for (int y = 0; y < gridHeight; y++) {
+            for (int x = 0; x < gridWidth; x++) {
+                Position currentPos = new Position(x, y);
+                if (!snakeBody.contains(currentPos)) {
+                    if (emptySpotCount == targetEmptySpot) {
+                        this.position = currentPos;
+                        return;
+                    }
+                    emptySpotCount++;
+                }
+            }
+        }
     }
 
     // --- Getters ---

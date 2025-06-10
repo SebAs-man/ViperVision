@@ -2,9 +2,7 @@ package com.github.sebasman;
 
 import processing.core.PApplet;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 /**
@@ -14,9 +12,12 @@ import java.util.Objects;
 public class Snake {
     private final PApplet parent;
     private final List<Position> body;
-    private Direction direction;
+    private final Set<Position> bodySet;
+    private Direction currentDirection;
     private final int boxSize;
     private boolean isGrowing;
+    private final Queue<Direction> inputQueue;
+    private static final int MAX_INPUT_QUEUE_SIZE = 3;
 
 
     /**
@@ -32,26 +33,49 @@ public class Snake {
         this.isGrowing = false;
 
         this.body = new LinkedList<>();
+        this.bodySet = new HashSet<>();
         this.body.add(start);
+        this.bodySet.add(start);
 
-        this.direction = Direction.RIGHT;
+        this.currentDirection = Direction.RIGHT;
+        this.inputQueue = new LinkedList<>();
+    }
+
+    /**
+     * Buffers a new direction for the snake.
+     * @param newDirection The new direction to buffer.
+     */
+    public void bufferDirection(Direction newDirection){
+        Objects.requireNonNull(newDirection, "New direction cannot be null");
+        if(inputQueue.size() < MAX_INPUT_QUEUE_SIZE){
+            inputQueue.add(newDirection);
+        }
     }
 
     /**
      * Updates the snake's position by moving its head in the current direction
      */
     public void update() {
+        // If there are buffered inputs, process the next one
+        if(!inputQueue.isEmpty()){
+            Direction nextDirection = inputQueue.poll();
+            if(nextDirection != this.currentDirection.opposite()){
+                this.currentDirection = nextDirection;
+            }
+        }
         // Calculate the new head position based on the current direction
-        Position head = this.getHead();
-        Position newHead = head.add(new Position(direction.getDx(), direction.getDy()));
+        Position currentHead = this.getHead();
+        Position newHead = currentHead.add(new Position(currentDirection.getDx(), currentDirection.getDy()));
         // Add the new head to the front of the body
         this.body.addFirst(newHead);
+        this.bodySet.add(newHead);
         // If the snake should grow, do not remove the tail.
         // If not, remove it to simulate movement.
         if(this.isGrowing){
             this.isGrowing = false; // Reset the growth flag after growing
         } else {
-            this.body.removeLast(); // Remove the tail segment to simulate movement
+            Position tail = this.body.removeLast(); // Remove the tail segment to simulate movement
+            this.bodySet.remove(tail); // Remove the tail from the set
         }
     }
 
@@ -87,6 +111,10 @@ public class Snake {
                head.y() < 0 || head.y() >= ((Game) this.parent).getGridHeight();
     }
 
+    /**
+     * Checks if the snake collides with itself.
+     * @return True if the snake collides with itself, false otherwise.
+     */
     public boolean checkCollisionWithSelf() {
         Position head = this.getHead();
         // Check if the head collides with any other segment of the body
@@ -101,11 +129,11 @@ public class Snake {
     // --- Getters ---
 
     /**
-     * Returns the current direction of the snake.
-     * @return The current direction of the snake.
+     * Returns the set of positions occupied by the snake's body.
+     * @return A set of positions representing the snake's body.
      */
-    public List<Position> getBody() {
-        return this.body;
+    public Set<Position> getBodySet() {
+        return bodySet;
     }
 
     /**
@@ -114,17 +142,5 @@ public class Snake {
      */
     public Position getHead() {
         return this.body.getFirst();
-    }
-
-    // --- Setters ---
-
-    /**
-     * Sets the direction of the snake.
-     * @param direction The new direction to set for the snake.
-     */
-    public void setDirection(Direction direction) {
-        Objects.requireNonNull(direction, "Direction cannot be null");
-        if(this.body.size() > 1 && this.direction.opposite() == direction) return;
-        this.direction = direction;
     }
 }

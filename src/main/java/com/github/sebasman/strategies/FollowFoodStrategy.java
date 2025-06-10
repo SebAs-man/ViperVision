@@ -1,0 +1,57 @@
+package com.github.sebasman.strategies;
+
+import com.github.sebasman.Direction;
+import com.github.sebasman.Game;
+import com.github.sebasman.Position;
+import com.github.sebasman.Snake;
+
+/**
+ * A strategy for controlling the snake to follow the food.
+ */
+public class FollowFoodStrategy implements ControlStrategy {
+    // Singleton instance of FollowFoodStrategy
+    private static final FollowFoodStrategy INSTANCE = new FollowFoodStrategy();
+
+    /**
+     * Private constructor to prevent instantiation.
+     */
+    private FollowFoodStrategy() {}
+
+    /**
+     * Returns the singleton instance of FollowFoodStrategy.
+     * @return The singleton instance of FollowFoodStrategy.
+     */
+    public  static FollowFoodStrategy getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public void update(Game game, Snake snake) {
+        Position head = snake.getHead();
+        Position food = game.getFood().getPosition();
+
+        int dx = food.x() - head.x();
+        int dy = food.y() - head.y();
+
+        if (Math.abs(dx) > Math.abs(dy)) {
+            // If the horizontal distance is greater, prioritize horizontal movement
+            if (dx > 0) {
+                snake.bufferDirection(Direction.RIGHT);
+            } else {
+                snake.bufferDirection(Direction.LEFT);
+            }
+        } else {
+            // If the vertical distance is greater, prioritize vertical movement
+            if (dy > 0) {
+                snake.bufferDirection(Direction.DOWN);
+            } else {
+                snake.bufferDirection(Direction.UP);
+            }
+        }
+    }
+
+    @Override
+    public void keyPressed(Game game, Snake snake, int keyCode) {
+        // The AI doesn't respond to the keyboard, so this method is empty.
+    }
+}

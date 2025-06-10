@@ -1,7 +1,8 @@
 package com.github.sebasman;
 
+import com.github.sebasman.states.StartingState;
+import com.github.sebasman.states.State;
 import processing.core.PApplet;
-import processing.core.PVector;
 
 /**
  * The main class of the game that manages the window, the game loop (draw),
@@ -14,7 +15,7 @@ public class Game extends PApplet {
     private static final int GRID_HEIGHT = 25;
 
     // Variables for game state and grid
-    private GameState state;
+    private State state;
     private Snake snake;
     private Food food;
 
@@ -30,117 +31,56 @@ public class Game extends PApplet {
         super.textAlign(CENTER, CENTER);
         // Initialize game components
         this.resetGame();
+        this.setState(StartingState.getInstance());
     }
 
     /**
      * Resets the game to its initial state.
      */
-    private void resetGame() {
+    public void resetGame() {
         this.snake = new Snake(this, new Position(GRID_WIDTH/4, GRID_HEIGHT/2));
         this.food = new Food(this);
-        this.food.spawn(this.snake.getBody());
-        this.state = GameState.PLAYING;
+        this.food.spawn(this.snake.getBodySet());
     }
 
     @Override
     public void draw() {
-        switch (this.state) {
-            case STARTING:
-                this.drawPresentation();
-                break;
-            case PLAYING:
-                // Logic for updating the game state
-                this.snake.update();
-                this.checkCollisions();
-                // Render the game components
-                super.background(0);
-                this.snake.draw();
-                food.draw();
-                break;
-            case GAME_OVER:
-                this.drawGameOver();
-                break;
-            case PAUSED:
-                break;
-            default:
-                super.background(150);
-                break;
+        if(this.state == null) {
+            throw new IllegalStateException(
+                    "The current state of the game cannot be null and void."
+            );
         }
-    }
-
-    /**
-     * Draws the main menu of the game.
-     */
-    private void drawPresentation(){
-        super.background(25, 25, 112);
-        super.fill(255);
-        super.textSize(50);
-        super.text("VIPER VISION", width / 2f, height / 3f);
-        super.textSize(20);
-        super.text("Press any key for start", width / 2f, height / 2f);
-    }
-
-    /**
-     * Draws the game over the screen.
-     */
-    private void drawGameOver(){
-        super.background(80, 0, 0); // Fondo rojo oscuro
-        super.fill(255, 0, 0);
-        super.textSize(50);
-        super.text("GAME OVER", width / 2f, height / 3f);
-        super.textSize(20);
-        super.fill(255);
-        super.text("Press 'Enter' to restart", width / 2f, height / 2f);
-    }
-
-    /**
-     * Checks for collisions between the snake and the walls, itself, or food.
-     */
-    private void checkCollisions(){
-        // Check if the snake's head collides with the wall
-        if(this.snake.checkCollisionWithWall()){
-            this.state = GameState.GAME_OVER;
-            return;
-        }
-        // Check if the snake's head collides with itself
-        if(this.snake.checkCollisionWithSelf()){
-            this.state = GameState.GAME_OVER;
-            return;
-        }
-        // Check if the snake's head collides with the food
-        if(this.snake.getHead().equals(this.food.getPosition())){
-            this.snake.grow(); // Grow the snake
-            this.food.spawn(this.snake.getBody()); // Spawn new food
-        }
+        this.state.update(this);
+        this.state.draw(this);
     }
 
     @Override
     public void keyPressed() {
-        switch (this.state) {
-            case STARTING:
-                this.state = GameState.PLAYING;
-                break;
-            case PLAYING:
-                if (keyCode == UP) {
-                    this.snake.setDirection(Direction.UP);
-                } else if (keyCode == DOWN) {
-                    this.snake.setDirection(Direction.DOWN);
-                } else if (keyCode == LEFT) {
-                    this.snake.setDirection(Direction.LEFT);
-                } else if (keyCode == RIGHT) {
-                    this.snake.setDirection(Direction.RIGHT);
-                }
-                break;
-            case GAME_OVER:
-                if (keyCode == ENTER) {
-                    this.resetGame(); // Reset the game when Enter is pressed
-                    this.state = GameState.PLAYING; // Change state to playing
-                }
-                break;
+        if(this.state == null) {
+            throw new IllegalStateException(
+                    "The current state of the game cannot be null and void."
+            );
         }
+        this.state.keyPressed(this, keyCode);
     }
 
-    // Getters
+    // --- Getters ---
+
+    /**
+     * Returns the Snake object representing the snake in the game.
+     * @return The Snake object.
+     */
+    public Snake getSnake() {
+        return snake;
+    }
+
+    /**
+     * Returns the Food object representing the food in the game.
+     * @return The Food object.
+     */
+    public Food getFood() {
+        return food;
+    }
 
     /**
      * Returns the width of the grid in boxes.
@@ -164,5 +104,16 @@ public class Game extends PApplet {
      */
     public  int getGridHeight() {
         return GRID_HEIGHT;
+    }
+
+    // --- Setters ---
+
+    /**
+     * Sets the current game state.
+     * @param state The new game state to set.
+     */
+    public void setState(State state) {
+        this.state = state;
+        this.state.onEnter(this); // Notify the state that it has been entered
     }
 }
