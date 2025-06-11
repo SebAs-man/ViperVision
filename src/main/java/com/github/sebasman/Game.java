@@ -1,57 +1,126 @@
 package com.github.sebasman;
 
+import com.github.sebasman.core.Food;
+import com.github.sebasman.core.GameConfig;
+import com.github.sebasman.core.Snake;
+import com.github.sebasman.states.PlayingState;
 import com.github.sebasman.states.StartingState;
 import com.github.sebasman.states.State;
+import com.github.sebasman.strategies.ControlStrategy;
+import com.github.sebasman.ui.Assets;
+import com.github.sebasman.ui.ColorPalette;
 import processing.core.PApplet;
+
+import java.util.Objects;
 
 /**
  * The main class of the game that manages the window, the game loop (draw),
  * and user events (keyPressed). Extends PApplet from Processing.
  */
 public class Game extends PApplet {
-    // Constats for game configuration
-    private static final int BOX_SIZE = 25;
-    private static final int GRID_WIDTH = 25;
-    private static final int GRID_HEIGHT = 25;
-
-    // Variables for game state and grid
+    // The last-played strategy, used to switch between strategies
+    private ControlStrategy lastPlayedStrategy;
+    // Variables for game components
     private State state;
     private Snake snake;
     private Food food;
+    // Variables for game loop timing
+    private long lastTime;
+    private double nsPerTick;
+    private double delta;
 
     @Override
     public void settings() {
         // Set the size of the window based on the grid dimensions and box size
-        super.size(GRID_WIDTH * BOX_SIZE, GRID_HEIGHT * BOX_SIZE);
+        super.size(GameConfig.GRID_WIDTH * GameConfig.BOX_SIZE, GameConfig.GRID_HEIGHT * GameConfig.BOX_SIZE);
     }
 
     @Override
     public void setup() {
-        super.frameRate(10);
+        // Set the frame rate
+        super.frameRate(60);
+        // Initialize the timing variables for the game loop
+        int ticksPerSecond = GameConfig.STARTING_FRAME_RATE;
+        this.nsPerTick = 1_000_000_000.0 / ticksPerSecond; // Convert ticks per second to nanoseconds per tick
+        this.lastTime = System.nanoTime();
+        this.delta = 0;
+        // Set the alignment for the game
         super.textAlign(CENTER, CENTER);
-        // Initialize game components
-        this.resetGame();
+        // Load assets such as images and fonts
+        Assets.load(this);
+        ColorPalette.load(this);
+        // Initialize the game state to the starting state
         this.setState(StartingState.getInstance());
     }
 
     /**
-     * Resets the game to its initial state.
+     * Starts a new game with the specified control strategy.
+     * @param strategy The control strategy to use for the game (e.g., human control, AI).
      */
-    public void resetGame() {
-        this.snake = new Snake(this, new Position(GRID_WIDTH/4, GRID_HEIGHT/2));
-        this.food = new Food(this);
+    public void starGame(ControlStrategy strategy){
+        Objects.requireNonNull(strategy, "Strategy cannot be null");
+        this.lastPlayedStrategy = strategy;
+        this.snake = new Snake(new Position(GameConfig.GRID_WIDTH/4, GameConfig.GRID_HEIGHT/2), 3);
+        this.food = new Food();
         this.food.spawn(this.snake.getBodySet());
+
+        PlayingState playingState = PlayingState.getInstance();
+        playingState.setControlStrategy(strategy);
+        this.setState(playingState);
     }
 
-    @Override
-    public void draw() {
+    /**
+     * Retries the last played game by restarting with the last used strategy.
+     */
+    public void retryGame(){
+        if(this.lastPlayedStrategy != null){
+            this.starGame(this.lastPlayedStrategy);
+        } else {
+            throw new IllegalStateException(
+                    "Cannot retry the game without a previously played strategy."
+            );
+        }
+    }
+
+    /**
+     * The main game loop that runs continuously.
+     */
+    private void update() {
         if(this.state == null) {
             throw new IllegalStateException(
                     "The current state of the game cannot be null and void."
             );
         }
         this.state.update(this);
-        this.state.draw(this);
+    }
+
+    /**
+     * Renders the game state at a specific interpolation value.
+     * @param interpolation The interpolation value used for rendering, typically between 0 and 1.
+     */
+    private void render(float interpolation) {
+        if(this.state == null) {
+            throw new IllegalStateException(
+                    "The current state of the game cannot be null and void."
+            );
+        }
+        this.state.draw(this, interpolation);
+    }
+
+    @Override
+    public void draw() {
+        long now = System.nanoTime();
+        delta += (now - lastTime) / nsPerTick;
+        lastTime = now;
+        // Loop to update logic at a fixed rate
+        // Ensures that logic is not speeded up on fast computers
+        while (delta >= 1) {
+            update();
+            delta--;
+        }
+        // Rendering occurs as fast as possible, with interpolation
+        // The 'delta' here is the percentage of progress towards the next tick (0.0 to 1.0).
+        render((float) delta);
     }
 
     @Override
@@ -62,6 +131,16 @@ public class Game extends PApplet {
             );
         }
         this.state.keyPressed(this, keyCode);
+    }
+
+    @Override
+    public void mousePressed() {
+        if(this.state == null) {
+            throw new IllegalStateException(
+                    "The current state of the game cannot be null and void."
+            );
+        }
+        this.state.mousePressed(this);
     }
 
     // --- Getters ---
@@ -80,30 +159,6 @@ public class Game extends PApplet {
      */
     public Food getFood() {
         return food;
-    }
-
-    /**
-     * Returns the width of the grid in boxes.
-     * @return The width of the grid in boxes.
-     */
-    public int getBoxSize() {
-        return BOX_SIZE;
-    }
-
-    /**
-     * Returns the width of the grid in boxes.
-     * @return The width of the grid in boxes.
-     */
-    public int getGridWidth() {
-        return GRID_WIDTH;
-    }
-
-    /**
-     * Returns the height of the grid in boxes.
-     * @return The height of the grid in boxes.
-     */
-    public  int getGridHeight() {
-        return GRID_HEIGHT;
     }
 
     // --- Setters ---

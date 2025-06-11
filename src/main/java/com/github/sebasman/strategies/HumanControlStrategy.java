@@ -2,7 +2,7 @@ package com.github.sebasman.strategies;
 
 import com.github.sebasman.Direction;
 import com.github.sebasman.Game;
-import com.github.sebasman.Snake;
+import com.github.sebasman.core.Snake;
 import processing.core.PConstants;
 
 /**
@@ -10,7 +10,7 @@ import processing.core.PConstants;
  * This strategy allows the player to control the snake's direction
  * by pressing the arrow keys.
  */
-public class HumanControlStrategy implements ControlStrategy {
+public final class HumanControlStrategy implements ControlStrategy {
     // Singleton instance of the HumanControlStrategy
     private static final HumanControlStrategy INSTANCE = new HumanControlStrategy();
 

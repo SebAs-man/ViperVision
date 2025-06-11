@@ -3,12 +3,12 @@ package com.github.sebasman.strategies;
 import com.github.sebasman.Direction;
 import com.github.sebasman.Game;
 import com.github.sebasman.Position;
-import com.github.sebasman.Snake;
+import com.github.sebasman.core.Snake;
 
 /**
  * A strategy for controlling the snake to follow the food.
  */
-public class FollowFoodStrategy implements ControlStrategy {
+public final class FollowFoodStrategy implements ControlStrategy {
     // Singleton instance of FollowFoodStrategy
     private static final FollowFoodStrategy INSTANCE = new FollowFoodStrategy();
 
