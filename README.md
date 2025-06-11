@@ -1,45 +1,41 @@
 <p align="center">
-  <a href="[https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT)"><img src="[https://img.shields.io/badge/License-MIT-yellow.svg](https://img.shields.io/badge/License-MIT-yellow.svg)" alt="License: MIT"></a>
-  <img src="[https://img.shields.io/badge/Java-24-ED8B00.svg?logo=openjdk](https://img.shields.io/badge/Java-24-ED8B00.svg?logo=openjdk)" alt="Language: Java 24">
-  <img src="[https://img.shields.io/badge/Processing-4.4.1-5A4098.svg?logo=processingfoundation](https://img.shields.io/badge/Processing-4.4.1-5A4098.svg?logo=processingfoundation)" alt="Uses: Processing">
-  <img src="[https://img.shields.io/badge/Maven-3.9-C71A36.svg?logo=apachemaven](https://img.shields.io/badge/Maven-3.9-C71A36.svg?logo=apachemaven)" alt="Build: Maven">
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/Java-24-ED8B00.svg?logo=openjdk" alt="Language: Java 24">
+  <img src="https://img.shields.io/badge/Processing-4.4.1-5A4098.svg?logo=processingfoundation" alt="Uses: Processing">
+  <img src="https://img.shields.io/badge/Maven-3.9-C71A36.svg?logo=apachemaven" alt="Build: Maven">
 </p>
 
 <p align="center">
   <img src="./docs/img/logo.png" alt="ViperVision Logo" width="600"/>
 </p>
 
-> A modern take on the classic Snake game, engineered with a focus on clean architecture, design patterns, and multiple AI-driven gameplay modes.
+> A modern take on the classic Snake game, engineered with a focus on clean, decoupled architecture, classic design patterns, and multiple AI-driven gameplay modes.
 
-ViperVision is a comprehensive implementation of the Snake game built from the ground up using Java and the Processing library for rendering. More than just a game, it serves as a practical case study for applying robust software design principles like the State and Strategy patterns, resulting in a flexible, maintainable, and extensible codebase.
-
-<p align="center">
-  <img src="./docs/img/gameplay.gif" alt="ViperVision Gameplay Demo" width="600"/>
-</p>
+ViperVision is a comprehensive implementation of the Snake game built from the ground up using Java and the Processing library for rendering. More than just a game, it serves as a practical case study for applying robust software design principles to build a flexible, maintainable, and extensible application.
 
 ---
 
 ## ✨ Features
 
-* **Classic Gameplay:** Smooth, grid-based movement, food consumption, and score tracking.
+* **Classic Gameplay:** Smooth, interpolated movement, food consumption, and score tracking.
 * **Multiple Game Modes:**
     * **Human Player:** Take control with the arrow keys in a responsive input-buffered system.
-    * **Pathfinding AI:** Watch the snake autonomously navigate using algorithms like A* or Dijkstra to find the optimal path to the food.
-    * **Genetic Algorithm AI (WIP):** Observe an AI that evolves and learns to play through generations of simulated evolution.
-* **Polished UI:** Interactive menus, custom fonts, and improved game aesthetics.
-* **Robust Architecture:** Built to be easily understood, modified, and extended.
+    * **Pathfinding AI (WIP):** Watch the snake autonomously navigate using algorithms like A* to find the optimal and safest path to the food.
+    * **Genetic Algorithm AI (Planned):** Observe an AI that evolves and learns to play through generations of simulated evolution.
+* **Polished UI/UX:** Interactive menus with custom fonts, graphics, and a fluid game loop.
+* **Clean, Decoupled Architecture:** Built to be easily understood, modified, and extended.
 
 ---
 
 ## 🏗️ Architecture & Design
 
-This project is engineered with a strong focus on applying proven software design principles:
+ViperVision is engineered with a strong focus on a clean, unidirectional dependency flow, preventing circular dependencies and promoting high cohesion and low coupling.
 
-* **Separation of Concerns:** Core logic is decoupled from rendering, input, and UI.
-* **State Pattern:** Manages the game's states (Menu, Playing, Paused, GameOver) by encapsulating state-specific behaviors into their own classes. This makes adding or changing states clean and simple.
-* **Strategy Pattern:** Dynamically switches the snake's control mechanism between different "strategies" (Human, Pathfinding AI, etc.), allowing for modular and interchangeable gameplay modes.
-* **Singleton Pattern:** Used for managing stateless objects like game states, strategies, and asset loaders to ensure efficiency and a single point of access.
-* **Composition over Inheritance:** Game objects are built with a focus on what they *do* (interfaces like `Drawable`, `Updatable`) rather than what they *are*, promoting flexibility.
+* **Core Architectural Principle:** The architecture is designed around a central **`core` package**, which acts as the game engine's API. It contains the main game loop, configuration, assets, and—most importantly—the **interfaces** that define the application's contracts (`State`, `ControlStrategy`, `SnakeAPI`, etc.).
+* **Unidirectional Dependencies:** All other packages (`states`, `strategies`, `entities`) are implementation details that **depend on `core`**, but `core` does not depend on them. This creates a clean, maintainable, and testable structure.
+* **Dependency Injection:** To break cycles, dependencies are "wired up" at the highest level possible. The `Main` class injects initial states, and the `PlayingState` is responsible for creating and resetting game entities, acting as the setup manager for a new game session.
+* **State Pattern:** Manages the game's high-level states (Menu, Playing, Paused, GameOver) using a **State Stack**. This allows for clean transitions, pausing/resuming, and complex menu flows.
+* **Strategy Pattern:** Decouples the game logic from the snake's control mechanism. This allows switching seamlessly between different "strategies" (Human, Pathfinding AI, etc.) without changing any core game code.
 
 ### Key Diagrams
 
@@ -47,52 +43,16 @@ Here are some diagrams illustrating the project's structure and flow.
 
 #### Package Structure
 
-```mermaid
-package "com.seb-asman.vipervision" {
-    package "core" {
-        class Game
-        class Assets
-        class GameConfig
-        class ColorPalette
-    }
-
-    package "entities" {
-        class Snake
-        class Food
-        class Board
-    }
-
-    package "states" {
-        class State
-        class PlayingState
-        class MenuState
-        class PausedState
-        class GameOverState
-    }
-
-    package "strategies" {
-        class ControlStrategy
-        class HumanControlStrategy
-        class FollowFoodStrategy
-    }
-
-    package "ui" {
-        class MenuButton
-    }
-
-    states --> core : "uses"
-    strategies --> core : "uses"
-    entities --> core : "uses"
-    ui --> core : "uses"
-    states --> entities : "manages"
-    states --> strategies : "uses"
-    states --> ui : "creates"
-}
-```
+![Package Structure](./docs/diagrams/packages.jpg)
 
 #### State Machine
 
-![State Diagram](./docs/diagrams/states.png)
+![State Diagram](./docs/diagrams/states.jpg)
+
+
+#### Class Diagram
+
+You can access all class diagrams in the file [`docs/diagrams/diagrams.mdj`](docs/diagrams/diagrams.mdj).
 
 ---
 
@@ -114,28 +74,17 @@ Follow these instructions to get a copy of the project up and running on your lo
 * **JDK 24** (or the version specified in `pom.xml`). Make sure `JAVA_HOME` is set correctly.
 * **Apache Maven** installed and configured in your system's PATH.
 
-### Installation
+### Installation & Running
 
 1.  **Clone the repository:**
     ```bash
     git clone https://github.com/SebAs-man/ViperVision.git
     cd ViperVision
     ```
-2.  **Build the project using Maven:** This will compile the code and package it into an executable JAR in the `target/` directory.
+2.  **Build and run the project using Maven:**
     ```bash
-    mvn clean package
+    mvn clean package exec:java
     ```
-
----
-
-## ▶️ How to Run
-
-After a successful build, you can run the game from the command line:
-
-```bash
-java -jar target/ViperVision-1.0-SNAPSHOT.jar
-```
-*(Note: The JAR file name may vary slightly based on the version in your `pom.xml`)*
 
 ---
 

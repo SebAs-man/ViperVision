@@ -1,8 +1,4 @@
-package com.github.sebasman.strategies;
-
-
-import com.github.sebasman.core.Game;
-import com.github.sebasman.entities.Snake;
+package com.github.sebasman.core;
 
 /**
  * Interface for the Strategy pattern. Defines a contract for all snake control strategies (human, AI, etc.).
@@ -14,7 +10,7 @@ public interface ControlStrategy {
      * @param game The game instance to access global data.
      * @param snake The snake that this strategy should control.
      */
-    void update(Game game, Snake snake);
+    void update(Game game, SnakeAPI snake);
 
 
     /**
@@ -24,5 +20,5 @@ public interface ControlStrategy {
      * @param snake The snake to control.
      * @param keyCode The code of the key pressed.
      */
-    void keyPressed(Game game, Snake snake, int keyCode);
+    void keyPressed(Game game, SnakeAPI snake, int keyCode);
 }

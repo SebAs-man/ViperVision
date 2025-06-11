@@ -1,8 +1,8 @@
 package com.github.sebasman.entities;
 
-import com.github.sebasman.interfaces.Drawable;
-import com.github.sebasman.core.GameConfig;
-import com.github.sebasman.ui.ColorPalette;
+import com.github.sebasman.core.Drawable;
+import com.github.sebasman.utils.GameConfig;
+import com.github.sebasman.utils.ColorPalette;
 import processing.core.PApplet;
 
 /**
@@ -27,7 +27,7 @@ public class Board implements Drawable {
     }
 
     @Override
-    public void draw(PApplet context) {
+    public void draw(PApplet context, Float interpolation) {
         context.pushStyle();
         context.noStroke();
         for(int y = 0; y < GameConfig.GRID_HEIGHT; y++) {

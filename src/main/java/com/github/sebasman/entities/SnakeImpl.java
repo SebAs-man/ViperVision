@@ -1,21 +1,19 @@
 package com.github.sebasman.entities;
 
-import com.github.sebasman.entities.vo.Direction;
-import com.github.sebasman.entities.vo.Position;
-import com.github.sebasman.interfaces.Drawable;
-import com.github.sebasman.core.GameConfig;
-import com.github.sebasman.interfaces.Updatable;
-import com.github.sebasman.ui.ColorPalette;
+import com.github.sebasman.core.SnakeAPI;
+import com.github.sebasman.core.vo.Direction;
+import com.github.sebasman.core.vo.Position;
+import com.github.sebasman.utils.GameConfig;
+import com.github.sebasman.utils.ColorPalette;
 import processing.core.PApplet;
 
 import java.util.*;
 
 
 /**
- * Represents the snake. Contains its body, direction and the logic
- * to move and draw itself.
+ * The SnakeImpl class represents the snake in the game.
  */
-public class Snake implements Drawable, Updatable {
+public class SnakeImpl implements SnakeAPI {
     private final List<Position> body;
     private final List<Position> previousBody; // Stores the position of the body in the previous logical frame.
     private final Set<Position> bodySet;
@@ -28,7 +26,7 @@ public class Snake implements Drawable, Updatable {
      * Snake constructor.
      * @param start The initial position of the head.
      */
-    public Snake(final Position start, int initialSize) {
+    public SnakeImpl(final Position start, int initialSize) {
         this.isGrowing = false;
 
         this.body = new LinkedList<>();
@@ -57,9 +55,6 @@ public class Snake implements Drawable, Updatable {
         }
     }
 
-    /**
-     * Updates the snake's position by moving its head in the current direction
-     */
     @Override
     public void update() {
         // If there are buffered inputs, process the next one
@@ -88,20 +83,8 @@ public class Snake implements Drawable, Updatable {
         this.bodySet.add(newHead);
     }
 
-    /**
-     * Draws the snake on the screen.
-     */
     @Override
-    public void draw(PApplet context) {
-        this.draw(context, 0f);
-    }
-
-    /**
-     * Draws the snake on the screen with interpolation for smooth rendering.
-     * @param p The PApplet instance used for drawing.
-     * @param interpolation The interpolation factor for smooth rendering, typically between 0 and 1.
-     */
-    public void draw(PApplet p, float interpolation) {
+    public void draw(PApplet p, Float interpolation) {
         p.pushStyle();
         p.noStroke();
         // Draw each body part independently
@@ -129,7 +112,7 @@ public class Snake implements Drawable, Updatable {
      * @param index The index of the segment to draw.
      * @param interpolation The interpolation factor for smooth rendering.
      */
-    private void drawSegment(PApplet p, int index, float interpolation) {
+    private void drawSegment(PApplet p, int index, Float interpolation) {
         Position currentPos = body.get(index);
         Position previousPos = (index < previousBody.size()) ? previousBody.get(index) : currentPos;
 
@@ -147,7 +130,7 @@ public class Snake implements Drawable, Updatable {
      * @param interpolation The interpolation factor for smooth rendering.
      * @param isHead True if drawing the head, false if drawing the tail.
      */
-    private void drawEnd(PApplet p, int index, float interpolation, boolean isHead) {
+    private void drawEnd(PApplet p, int index, Float interpolation, boolean isHead) {
         Position currentPos = body.get(index);
         Position previousPos = (index < previousBody.size()) ? previousBody.get(index) : currentPos;
 
@@ -224,10 +207,7 @@ public class Snake implements Drawable, Updatable {
         }
     }
 
-    /**
-     * Buffers a new direction for the snake.
-     * @param newDirection The new direction to buffer.
-     */
+    @Override
     public void bufferDirection(Direction newDirection){
         Objects.requireNonNull(newDirection, "New direction cannot be null");
         if(inputQueue.size() < GameConfig.INPUT_BUFFER_LIMIT){
@@ -235,46 +215,30 @@ public class Snake implements Drawable, Updatable {
         }
     }
 
-    /**
-     * Grows the snake by one segment.
-     */
+    @Override
     public void grow(){
         this.isGrowing = true;
     }
 
-    /**
-     * Checks if the snake collides with itself.
-     * @return True if the snake collides with itself, false otherwise.
-     */
+    @Override
     public boolean checkCollisionWithWall() {
         Position head = this.getHead();
         return head.x() < 0 || head.x() >= GameConfig.GRID_WIDTH ||
                head.y() < 0 || head.y() >= GameConfig.GRID_HEIGHT;
     }
 
-    /**
-     * Checks if the snake collides with itself.
-     * @return True if the snake collides with itself, false otherwise.
-     */
+    @Override
     public boolean checkCollisionWithSelf() {
         return this.body.size() != this.bodySet.size();
     }
 
-    // --- Getters ---
-
-    /**
-     * Returns the set of positions occupied by the snake's body.
-     * @return A set of positions representing the snake's body.
-     */
-    public Set<Position> getBodySet() {
-        return bodySet;
-    }
-
-    /**
-     * Returns the current direction of the snake.
-     * @return The current direction of the snake.
-     */
+    @Override
     public Position getHead() {
         return this.body.getFirst();
+    }
+
+    @Override
+    public Set<Position> getBodySet() {
+        return bodySet;
     }
 }

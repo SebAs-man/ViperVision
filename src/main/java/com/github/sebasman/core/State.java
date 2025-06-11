@@ -1,6 +1,4 @@
-package com.github.sebasman.states;
-
-import com.github.sebasman.core.Game;
+package com.github.sebasman.core;
 
 /**
  * Interface that defines the behavior of a game state.
@@ -26,7 +24,7 @@ public interface State {
      * @param game The main instance of the game (the context).
      * @param interpolation The percentage of progress towards the next tick (0.0 to 1.0).
      */
-    void draw(Game game, float interpolation);
+    void draw(Game game, Float interpolation);
 
     /**
      * Handles keyboard input specific to this state.

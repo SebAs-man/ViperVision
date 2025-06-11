@@ -2,12 +2,13 @@ package com.github.sebasman.states;
 
 import com.github.sebasman.core.Game;
 import com.github.sebasman.entities.Board;
-import com.github.sebasman.core.GameConfig;
+import com.github.sebasman.core.State;
+import com.github.sebasman.utils.GameConfig;
 import com.github.sebasman.strategies.FollowFoodStrategy;
 import com.github.sebasman.strategies.HumanControlStrategy;
-import com.github.sebasman.ui.Assets;
+import com.github.sebasman.utils.Assets;
 import com.github.sebasman.ui.Button;
-import com.github.sebasman.ui.ColorPalette;
+import com.github.sebasman.utils.ColorPalette;
 
 /**
  * The menu state of the game, where the player can see the main menu options.
@@ -44,8 +45,8 @@ public final class MenuState implements State {
     }
 
     @Override
-    public void draw(Game game, float interpolation) {
-        Board.getInstance().draw(game);
+    public void draw(Game game, Float interpolation) {
+        Board.getInstance().draw(game, null);
         game.fill(0, 0, 0, 200); // Semi-transparent black background
         game.rect(0, 0, game.width, game.height); // Draw a rectangle to cover the background
         game.textFont(Assets.titleFont);
@@ -65,10 +66,10 @@ public final class MenuState implements State {
     @Override
     public void mousePressed(Game game) {
         if (humanButton.isMouseOver(game.mouseX, game.mouseY)) {
-            game.starGame(HumanControlStrategy.getInstance());
+            game.changeState(new PlayingState(HumanControlStrategy.getInstance()));
         }
         if (aiButton.isMouseOver(game.mouseX, game.mouseY)) {
-            game.starGame(FollowFoodStrategy.getInstance());
+            game.changeState(new PlayingState(FollowFoodStrategy.getInstance()));
         }
     }
 }

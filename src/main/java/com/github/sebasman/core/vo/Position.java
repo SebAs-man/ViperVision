@@ -1,4 +1,4 @@
-package com.github.sebasman.entities.vo;
+package com.github.sebasman.core.vo;
 
 /**
  * Represents a position in a 2D coordinate system with non-negative x and y values.

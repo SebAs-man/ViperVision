@@ -1,9 +1,10 @@
 package com.github.sebasman.strategies;
 
-import com.github.sebasman.entities.vo.Direction;
+import com.github.sebasman.core.SnakeAPI;
+import com.github.sebasman.core.vo.Direction;
 import com.github.sebasman.core.Game;
-import com.github.sebasman.entities.vo.Position;
-import com.github.sebasman.entities.Snake;
+import com.github.sebasman.core.vo.Position;
+import com.github.sebasman.core.ControlStrategy;
 
 /**
  * A strategy for controlling the snake to follow the food.
@@ -26,7 +27,7 @@ public final class FollowFoodStrategy implements ControlStrategy {
     }
 
     @Override
-    public void update(Game game, Snake snake) {
+    public void update(Game game, SnakeAPI snake) {
         Position head = snake.getHead();
         Position food = game.getFood().getPosition();
 
@@ -51,7 +52,7 @@ public final class FollowFoodStrategy implements ControlStrategy {
     }
 
     @Override
-    public void keyPressed(Game game, Snake snake, int keyCode) {
+    public void keyPressed(Game game, SnakeAPI snake, int keyCode) {
         // The AI doesn't respond to the keyboard, so this method is empty.
     }
 }

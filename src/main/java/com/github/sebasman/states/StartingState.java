@@ -1,8 +1,9 @@
 package com.github.sebasman.states;
 
 import com.github.sebasman.core.Game;
-import com.github.sebasman.ui.Assets;
-import com.github.sebasman.ui.ColorPalette;
+import com.github.sebasman.core.State;
+import com.github.sebasman.utils.Assets;
+import com.github.sebasman.utils.ColorPalette;
 
 /**
  * The starting state of the game, where the player is prompted to start the game.
@@ -35,7 +36,7 @@ public final class StartingState implements State {
     }
 
     @Override
-    public void draw(Game game, float interpolation) {
+    public void draw(Game game, Float interpolation) {
         // Draw the background
         game.fill(0, 0, 0, 125); // Semi-transparent black background
         game.image(Assets.backgroundPortalImage, 0, 0, game.width, game.height);
@@ -52,7 +53,7 @@ public final class StartingState implements State {
 
     @Override
     public void keyPressed(Game game, int keyCode) {
-        game.setState(MenuState.getInstance());
+        game.changeState(MenuState.getInstance());
     }
 
     @Override

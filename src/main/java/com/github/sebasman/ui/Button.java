@@ -1,6 +1,8 @@
 package com.github.sebasman.ui;
 
-import com.github.sebasman.core.GameConfig;
+import com.github.sebasman.utils.Assets;
+import com.github.sebasman.utils.ColorPalette;
+import com.github.sebasman.utils.GameConfig;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PImage;

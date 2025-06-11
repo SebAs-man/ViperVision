@@ -2,15 +2,16 @@ package com.github.sebasman.states;
 
 import com.github.sebasman.core.Game;
 import com.github.sebasman.entities.Board;
-import com.github.sebasman.ui.Assets;
+import com.github.sebasman.core.State;
+import com.github.sebasman.utils.Assets;
 import com.github.sebasman.ui.Button;
-import com.github.sebasman.ui.ColorPalette;
+import com.github.sebasman.utils.ColorPalette;
 
 /**
  * The paused state of the game, where the player can see a pause message
  * and can resume the game by pressing 'Space' or 'p'.
  */
-public final class PausedState implements State{
+public final class PausedState implements State {
     // This is a singleton class for the paused state of the game.
     private static final PausedState INSTANCE = new PausedState();
     // A button to return to the main menu
@@ -40,10 +41,10 @@ public final class PausedState implements State{
     }
 
     @Override
-    public void draw(Game game, float interpolation) {
-        Board.getInstance().draw(game);
-        game.getSnake().draw(game);
-        game.getFood().draw(game);
+    public void draw(Game game, Float interpolation) {
+        Board.getInstance().draw(game, null);
+        game.getSnake().draw(game, 0f);
+        game.getFood().draw(game, null);
 
         game.fill(255, 255, 255, 175);
         game.rect(0, 0, game.width, game.height);
@@ -63,14 +64,15 @@ public final class PausedState implements State{
     @Override
     public void keyPressed(Game game, int keyCode) {
         if(Character.toLowerCase(game.key) == 'p' || game.key == ' ') {
-            game.setState(PlayingState.getInstance());
+            game.popState();
         }
     }
 
     @Override
     public void mousePressed(Game game) {
         if(this.menuButton.isMouseOver(game.mouseX, game.mouseY)) {
-            game.setState(MenuState.getInstance());
+            game.popState();
+            game.changeState(MenuState.getInstance());
         }
     }
 }

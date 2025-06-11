@@ -1,8 +1,9 @@
 package com.github.sebasman.strategies;
 
-import com.github.sebasman.entities.vo.Direction;
+import com.github.sebasman.core.SnakeAPI;
+import com.github.sebasman.core.vo.Direction;
 import com.github.sebasman.core.Game;
-import com.github.sebasman.entities.Snake;
+import com.github.sebasman.core.ControlStrategy;
 import processing.core.PConstants;
 
 /**
@@ -11,6 +12,7 @@ import processing.core.PConstants;
  * by pressing the arrow keys.
  */
 public final class HumanControlStrategy implements ControlStrategy {
+
     // Singleton instance of the HumanControlStrategy
     private static final HumanControlStrategy INSTANCE = new HumanControlStrategy();
 
@@ -28,13 +30,13 @@ public final class HumanControlStrategy implements ControlStrategy {
     }
 
     @Override
-    public void update(Game game, Snake snake) {
+    public void update(Game game, SnakeAPI snake) {
         // The human control does not need to do anything in the update loop.
         // All logic is reactive to keyboard events.
     }
 
     @Override
-    public void keyPressed(Game game, Snake snake, int keyCode) {
+    public void keyPressed(Game game, SnakeAPI snake, int keyCode) {
         if (keyCode == PConstants.UP) {
             snake.bufferDirection(Direction.UP);
         } else if (keyCode == PConstants.DOWN) {

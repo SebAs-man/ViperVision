@@ -1,4 +1,4 @@
-package com.github.sebasman.interfaces;
+package com.github.sebasman.core;
 
 /**
  * Updatable is an interface that defines a contract for objects that can be updated.

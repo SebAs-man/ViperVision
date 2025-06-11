@@ -1,5 +1,8 @@
 package com.github.sebasman;
 
+import com.github.sebasman.core.Game;
+import com.github.sebasman.core.State;
+import com.github.sebasman.states.StartingState;
 import processing.core.PApplet;
 
 /**
@@ -8,6 +11,10 @@ import processing.core.PApplet;
  */
 public class Main {
     public static void main(String[] args){
-        PApplet.main("com.github.sebasman.core.Game");
+        State initialState = StartingState.getInstance();
+        // Create the game instance with the initial state and the factory for the playing state.
+        Game game = new Game(initialState);
+        String[] processingArgs = {"ViperVision"};
+        PApplet.runSketch(processingArgs, game);
     }
 }

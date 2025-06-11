@@ -1,4 +1,4 @@
-package com.github.sebasman.core;
+package com.github.sebasman.utils;
 
 /**
  * GameConfig is a utility class that holds the configuration constants for the game.
