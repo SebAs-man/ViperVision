@@ -1,8 +1,8 @@
 package com.github.sebasman.strategies;
 
-import com.github.sebasman.Direction;
-import com.github.sebasman.Game;
-import com.github.sebasman.core.Snake;
+import com.github.sebasman.entities.vo.Direction;
+import com.github.sebasman.core.Game;
+import com.github.sebasman.entities.Snake;
 import processing.core.PConstants;
 
 /**

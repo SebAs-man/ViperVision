@@ -1,4 +1,4 @@
-package com.github.sebasman;
+package com.github.sebasman.entities.vo;
 
 /**
  * Represents the four cardinal directions: UP, DOWN, LEFT, and RIGHT.

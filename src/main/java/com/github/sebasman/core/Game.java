@@ -1,8 +1,8 @@
-package com.github.sebasman;
+package com.github.sebasman.core;
 
-import com.github.sebasman.core.Food;
-import com.github.sebasman.core.GameConfig;
-import com.github.sebasman.core.Snake;
+import com.github.sebasman.entities.vo.Position;
+import com.github.sebasman.entities.Food;
+import com.github.sebasman.entities.Snake;
 import com.github.sebasman.states.PlayingState;
 import com.github.sebasman.states.StartingState;
 import com.github.sebasman.states.State;

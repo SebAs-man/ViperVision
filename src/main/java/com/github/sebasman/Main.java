@@ -8,6 +8,6 @@ import processing.core.PApplet;
  */
 public class Main {
     public static void main(String[] args){
-        PApplet.main("com.github.sebasman.Game");
+        PApplet.main("com.github.sebasman.core.Game");
     }
 }

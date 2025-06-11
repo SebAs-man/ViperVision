@@ -1,7 +1,7 @@
 package com.github.sebasman.states;
 
-import com.github.sebasman.Game;
-import com.github.sebasman.core.Board;
+import com.github.sebasman.core.Game;
+import com.github.sebasman.entities.Board;
 import com.github.sebasman.core.GameConfig;
 import com.github.sebasman.strategies.FollowFoodStrategy;
 import com.github.sebasman.strategies.HumanControlStrategy;

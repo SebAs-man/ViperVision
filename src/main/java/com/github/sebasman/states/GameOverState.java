@@ -1,7 +1,7 @@
 package com.github.sebasman.states;
 
-import com.github.sebasman.Game;
-import com.github.sebasman.core.Board;
+import com.github.sebasman.core.Game;
+import com.github.sebasman.entities.Board;
 import com.github.sebasman.core.GameConfig;
 import com.github.sebasman.ui.Assets;
 import com.github.sebasman.ui.Button;
@@ -34,6 +34,7 @@ public final class GameOverState implements State{
 
     @Override
     public void onEnter(Game game) {
+        System.out.println("Game Over!");
         this.retryButton = new Button("Retry", Assets.retryImage, game.width/2, game.height/2);
         this.menuButton = new Button("Menu", Assets.homeImage, game.width/2, (int) (game.height/2f+GameConfig.BUTTON_HEIGHT*1.5));
     }

@@ -1,9 +1,9 @@
 package com.github.sebasman.states;
 
-import com.github.sebasman.core.Board;
-import com.github.sebasman.core.Food;
-import com.github.sebasman.Game;
-import com.github.sebasman.core.Snake;
+import com.github.sebasman.entities.Board;
+import com.github.sebasman.entities.Food;
+import com.github.sebasman.core.Game;
+import com.github.sebasman.entities.Snake;
 import com.github.sebasman.strategies.ControlStrategy;
 
 import java.util.Objects;
@@ -45,7 +45,6 @@ public final class PlayingState implements State{
 
     @Override
     public void draw(Game game, float interpolation) {
-        game.background(0);
         Board.getInstance().draw(game);
         game.getSnake().draw(game, interpolation);
         game.getFood().draw(game);

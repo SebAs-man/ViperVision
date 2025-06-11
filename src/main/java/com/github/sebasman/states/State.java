@@ -1,6 +1,6 @@
 package com.github.sebasman.states;
 
-import com.github.sebasman.Game;
+import com.github.sebasman.core.Game;
 
 /**
  * Interface that defines the behavior of a game state.

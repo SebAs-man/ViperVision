@@ -1,6 +1,8 @@
-package com.github.sebasman.core;
+package com.github.sebasman.entities;
 
-import com.github.sebasman.Position;
+import com.github.sebasman.entities.vo.Position;
+import com.github.sebasman.interfaces.Drawable;
+import com.github.sebasman.core.GameConfig;
 import com.github.sebasman.ui.Assets;
 import processing.core.PApplet;
 import processing.core.PImage;

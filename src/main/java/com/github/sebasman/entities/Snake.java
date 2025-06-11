@@ -1,7 +1,10 @@
-package com.github.sebasman.core;
+package com.github.sebasman.entities;
 
-import com.github.sebasman.Direction;
-import com.github.sebasman.Position;
+import com.github.sebasman.entities.vo.Direction;
+import com.github.sebasman.entities.vo.Position;
+import com.github.sebasman.interfaces.Drawable;
+import com.github.sebasman.core.GameConfig;
+import com.github.sebasman.interfaces.Updatable;
 import com.github.sebasman.ui.ColorPalette;
 import processing.core.PApplet;
 
@@ -72,9 +75,6 @@ public class Snake implements Drawable, Updatable {
         // Calculate the new head position based on the current direction
         Position currentHead = this.getHead();
         Position newHead = currentHead.add(new Position(currentDirection.getDx(), currentDirection.getDy()));
-        // Add the new head to the front of the body
-        this.body.addFirst(newHead);
-        this.bodySet.add(newHead);
         // If the snake should grow, do not remove the tail.
         // If not, remove it to simulate movement.
         if(this.isGrowing){
@@ -83,6 +83,9 @@ public class Snake implements Drawable, Updatable {
             Position tail = this.body.removeLast(); // Remove the tail segment to simulate movement
             this.bodySet.remove(tail); // Remove the tail from the set
         }
+        // Add the new head to the front of the body
+        this.body.addFirst(newHead);
+        this.bodySet.add(newHead);
     }
 
     /**
@@ -254,14 +257,7 @@ public class Snake implements Drawable, Updatable {
      * @return True if the snake collides with itself, false otherwise.
      */
     public boolean checkCollisionWithSelf() {
-        Position head = this.getHead();
-        // Check if the head collides with any other segment of the body
-        for (int i = 1; i < this.body.size(); i++) {
-            if (head.equals(this.body.get(i))) {
-                return true; // Collision detected
-            }
-        }
-        return false; // No collision
+        return this.body.size() != this.bodySet.size();
     }
 
     // --- Getters ---

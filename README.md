@@ -1,143 +1,155 @@
-# ViperVision 🐍
-
 <p align="center">
-  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
-  <img src="https://img.shields.io/badge/Language-Java-blue.svg" alt="Language: Java">
-  <img src="https://img.shields.io/badge/JDK-24-orange.svg" alt="JDK: 24">
-  <img src="https://img.shields.io/badge/Uses-Processing-blueviolet.svg" alt="Uses: Processing">
-  <img src="https://img.shields.io/badge/Made%20With-Love-orange.svg" alt="Made With Love">
-  </p>
-
-<p align="center">
-  <img src="./docs/img/logo.png" alt="ViperVision Logo" width="640"/>
+  <a href="[https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT)"><img src="[https://img.shields.io/badge/License-MIT-yellow.svg](https://img.shields.io/badge/License-MIT-yellow.svg)" alt="License: MIT"></a>
+  <img src="[https://img.shields.io/badge/Java-24-ED8B00.svg?logo=openjdk](https://img.shields.io/badge/Java-24-ED8B00.svg?logo=openjdk)" alt="Language: Java 24">
+  <img src="[https://img.shields.io/badge/Processing-4.4.1-5A4098.svg?logo=processingfoundation](https://img.shields.io/badge/Processing-4.4.1-5A4098.svg?logo=processingfoundation)" alt="Uses: Processing">
+  <img src="[https://img.shields.io/badge/Maven-3.9-C71A36.svg?logo=apachemaven](https://img.shields.io/badge/Maven-3.9-C71A36.svg?logo=apachemaven)" alt="Build: Maven">
 </p>
 
 <p align="center">
-  <em>A classic Snake game with AI players, built using Java, Processing, and modern design config.</em>
-  <br/> 
+  <img src="./docs/img/logo.png" alt="ViperVision Logo" width="600"/>
 </p>
 
-ViperVision is a classic Snake game implementation using Java and the Processing library. It features multiple game modes, including human control and AI players driven by pathfinding and genetic algorithms. Built with the MVP pattern and various design principles.
+> A modern take on the classic Snake game, engineered with a focus on clean architecture, design patterns, and multiple AI-driven gameplay modes.
+
+ViperVision is a comprehensive implementation of the Snake game built from the ground up using Java and the Processing library for rendering. More than just a game, it serves as a practical case study for applying robust software design principles like the State and Strategy patterns, resulting in a flexible, maintainable, and extensible codebase.
+
+<p align="center">
+  <img src="./docs/img/gameplay.gif" alt="ViperVision Gameplay Demo" width="600"/>
+</p>
 
 ---
 
-## Table of Contents
+## ✨ Features
 
-- [Features](#features)
-- [Architecture & Design](#architecture--design)
-- [Key Diagrams](#key-diagrams)
-- [Technologies Used](#technologies-used)
-- [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
-- [How to Run](#how-to-run)
-- [Development](#development)
-- [License](#license)
-- [Acknowledgements](#acknowledgements)
+* **Classic Gameplay:** Smooth, grid-based movement, food consumption, and score tracking.
+* **Multiple Game Modes:**
+    * **Human Player:** Take control with the arrow keys in a responsive input-buffered system.
+    * **Pathfinding AI:** Watch the snake autonomously navigate using algorithms like A* or Dijkstra to find the optimal path to the food.
+    * **Genetic Algorithm AI (WIP):** Observe an AI that evolves and learns to play through generations of simulated evolution.
+* **Polished UI:** Interactive menus, custom fonts, and improved game aesthetics.
+* **Robust Architecture:** Built to be easily understood, modified, and extended.
 
 ---
 
-## Features
+## 🏗️ Architecture & Design
 
-* Classic Snake gameplay: Control the snake to eat food and grow longer.
-* Multiple Game Modes:
-    * **Human Player:** Control the snake using arrow keys.
-    * **AI Player (Pathfinding):** Watch the snake navigate autonomously using algorithms like Dijkstra or A* to find the food.
-    * **AI Player (Genetic Algorithm):** Observe an AI that learns to play Snake through evolutionary strategies.
-* Score tracking.
-* Game states: Main Menu, Playing, Paused, Game Over.
+This project is engineered with a strong focus on applying proven software design principles:
 
----
+* **Separation of Concerns:** Core logic is decoupled from rendering, input, and UI.
+* **State Pattern:** Manages the game's states (Menu, Playing, Paused, GameOver) by encapsulating state-specific behaviors into their own classes. This makes adding or changing states clean and simple.
+* **Strategy Pattern:** Dynamically switches the snake's control mechanism between different "strategies" (Human, Pathfinding AI, etc.), allowing for modular and interchangeable gameplay modes.
+* **Singleton Pattern:** Used for managing stateless objects like game states, strategies, and asset loaders to ensure efficiency and a single point of access.
+* **Composition over Inheritance:** Game objects are built with a focus on what they *do* (interfaces like `Drawable`, `Updatable`) rather than what they *are*, promoting flexibility.
 
-## Architecture & Design
-
-This project is developed with a focus on applying software design principles and config:
-
-* **Model-View-Presenter (MVP):** Separates concerns between the game logic (Model), the visual representation (View - using Processing), and the user input/game flow control (Presenter).
-* **State Pattern:** Manages the different states of the game (Menu, Playing, Paused, Game Over) and their specific behaviors and transitions.
-* **Strategy Pattern:** Allows switching between different control mechanisms (Human input, Pathfinding AI, Genetic AI) seamlessly.
-* **Dependency Injection (Manual):** Dependencies are manually injected (primarily during setup) to promote loose coupling and testability.
-* **Factory Method (Potential):** May be used for creating different types of game objects like food or AI instances.
-
-The goal is to create a maintainable, scalable, and testable codebase, serving as a practical example of these design concepts.
-
----
-
-## Key Diagrams
+### Key Diagrams
 
 Here are some diagrams illustrating the project's structure and flow.
 
-* **Package Diagram:**
+#### Package Structure
 
-![Package Diagram](./docs/diagrams/package.png)
+```mermaid
+package "com.seb-asman.vipervision" {
+    package "core" {
+        class Game
+        class Assets
+        class GameConfig
+        class ColorPalette
+    }
 
-* **State Diagram:**
+    package "entities" {
+        class Snake
+        class Food
+        class Board
+    }
+
+    package "states" {
+        class State
+        class PlayingState
+        class MenuState
+        class PausedState
+        class GameOverState
+    }
+
+    package "strategies" {
+        class ControlStrategy
+        class HumanControlStrategy
+        class FollowFoodStrategy
+    }
+
+    package "ui" {
+        class MenuButton
+    }
+
+    states --> core : "uses"
+    strategies --> core : "uses"
+    entities --> core : "uses"
+    ui --> core : "uses"
+    states --> entities : "manages"
+    states --> strategies : "uses"
+    states --> ui : "creates"
+}
+```
+
+#### State Machine
 
 ![State Diagram](./docs/diagrams/states.png)
 
 ---
 
-## Technologies Used
+## 🛠️ Technologies Used
 
-[![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)]()
-[![Maven](https://img.shields.io/badge/apachemaven-C71A36.svg?style=for-the-badge&logo=apachemaven&logoColor=white)]()
-
-* **Language:** Java 24 (or your specific JDK version)
-* **Graphics/Interaction:** Processing 4.4.1 (or your specific version)
-* **Build Tool:** Apache Maven
-* **Diagramming:** StarUML
+* **Language:** Java 24
+* **Graphics & Interaction:** [Processing](https://processing.org/) (v4.4.1)
+* **Build Tool:** [Apache Maven](https://maven.apache.org/)
+* **Diagramming:** StarUML / Mermaid
 
 ---
 
-## Getting Started
+## 🚀 Getting Started
 
 Follow these instructions to get a copy of the project up and running on your local machine.
 
 ### Prerequisites
 
-* **JDK 24** (or the version specified in `pom.xml`) installed. Make sure `JAVA_HOME` is set correctly.
-* **Apache Maven** installed.
+* **JDK 24** (or the version specified in `pom.xml`). Make sure `JAVA_HOME` is set correctly.
+* **Apache Maven** installed and configured in your system's PATH.
 
 ### Installation
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/SebAs-man/ViperVision.git](https://github.com/SebAs-man/ViperVision.git)
-    cd vipervision
+    git clone https://github.com/SebAs-man/ViperVision.git
+    cd ViperVision
     ```
-2.  **Build the project using Maven:** This will compile the code and package it into a JAR file in the `target/` directory.
+2.  **Build the project using Maven:** This will compile the code and package it into an executable JAR in the `target/` directory.
     ```bash
     mvn clean package
     ```
 
 ---
 
-## How to Run
+## ▶️ How to Run
 
-After building the project (`mvn clean package`), you can run the game from the command line:
+After a successful build, you can run the game from the command line:
 
 ```bash
-java -jar target/vipervision-x.y.z-SNAPSHOT.jar
+java -jar target/ViperVision-1.0-SNAPSHOT.jar
 ```
+*(Note: The JAR file name may vary slightly based on the version in your `pom.xml`)*
 
-When «x.y.z» is the version that you have downloaded.
+---
 
-## Development
+## 🎨 A Note on Design
 
-This project follows a standard Git workflow:
+This project's primary focus is on software architecture and clean, maintainable code. While efforts were made to create a pleasant user interface, the visual design choices reflect an engineer's perspective. Contributions, ideas, and pull requests from design-savvy individuals are most welcome!
 
-Create feature branches from the main (e.g., develop).
-Make changes and commit frequently on the feature branch.
-Push the feature branch to the remote repository.
-Create a Pull Request (PR) to merge the feature branch back into the main.
-Review and merge the PR.
-Feel free to fork the repository and submit pull requests for improvements or bug fixes. Please open an issue first to discuss significant changes.
+---
 
-## License
+## 📜 License
 
-This project is distributed under the MIT License. See the [`LICENSE`](./LICENSE.md) file for more information.
+This project is distributed under the MIT License. See the [`LICENSE`](LICENSE) file for more information.
 
-## Acknowledgements
+## 🙏 Acknowledgements
 
-* Processing library team for the amazing creative coding environment.
-* Mention any specific tutorials, articles, or libraries that inspired or helped you significantly.
+* The [Processing Foundation](https://processingfoundation.org/) for their amazing creative coding environment.
+* You, for exploring this project!
