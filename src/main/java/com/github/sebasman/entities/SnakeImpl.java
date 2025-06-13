@@ -1,6 +1,6 @@
 package com.github.sebasman.entities;
 
-import com.github.sebasman.core.SnakeAPI;
+import com.github.sebasman.core.interfaces.SnakeAPI;
 import com.github.sebasman.core.vo.Direction;
 import com.github.sebasman.core.vo.Position;
 import com.github.sebasman.utils.GameConfig;
@@ -92,7 +92,7 @@ public class SnakeImpl implements SnakeAPI {
         for (int i = 1; i < body.size() - 1; i++) {
             drawSegment(p, i, interpolation);
         }
-        /* Now draw the head and tail separately to handle them as special cases
+        /* Now render the head and tail separately to handle them as special cases
         We make sure there is more than one segment so that the tail is not drawn over the head
         If the body has grown, there may not be a 'previousPos' for the new segment.
         */
@@ -109,7 +109,7 @@ public class SnakeImpl implements SnakeAPI {
     /**
      * Draws a segment of the snake's body.
      * @param p The PApplet instance used for drawing.
-     * @param index The index of the segment to draw.
+     * @param index The index of the segment to render.
      * @param interpolation The interpolation factor for smooth rendering.
      */
     private void drawSegment(PApplet p, int index, Float interpolation) {
@@ -126,7 +126,7 @@ public class SnakeImpl implements SnakeAPI {
     /**
      * Draws the head or tail of the snake with rounded corners based on its direction.
      * @param p The PApplet instance used for drawing.
-     * @param index The index of the segment to draw (0 for head, last for tail).
+     * @param index The index of the segment to render (0 for head, last for tail).
      * @param interpolation The interpolation factor for smooth rendering.
      * @param isHead True if drawing the head, false if drawing the tail.
      */

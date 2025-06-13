@@ -1,9 +1,9 @@
 package com.github.sebasman.strategies;
 
-import com.github.sebasman.core.SnakeAPI;
+import com.github.sebasman.core.interfaces.SnakeAPI;
 import com.github.sebasman.core.vo.Direction;
 import com.github.sebasman.core.Game;
-import com.github.sebasman.core.ControlStrategy;
+import com.github.sebasman.core.interfaces.ControlStrategy;
 import processing.core.PConstants;
 
 /**

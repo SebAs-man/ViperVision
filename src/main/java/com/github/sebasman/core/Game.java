@@ -1,5 +1,6 @@
 package com.github.sebasman.core;
 
+import com.github.sebasman.core.interfaces.*;
 import com.github.sebasman.utils.Assets;
 import com.github.sebasman.utils.ColorPalette;
 import com.github.sebasman.utils.GameConfig;
@@ -9,7 +10,7 @@ import java.util.Objects;
 import java.util.Stack;
 
 /**
- * The main class of the game that manages the window, the game loop (draw),
+ * The main class of the game that manages the window, the game loop (render),
  * and user events (keyPressed). Extends PApplet from Processing.
  */
 public class Game extends PApplet {
@@ -20,24 +21,33 @@ public class Game extends PApplet {
     // The snake and food instances, which are part of the game state
     private SnakeAPI snake;
     private FoodAPI food;
+    private final UiRenderAPI render;
     // Variables for game loop timing
     private long lastTime;
     private double nsPerTick;
     private double delta;
+    // Score and high score variables
+    private int score;
+    private int highScore;
 
     /**
      * Constructor for the Game class.
      * @param initialState The initial state of the game to start with.
      */
-    public Game(State initialState) {
+    public Game(State initialState, UiRenderAPI render) {
+        Objects.requireNonNull(render);
         this.states = new Stack<>();
+        this.render = render;
         this.pushState(initialState);
     }
 
     @Override
     public void settings() {
+        int boardPixelWidth = GameConfig.GRID_WIDTH * GameConfig.BOX_SIZE;
+        int boardPixelHeight = GameConfig.GRID_HEIGHT * GameConfig.BOX_SIZE;
         // Set the size of the window based on the grid dimensions and box size
-        super.size(GameConfig.GRID_WIDTH * GameConfig.BOX_SIZE, GameConfig.GRID_HEIGHT * GameConfig.BOX_SIZE);
+        super.size(boardPixelWidth + (GameConfig.GAME_AREA_PADDING*4) + GameConfig.SIDE_PANEL_WIDTH,
+                boardPixelHeight + GameConfig.GAME_AREA_PADDING*3 + GameConfig.TOP_BAR_HEIGHT);
     }
 
     @Override
@@ -54,6 +64,7 @@ public class Game extends PApplet {
         // Load assets such as images and fonts
         Assets.load(this);
         ColorPalette.load(this);
+        this.render.initialize(this);
     }
 
     /**
@@ -85,46 +96,43 @@ public class Game extends PApplet {
     }
 
     /**
-     * The main game loop that runs continuously.
+     * Resets the score to zero.
      */
-    private void update() {
-        State currentState = this.states.peek();
-        if(currentState == null) {
-            throw new IllegalStateException(
-                    "The current state of the game cannot be null and void."
-            );
-        }
-        currentState.update(this);
+    public void resetScore() {
+        this.score = 0;
     }
 
     /**
-     * Renders the game state at a specific interpolation value.
-     * @param interpolation The interpolation value used for rendering, typically between 0 and 1.
+     * Increments the score by a specified number of points.
+     * @param points The number of points to add to the score.
      */
-    private void render(Float interpolation) {
-        State currentState = this.states.peek();
-        if(currentState == null) {
-            throw new IllegalStateException(
-                    "The current state of the game cannot be null and void."
-            );
+    public void incrementScore(int points) {
+        this.score += points;
+        if (this.score > this.highScore) {
+            this.highScore = this.score;
         }
-        currentState.draw(this, interpolation);
     }
 
     @Override
     public void draw() {
+        State currentState = this.states.peek();
+        if(currentState == null) {
+            throw new IllegalStateException(
+                    "The current state of the game cannot be null and void."
+            );
+        }
         long now = System.nanoTime();
         delta += (now - lastTime) / nsPerTick;
         lastTime = now;
         // Loop to update logic at a fixed rate
         // Ensures that logic is not speeded up on fast computers
         while (delta >= 1) {
-            update();
+            currentState.update(this);
             delta--;
         }
         // Rendering occurs as fast as possible, with interpolation
         // The 'delta' here is the percentage of progress towards the next tick (0.0 to 1.0).
-        render((float) delta);
+        currentState.draw(this, (float) delta);
     }
 
     @Override
@@ -175,6 +183,30 @@ public class Game extends PApplet {
         return lastPlayedStrategy;
     }
 
+    /**
+     * Returns the current score of the game.
+     * @return The current score as an integer.
+     */
+    public int getScore() {
+        return score;
+    }
+
+    /**
+     * Returns the high score of the game.
+     * @return The high score as an integer.
+     */
+    public int getHighScore() {
+        return highScore;
+    }
+
+    /**
+     * Returns the render API used for UI rendering.
+     * @return The UiRenderAPI instance used for rendering the game UI.
+     */
+    public UiRenderAPI getRender() {
+        return render;
+    }
+
     // --- Setters ---
 
     /**
@@ -182,7 +214,6 @@ public class Game extends PApplet {
      * @param snake The SnakeAPI instance representing the snake in the game.
      */
     public void setSnake(SnakeAPI snake) {
-        Objects.requireNonNull(snake, "Snake cannot be null");
         this.snake = snake;
     }
 
@@ -191,7 +222,6 @@ public class Game extends PApplet {
      * @param food The FoodAPI instance representing the food in the game.
      */
     public void setFood(FoodAPI food) {
-        Objects.requireNonNull(food, "Food cannot be null");
         this.food = food;
     }
 

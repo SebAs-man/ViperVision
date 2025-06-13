@@ -1,4 +1,4 @@
-package com.github.sebasman.core;
+package com.github.sebasman.core.interfaces;
 
 import processing.core.PApplet;
 

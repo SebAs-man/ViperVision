@@ -1,12 +1,12 @@
 package com.github.sebasman.states;
 
 import com.github.sebasman.core.Game;
-import com.github.sebasman.entities.Board;
-import com.github.sebasman.core.State;
+import com.github.sebasman.core.interfaces.State;
 import com.github.sebasman.utils.GameConfig;
 import com.github.sebasman.utils.Assets;
 import com.github.sebasman.ui.Button;
 import com.github.sebasman.utils.ColorPalette;
+import processing.core.PConstants;
 
 /**
  * The game over the state of the game, where the player sees the game over a message
@@ -15,7 +15,7 @@ import com.github.sebasman.utils.ColorPalette;
 public final class GameOverState implements State {
 
     // This is a singleton class for the game over state of the game.
-    private static final GameOverState INSTANCE = new GameOverState();
+    private static final State INSTANCE = new GameOverState();
     // Menu buttons for retry and menu options
     private Button retryButton;
     private Button menuButton;
@@ -29,7 +29,7 @@ public final class GameOverState implements State {
      * Returns the singleton instance of the GameOverState.
      * @return the instance of GameOverState
      */
-    public  static GameOverState getInstance() {
+    public static State getInstance() {
         return INSTANCE;
     }
 
@@ -47,11 +47,17 @@ public final class GameOverState implements State {
 
     @Override
     public void draw(Game game, Float interpolation) {
-        Board.getInstance().draw(game, null);
-        game.getSnake().draw(game, 0f);
-        game.getFood().draw(game, null);
+        // Draw static elements
+        game.getRender().render(game, 0f);
+        boolean isHoveringButton = retryButton.isMouseOver(game.mouseX, game.mouseY) || menuButton.isMouseOver(game.mouseX, game.mouseY);
+        // Change the cursor based on button hover state
+        if(isHoveringButton){
+            game.cursor(PConstants.HAND);
+        } else{
+            game.cursor(PConstants.ARROW);
+        }
 
-        game.fill(0, 0, 0, 225); // Semi-transparent black background
+        game.fill(0, 0, 0, 215); // Semi-transparent black background
         game.rect(0, 0, game.width, game.height);
         game.textFont(Assets.titleFont);
         game.fill(ColorPalette.TEXT_QUATERNARY);
@@ -70,7 +76,7 @@ public final class GameOverState implements State {
     @Override
     public void mousePressed(Game game) {
         if(this.retryButton.isMouseOver(game.mouseX, game.mouseY)) {
-            game.changeState(new PlayingState(game.getLastPlayedStrategy()));
+            game.changeState(new PreparingState(game.getLastPlayedStrategy()));
         }
         if(this.menuButton.isMouseOver(game.mouseX, game.mouseY)) {
             game.changeState(MenuState.getInstance()); // Go back to the main menu

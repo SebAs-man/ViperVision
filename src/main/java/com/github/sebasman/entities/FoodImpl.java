@@ -1,6 +1,6 @@
 package com.github.sebasman.entities;
 
-import com.github.sebasman.core.FoodAPI;
+import com.github.sebasman.core.interfaces.FoodAPI;
 import com.github.sebasman.core.vo.Position;
 import com.github.sebasman.utils.GameConfig;
 import com.github.sebasman.utils.Assets;
@@ -15,13 +15,17 @@ import java.util.*;
 public class FoodImpl implements FoodAPI {
     // Attributes
     private Position position;
+    private final int scoreValue;
     // Random number generator to select a random position for the food
     private final Random random;
 
     /**
      * Constructor for the Food class.
      */
-    public FoodImpl(){
+    public FoodImpl(int scoreValue, Position initialPosition) {
+        this.scoreValue = Math.max(scoreValue, 1); // Ensure score value is at least 1
+        Objects.requireNonNull(initialPosition);
+        this.position = initialPosition;
         this.random = new Random();
     }
 
@@ -62,6 +66,11 @@ public class FoodImpl implements FoodAPI {
                 }
             }
         }
+    }
+
+    @Override
+    public int getScoreValue() {
+        return this.scoreValue;
     }
 
     @Override

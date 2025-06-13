@@ -1,4 +1,4 @@
-package com.github.sebasman.core;
+package com.github.sebasman.core.interfaces;
 
 import com.github.sebasman.core.vo.Direction;
 import com.github.sebasman.core.vo.Position;

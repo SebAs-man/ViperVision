@@ -1,4 +1,6 @@
-package com.github.sebasman.core;
+package com.github.sebasman.core.interfaces;
+
+import com.github.sebasman.core.Game;
 
 /**
  * Interface that defines the behavior of a game state.

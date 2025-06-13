@@ -1,11 +1,10 @@
 package com.github.sebasman.states;
 
 import com.github.sebasman.core.*;
-import com.github.sebasman.core.vo.Position;
-import com.github.sebasman.entities.Board;
-import com.github.sebasman.entities.FoodImpl;
-import com.github.sebasman.entities.SnakeImpl;
-import com.github.sebasman.utils.GameConfig;
+import com.github.sebasman.core.interfaces.ControlStrategy;
+import com.github.sebasman.core.interfaces.FoodAPI;
+import com.github.sebasman.core.interfaces.SnakeAPI;
+import com.github.sebasman.core.interfaces.State;
 
 import java.util.Objects;
 
@@ -27,15 +26,7 @@ public final class PlayingState implements State {
 
     @Override
     public void onEnter(Game game) {
-        System.out.println("Entering PlayingState with control strategy: " + this.controlStrategy.getClass().getSimpleName());
-        // Initialize the game components such as the snake and food.
-        SnakeAPI snake = new SnakeImpl(new Position(GameConfig.GRID_WIDTH/4, GameConfig.GRID_HEIGHT/2), 3);
-        FoodAPI food = new FoodImpl();
-        food.spawn(snake.getBodySet());
-        // Set the snake and food in the game instance.
-        game.setSnake(snake);
-        game.setFood(food);
-        game.setLastPlayedStrategy(this.controlStrategy);
+        System.out.println("¡Starting Game!");
     }
 
     @Override
@@ -48,9 +39,7 @@ public final class PlayingState implements State {
 
     @Override
     public void draw(Game game, Float interpolation) {
-        Board.getInstance().draw(game, null);
-        game.getSnake().draw(game, interpolation);
-        game.getFood().draw(game, null);
+        game.getRender().render(game, interpolation);
     }
 
     @Override
@@ -82,6 +71,7 @@ public final class PlayingState implements State {
         }
 
         if (snake.getHead().equals(food.getPosition())) {
+            game.incrementScore(food.getScoreValue());
             snake.grow();
             food.spawn(snake.getBodySet());
         }

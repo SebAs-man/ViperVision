@@ -1,7 +1,7 @@
 package com.github.sebasman.states;
 
 import com.github.sebasman.core.Game;
-import com.github.sebasman.core.State;
+import com.github.sebasman.core.interfaces.State;
 import com.github.sebasman.utils.Assets;
 import com.github.sebasman.utils.ColorPalette;
 
@@ -10,7 +10,7 @@ import com.github.sebasman.utils.ColorPalette;
  */
 public final class StartingState implements State {
     // This is a singleton class for the starting state of the game.
-    private static final StartingState INSTANCE = new StartingState();
+    private static final State INSTANCE = new StartingState();
 
     /**
      * Private constructor to prevent instantiation.
@@ -21,7 +21,7 @@ public final class StartingState implements State {
      * Returns the singleton instance of the StartingState.
      * @return the instance of StartingState
      */
-    public static StartingState getInstance() {
+    public static State getInstance() {
         return INSTANCE;
     }
 
@@ -48,7 +48,7 @@ public final class StartingState implements State {
         game.text("VIPER VISION", game.width / 2f, game.height / 2f);
         game.textFont(Assets.textFont);
         game.textSize(game.width/21f);
-        game.text("Press any key for start", game.width / 2f, game.height / 1.25f);
+        game.text("Press any key for start", game.width / 2f, game.height / 1.15f);
     }
 
     @Override

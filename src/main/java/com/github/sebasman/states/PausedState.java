@@ -1,11 +1,11 @@
 package com.github.sebasman.states;
 
 import com.github.sebasman.core.Game;
-import com.github.sebasman.entities.Board;
-import com.github.sebasman.core.State;
+import com.github.sebasman.core.interfaces.State;
 import com.github.sebasman.utils.Assets;
 import com.github.sebasman.ui.Button;
 import com.github.sebasman.utils.ColorPalette;
+import processing.core.PConstants;
 
 /**
  * The paused state of the game, where the player can see a pause message
@@ -13,7 +13,7 @@ import com.github.sebasman.utils.ColorPalette;
  */
 public final class PausedState implements State {
     // This is a singleton class for the paused state of the game.
-    private static final PausedState INSTANCE = new PausedState();
+    private static final State INSTANCE = new PausedState();
     // A button to return to the main menu
     private Button menuButton;
 
@@ -26,7 +26,7 @@ public final class PausedState implements State {
      * Returns the singleton instance of the PausedGame state.
      * @return the instance of PausedGame
      */
-    public static PausedState getInstance() {
+    public static State getInstance() {
         return INSTANCE;
     }
 
@@ -42,11 +42,18 @@ public final class PausedState implements State {
 
     @Override
     public void draw(Game game, Float interpolation) {
-        Board.getInstance().draw(game, null);
-        game.getSnake().draw(game, 0f);
-        game.getFood().draw(game, null);
+        // Draw static elements
+        game.getRender().render(game, 0f);
+        // Check if the mouse is hovering over the buttons
+        boolean isHoveringButton = menuButton.isMouseOver(game.mouseX, game.mouseY);
+        // Change the cursor based on button hover state
+        if(isHoveringButton){
+            game.cursor(PConstants.HAND);
+        } else{
+            game.cursor(PConstants.ARROW);
+        }
 
-        game.fill(255, 255, 255, 175);
+        game.fill(255, 255, 255, 160);
         game.rect(0, 0, game.width, game.height);
 
         game.textFont(Assets.titleFont);

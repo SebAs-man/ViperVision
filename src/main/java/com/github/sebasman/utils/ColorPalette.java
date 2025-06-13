@@ -16,6 +16,9 @@ public final class ColorPalette {
     public static int BUTTON_FILL;
     public static int BUTTON_HOVER_FILL;
     public static int BUTTON_STROKE;
+    public static int UI_BACKGROUND;
+    public static int UI_FRAME;
+    // --- Colors for text elements ---
     public static int TEXT_PRIMARY;
     public static int TEXT_SECONDARY;
     public  static int TEXT_TERTIARY;
@@ -34,6 +37,8 @@ public final class ColorPalette {
         BUTTON_FILL = p.color(63, 15, 208, 200);
         BUTTON_HOVER_FILL = p.color(90, 45, 230, 2000);
         BUTTON_STROKE = p.color(120, 70, 255, 255);
+        UI_BACKGROUND = p.color(62, 150, 45);
+        UI_FRAME = p.color(53, 115, 36);
         TEXT_PRIMARY = p.color(220, 220, 220, 255);
         TEXT_SECONDARY = p.color(44, 102, 30, 255);
         TEXT_TERTIARY = p.color(20, 20, 80, 255);

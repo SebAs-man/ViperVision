@@ -1,4 +1,6 @@
-package com.github.sebasman.core;
+package com.github.sebasman.core.interfaces;
+
+import com.github.sebasman.core.Game;
 
 /**
  * Interface for the Strategy pattern. Defines a contract for all snake control strategies (human, AI, etc.).

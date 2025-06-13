@@ -1,4 +1,4 @@
-package com.github.sebasman.core;
+package com.github.sebasman.core.interfaces;
 
 import com.github.sebasman.core.vo.Position;
 
@@ -14,6 +14,12 @@ public interface FoodAPI extends Drawable{
      * @param snakeBody A list of positions representing the snake's body.
      */
     void spawn(Set<Position> snakeBody);
+
+    /**
+     * Retrieves the score value associated with the food.
+     * @return The score value of the food, which is added to the player's score when eaten.
+     */
+    int getScoreValue();
 
     /**
      * Retrieves the current position of the food.
