@@ -1,11 +1,14 @@
 package com.github.sebasman.states;
 
 import com.github.sebasman.core.*;
-import com.github.sebasman.core.interfaces.ControlStrategy;
-import com.github.sebasman.core.interfaces.FoodAPI;
-import com.github.sebasman.core.interfaces.SnakeAPI;
-import com.github.sebasman.core.interfaces.State;
+import com.github.sebasman.core.interfaces.engine.ControlStrategy;
+import com.github.sebasman.core.interfaces.engine.State;
+import com.github.sebasman.core.interfaces.gamemodel.FoodAPI;
+import com.github.sebasman.core.interfaces.gamemodel.SnakeAPI;
+import com.github.sebasman.core.interfaces.ui.UiComponent;
+import com.github.sebasman.ui.GameUiDynamic;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -39,7 +42,8 @@ public final class PlayingState implements State {
 
     @Override
     public void draw(Game game, Float interpolation) {
-        game.getRender().render(game, interpolation);
+        game.getStaticElementsRender().render(game, interpolation);
+        GameUiDynamic.getInstance().render(game, interpolation);
     }
 
     @Override
@@ -54,7 +58,7 @@ public final class PlayingState implements State {
 
     @Override
     public void mousePressed(Game game) {
-        // No mouse interaction in this state, but can be overridden if needed.
+        controlStrategy.getSidePanelComponents().forEach(c -> c.handleMousePress(game));
     }
 
     /**

@@ -1,6 +1,10 @@
 package com.github.sebasman.core;
 
-import com.github.sebasman.core.interfaces.*;
+import com.github.sebasman.core.interfaces.engine.ControlStrategy;
+import com.github.sebasman.core.interfaces.engine.State;
+import com.github.sebasman.core.interfaces.gamemodel.FoodAPI;
+import com.github.sebasman.core.interfaces.gamemodel.SnakeAPI;
+import com.github.sebasman.core.interfaces.ui.UiRenderAPI;
 import com.github.sebasman.utils.Assets;
 import com.github.sebasman.utils.ColorPalette;
 import com.github.sebasman.utils.GameConfig;
@@ -21,7 +25,7 @@ public class Game extends PApplet {
     // The snake and food instances, which are part of the game state
     private SnakeAPI snake;
     private FoodAPI food;
-    private final UiRenderAPI render;
+    private final UiRenderAPI staticElementsRender;
     // Variables for game loop timing
     private long lastTime;
     private double nsPerTick;
@@ -34,11 +38,10 @@ public class Game extends PApplet {
      * Constructor for the Game class.
      * @param initialState The initial state of the game to start with.
      */
-    public Game(State initialState, UiRenderAPI render) {
-        Objects.requireNonNull(render);
+    public Game(State initialState, UiRenderAPI staticElementsRender) {
         this.states = new Stack<>();
-        this.render = render;
-        this.pushState(initialState);
+        this.staticElementsRender = Objects.requireNonNull(staticElementsRender, "Render cannot be null.");;
+        this.pushState(Objects.requireNonNull(initialState, "Initial state cannot be null."));
     }
 
     @Override
@@ -64,7 +67,62 @@ public class Game extends PApplet {
         // Load assets such as images and fonts
         Assets.load(this);
         ColorPalette.load(this);
-        this.render.initialize(this);
+        this.staticElementsRender.initialize(this);
+    }
+
+    @Override
+    public void draw() {
+        State currentState = this.peekState();
+        if(currentState == null) {
+            throw new IllegalStateException(
+                    "The current state of the game cannot be null and void."
+            );
+        }
+        long now = System.nanoTime();
+        delta += (now - lastTime) / nsPerTick;
+        lastTime = now;
+        // Loop to update logic at a fixed rate
+        // Ensures that logic is not speeded up on fast computers
+        while (delta >= 1) {
+            currentState.update(this);
+            delta--;
+        }
+        // Rendering occurs as fast as possible, with interpolation
+        // The 'delta' here is the percentage of progress towards the next tick (0.0 to 1.0).
+        currentState.draw(this, (float) delta);
+    }
+
+    @Override
+    public void keyPressed() {
+        State currentState = this.peekState();
+        if(currentState == null) {
+            throw new IllegalStateException(
+                    "The current state of the game cannot be null and void."
+            );
+        }
+        currentState.keyPressed(this, keyCode);
+    }
+
+    @Override
+    public void mousePressed() {
+        State currentState = this.peekState();
+        if(currentState == null) {
+            throw new IllegalStateException(
+                    "The current state of the game cannot be null and void."
+            );
+        }
+        currentState.mousePressed(this);
+    }
+
+    /**
+     * Returns the current game state without removing it from the stack.
+     * @return The current state of the game, or null if the stack is empty.
+     */
+    public State peekState() {
+        if (this.states.isEmpty()) {
+            return null;
+        }
+        return this.states.peek();
     }
 
     /**
@@ -113,50 +171,6 @@ public class Game extends PApplet {
         }
     }
 
-    @Override
-    public void draw() {
-        State currentState = this.states.peek();
-        if(currentState == null) {
-            throw new IllegalStateException(
-                    "The current state of the game cannot be null and void."
-            );
-        }
-        long now = System.nanoTime();
-        delta += (now - lastTime) / nsPerTick;
-        lastTime = now;
-        // Loop to update logic at a fixed rate
-        // Ensures that logic is not speeded up on fast computers
-        while (delta >= 1) {
-            currentState.update(this);
-            delta--;
-        }
-        // Rendering occurs as fast as possible, with interpolation
-        // The 'delta' here is the percentage of progress towards the next tick (0.0 to 1.0).
-        currentState.draw(this, (float) delta);
-    }
-
-    @Override
-    public void keyPressed() {
-        State currentState = this.states.peek();
-        if(currentState == null) {
-            throw new IllegalStateException(
-                    "The current state of the game cannot be null and void."
-            );
-        }
-        currentState.keyPressed(this, keyCode);
-    }
-
-    @Override
-    public void mousePressed() {
-        State currentState = this.states.peek();
-        if(currentState == null) {
-            throw new IllegalStateException(
-                    "The current state of the game cannot be null and void."
-            );
-        }
-        currentState.mousePressed(this);
-    }
-
     // --- Getters ---
 
     /**
@@ -203,8 +217,8 @@ public class Game extends PApplet {
      * Returns the render API used for UI rendering.
      * @return The UiRenderAPI instance used for rendering the game UI.
      */
-    public UiRenderAPI getRender() {
-        return render;
+    public UiRenderAPI getStaticElementsRender() {
+        return staticElementsRender;
     }
 
     // --- Setters ---

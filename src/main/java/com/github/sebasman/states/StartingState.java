@@ -1,7 +1,7 @@
 package com.github.sebasman.states;
 
 import com.github.sebasman.core.Game;
-import com.github.sebasman.core.interfaces.State;
+import com.github.sebasman.core.interfaces.engine.State;
 import com.github.sebasman.utils.Assets;
 import com.github.sebasman.utils.ColorPalette;
 

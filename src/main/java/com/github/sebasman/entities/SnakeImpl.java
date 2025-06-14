@@ -1,6 +1,6 @@
 package com.github.sebasman.entities;
 
-import com.github.sebasman.core.interfaces.SnakeAPI;
+import com.github.sebasman.core.interfaces.gamemodel.SnakeAPI;
 import com.github.sebasman.core.vo.Direction;
 import com.github.sebasman.core.vo.Position;
 import com.github.sebasman.utils.GameConfig;
@@ -92,10 +92,6 @@ public class SnakeImpl implements SnakeAPI {
         for (int i = 1; i < body.size() - 1; i++) {
             drawSegment(p, i, interpolation);
         }
-        /* Now render the head and tail separately to handle them as special cases
-        We make sure there is more than one segment so that the tail is not drawn over the head
-        If the body has grown, there may not be a 'previousPos' for the new segment.
-        */
         if (!body.isEmpty()) {
             drawEnd(p, 0, interpolation, true); // Draw the head
         }

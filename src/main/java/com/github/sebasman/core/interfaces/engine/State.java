@@ -1,6 +1,11 @@
-package com.github.sebasman.core.interfaces;
+package com.github.sebasman.core.interfaces.engine;
 
 import com.github.sebasman.core.Game;
+import com.github.sebasman.core.interfaces.ui.UiProvider;
+import com.github.sebasman.core.interfaces.ui.UiComponent;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Interface that defines the behavior of a game state.

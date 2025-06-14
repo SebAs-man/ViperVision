@@ -1,10 +1,10 @@
 package com.github.sebasman;
 
 import com.github.sebasman.core.Game;
-import com.github.sebasman.core.interfaces.State;
-import com.github.sebasman.core.interfaces.UiRenderAPI;
+import com.github.sebasman.core.interfaces.engine.State;
+import com.github.sebasman.core.interfaces.ui.UiRenderAPI;
 import com.github.sebasman.states.StartingState;
-import com.github.sebasman.ui.GameUiImpl;
+import com.github.sebasman.ui.GameUiStatic;
 import processing.core.PApplet;
 
 /**
@@ -14,7 +14,7 @@ import processing.core.PApplet;
 public class Main {
     public static void main(String[] args){
         State initialState = StartingState.getInstance();
-        UiRenderAPI render = GameUiImpl.getInstance();
+        UiRenderAPI render = GameUiStatic.getInstance();
         // Create the game instance with the initial state and the factory for the playing state.
         Game game = new Game(initialState, render);
         String[] processingArgs = {"ViperVision"};

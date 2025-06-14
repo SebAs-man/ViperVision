@@ -1,11 +1,17 @@
-package com.github.sebasman.core.interfaces;
+package com.github.sebasman.core.interfaces.engine;
 
 import com.github.sebasman.core.Game;
+import com.github.sebasman.core.interfaces.ui.UiProvider;
+import com.github.sebasman.core.interfaces.ui.UiComponent;
+import com.github.sebasman.core.interfaces.gamemodel.SnakeAPI;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Interface for the Strategy pattern. Defines a contract for all snake control strategies (human, AI, etc.).
  */
-public interface ControlStrategy {
+public interface ControlStrategy extends UiProvider {
     /**
      * Called on every frame of the game loop.
      * Ideal for AIs that need to recalculate their movement constantly.
@@ -13,7 +19,6 @@ public interface ControlStrategy {
      * @param snake The snake that this strategy should control.
      */
     void update(Game game, SnakeAPI snake);
-
 
     /**
      * Called each time a key is pressed.
@@ -23,4 +28,9 @@ public interface ControlStrategy {
      * @param keyCode The code of the key pressed.
      */
     void keyPressed(Game game, SnakeAPI snake, int keyCode);
+
+    @Override
+    default List<UiComponent> getSidePanelComponents() {
+        return Collections.emptyList();
+    }
 }

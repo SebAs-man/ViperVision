@@ -1,6 +1,7 @@
-package com.github.sebasman.core.interfaces;
+package com.github.sebasman.core.interfaces.ui;
 
 import com.github.sebasman.core.Game;
+import processing.core.PApplet;
 
 /**
  * Defines the contract for any classes that can render
@@ -9,9 +10,9 @@ import com.github.sebasman.core.Game;
 public interface UiRenderAPI {
     /**
      * Initializes the UI render API with the game instance.
-     * @param game The main instance of the game (the context).
+     * @param context The PApplet context of the game, used for rendering.
      */
-    void initialize(Game game);
+    void initialize(PApplet context);
 
     /**
      * Renders the UI elements of the game.

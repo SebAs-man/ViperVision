@@ -1,4 +1,4 @@
-package com.github.sebasman.core.interfaces;
+package com.github.sebasman.core.interfaces.gamemodel;
 
 import com.github.sebasman.core.vo.Direction;
 import com.github.sebasman.core.vo.Position;
@@ -10,7 +10,7 @@ import java.util.Set;
  * It extends the Drawable and Updatable interfaces to allow the snake to be drawn on the game board
  * and updated during each game tick.
  */
-public interface SnakeAPI extends Drawable, Updatable{
+public interface SnakeAPI extends Drawable, Updatable {
     /**
      * Sets the direction of the snake's movement.
      * @param direction the direction to set for the snake

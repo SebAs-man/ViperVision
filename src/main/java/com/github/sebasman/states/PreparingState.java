@@ -1,14 +1,15 @@
 package com.github.sebasman.states;
 
 import com.github.sebasman.core.Game;
-import com.github.sebasman.core.interfaces.ControlStrategy;
-import com.github.sebasman.core.interfaces.FoodAPI;
-import com.github.sebasman.core.interfaces.SnakeAPI;
-import com.github.sebasman.core.interfaces.State;
+import com.github.sebasman.core.interfaces.engine.ControlStrategy;
+import com.github.sebasman.core.interfaces.gamemodel.FoodAPI;
+import com.github.sebasman.core.interfaces.gamemodel.SnakeAPI;
+import com.github.sebasman.core.interfaces.engine.State;
 import com.github.sebasman.core.vo.Position;
 import com.github.sebasman.entities.FoodImpl;
 import com.github.sebasman.entities.SnakeImpl;
 import com.github.sebasman.strategies.HumanControlStrategy;
+import com.github.sebasman.ui.GameUiDynamic;
 import com.github.sebasman.utils.GameConfig;
 import processing.core.PConstants;
 
@@ -38,7 +39,6 @@ public class PreparingState implements State {
         // Reset the game state and set the last played strategy.
         game.resetScore();
         game.setLastPlayedStrategy(this.strategy);
-        // Change the cursor to the default arrow cursor.
         game.cursor(PConstants.ARROW);
     }
 
@@ -49,7 +49,8 @@ public class PreparingState implements State {
 
     @Override
     public void draw(Game game, Float interpolation) {
-        game.getRender().render(game, 0f);
+        game.getStaticElementsRender().render(game, 0f);
+        GameUiDynamic.getInstance().render(game, 0f);
 
         int gameWidth = (game.width - GameConfig.SIDE_PANEL_WIDTH);
         game.pushStyle();
