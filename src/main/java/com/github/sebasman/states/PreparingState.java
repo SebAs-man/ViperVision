@@ -2,17 +2,22 @@ package com.github.sebasman.states;
 
 import com.github.sebasman.core.Game;
 import com.github.sebasman.core.interfaces.engine.ControlStrategy;
-import com.github.sebasman.core.interfaces.gamemodel.FoodAPI;
-import com.github.sebasman.core.interfaces.gamemodel.SnakeAPI;
+import com.github.sebasman.core.interfaces.model.FoodAPI;
+import com.github.sebasman.core.interfaces.model.SnakeAPI;
 import com.github.sebasman.core.interfaces.engine.State;
+import com.github.sebasman.core.interfaces.ui.UiComponent;
 import com.github.sebasman.core.vo.Position;
 import com.github.sebasman.entities.FoodImpl;
 import com.github.sebasman.entities.SnakeImpl;
 import com.github.sebasman.strategies.HumanControlStrategy;
 import com.github.sebasman.ui.GameUiDynamic;
+import com.github.sebasman.ui.UiManager;
+import com.github.sebasman.core.interfaces.ui.Layout;
+import com.github.sebasman.ui.layouts.VerticalLayout;
 import com.github.sebasman.utils.GameConfig;
 import processing.core.PConstants;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -21,15 +26,24 @@ import java.util.Objects;
 public class PreparingState implements State {
     // The strategy used for controlling the snake in this state.
     private final ControlStrategy strategy;
+    // The UI manager for handling user interface elements.
+    private final UiManager uiManager;
 
     public PreparingState(ControlStrategy strategy) {
         Objects.requireNonNull(strategy, "Control strategy cannot be null");
         this.strategy = strategy;
+        this.uiManager = new UiManager();
     }
 
     @Override
     public void onEnter(Game game) {
         System.out.println("Entering PreparingState with control strategy: " + this.strategy.getClass().getSimpleName());
+        this.uiManager.clear();
+        Layout sidePanel = new VerticalLayout(game.width - GameConfig.SIDE_PANEL_WIDTH,
+                GameConfig.GAME_AREA_PADDING*2);
+        List<UiComponent> componentList = strategy.getSidePanelComponents();
+        componentList.forEach(sidePanel::add);
+        uiManager.addLayout(sidePanel);
         // Initialize the game components such as the snake and food.
         SnakeAPI snake = new SnakeImpl(new Position(GameConfig.GRID_WIDTH/4, GameConfig.GRID_HEIGHT/2), 3);
         FoodAPI food = new FoodImpl(1, new Position(3*GameConfig.GRID_WIDTH/4, GameConfig.GRID_HEIGHT/2));
@@ -39,12 +53,16 @@ public class PreparingState implements State {
         // Reset the game state and set the last played strategy.
         game.resetScore();
         game.setLastPlayedStrategy(this.strategy);
-        game.cursor(PConstants.ARROW);
     }
 
     @Override
     public void update(Game game) {
-        // No updates needed in preparing state
+        this.uiManager.update(game);
+    }
+
+    @Override
+    public void gameTickUpdate(Game game) {
+        // No game tick updates needed in preparing state
     }
 
     @Override
@@ -58,6 +76,8 @@ public class PreparingState implements State {
         game.fill(0, 0, 0, 215); // Semi-transparent black background
         game.rect(gameWidth/2f, game.height/3f, GameConfig.BOX_SIZE*3.5f, GameConfig.BOX_SIZE*3, 16); // Draw a rectangle to cover the background
         game.popStyle();
+        // Draw the panel
+        this.uiManager.draw(game);
     }
 
     @Override
@@ -70,7 +90,7 @@ public class PreparingState implements State {
     }
 
     @Override
-    public void mousePressed(Game game) {
-        // No mouse interaction in this state, but can be overridden if needed.
+    public void mousePressed(int mouseX, int mouseY) {
+        this.uiManager.handleMousePress(mouseX, mouseY);
     }
 }

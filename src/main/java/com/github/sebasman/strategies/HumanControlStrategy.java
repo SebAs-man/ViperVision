@@ -1,10 +1,14 @@
 package com.github.sebasman.strategies;
 
-import com.github.sebasman.core.interfaces.gamemodel.SnakeAPI;
+import com.github.sebasman.core.interfaces.model.SnakeAPI;
+import com.github.sebasman.core.interfaces.ui.UiComponent;
 import com.github.sebasman.core.vo.Direction;
 import com.github.sebasman.core.Game;
 import com.github.sebasman.core.interfaces.engine.ControlStrategy;
 import processing.core.PConstants;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A strategy for controlling the snake using human input via keyboard.
@@ -46,5 +50,10 @@ public final class HumanControlStrategy implements ControlStrategy {
         } else if (keyCode == PConstants.RIGHT) {
             snake.bufferDirection(Direction.RIGHT);
         }
+    }
+
+    @Override
+    public List<UiComponent> getSidePanelComponents() {
+        return Collections.emptyList();
     }
 }

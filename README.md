@@ -29,13 +29,18 @@ ViperVision is a comprehensive implementation of the Snake game built from the g
 
 ## 🏗️ Architecture & Design
 
-ViperVision is engineered with a strong focus on a clean, unidirectional dependency flow, preventing circular dependencies and promoting high cohesion and low coupling.
-
-* **Core Architectural Principle:** The architecture is designed around a central **`core` package**, which acts as the game engine's API. It contains the main game loop, configuration, assets, and—most importantly—the **interfaces** that define the application's contracts (`State`, `ControlStrategy`, `SnakeAPI`, etc.).
-* **Unidirectional Dependencies:** All other packages (`states`, `strategies`, `entities`) are implementation details that **depend on `core`**, but `core` does not depend on them. This creates a clean, maintainable, and testable structure.
-* **Dependency Injection:** To break cycles, dependencies are "wired up" at the highest level possible. The `Main` class injects initial states, and the `PlayingState` is responsible for creating and resetting game entities, acting as the setup manager for a new game session.
-* **State Pattern:** Manages the game's high-level states (Menu, Playing, Paused, GameOver) using a **State Stack**. This allows for clean transitions, pausing/resuming, and complex menu flows.
-* **Strategy Pattern:** Decouples the game logic from the snake's control mechanism. This allows switching seamlessly between different "strategies" (Human, Pathfinding AI, etc.) without changing any core game code.
+ViperVision is engineered with a modern, decoupled architecture focusing on the Single Responsibility Principle and Composition over Inheritance. This ensures the codebase is clean, scalable, and easy to maintain.  
+* **Core Principles**
+  * **Unidirectional Dependencies**: The architecture centers around a core package that defines the application's contracts (interfaces). All other packages (entities, states, strategies, ui) depend on core, but core does not depend on them. This prevents circular dependencies and creates a clean, plug-and-play structure.
+  * **Dependency Injection**: Dependencies are provided to objects rather than created by them. For instance, the PlayingState is injected with a ControlStrategy, allowing it to function without knowing the concrete type of the strategy.
+* **Design Patterns in Use**  
+The project heavily relies on established design patterns to solve common problems elegantly:  
+  * **State Pattern**: Manages the game's high-level flow (MenuState, PlayingState, PausedState, etc.). Each state encapsulates its own logic, and a Game class context seamlessly transitions between them using a state stack.
+  * **Strategy Pattern**: Decouples the snake's control logic from the main game loop. This allows switching between different control mechanisms (HumanControlStrategy, FollowFoodStrategy) without altering any core game code.
+  * **Command Pattern**: Decouples UI components (like Button) from the actions they perform. Buttons are given a Command object to execute on click, making them highly reusable and configurable.
+  * **Singleton Pattern**: Used for global, unique objects like GameRenderer or stateless objects like HumanControlStrategy to ensure a single instance exists throughout the application, saving resources.
+  * **Composite & Layout Manager**: The UI is built using a composite structure. UiComponent is the base interface for elements like buttons and labels. Layout classes (e.g., VerticalLayout) act as composite objects that manage and arrange collections of components. This creates a powerful, reusable, and declarative UI system.
+  * **Provider Pattern (a form of DI)**: The UiProvider interface allows objects like a ControlStrategy to provide a list of UI components to the current State without the state needing to know the strategy's concrete type. This is key to building dynamic UIs.
 
 ### Key Diagrams
 

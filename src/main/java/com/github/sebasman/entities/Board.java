@@ -1,6 +1,6 @@
 package com.github.sebasman.entities;
 
-import com.github.sebasman.core.interfaces.gamemodel.Drawable;
+import com.github.sebasman.core.interfaces.model.Drawable;
 import com.github.sebasman.utils.GameConfig;
 import com.github.sebasman.utils.ColorPalette;
 import processing.core.PApplet;

@@ -3,12 +3,10 @@ package com.github.sebasman.states;
 import com.github.sebasman.core.*;
 import com.github.sebasman.core.interfaces.engine.ControlStrategy;
 import com.github.sebasman.core.interfaces.engine.State;
-import com.github.sebasman.core.interfaces.gamemodel.FoodAPI;
-import com.github.sebasman.core.interfaces.gamemodel.SnakeAPI;
-import com.github.sebasman.core.interfaces.ui.UiComponent;
+import com.github.sebasman.core.interfaces.model.FoodAPI;
+import com.github.sebasman.core.interfaces.model.SnakeAPI;
 import com.github.sebasman.ui.GameUiDynamic;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -29,11 +27,16 @@ public final class PlayingState implements State {
 
     @Override
     public void onEnter(Game game) {
-        System.out.println("¡Starting Game!");
+        System.out.println("¡Good Look!");
     }
 
     @Override
     public void update(Game game) {
+        // This state does not require updates, so this method can be empty.
+    }
+
+    @Override
+    public void gameTickUpdate(Game game) {
         this.controlStrategy.update(game, game.getSnake());
         // Update the snake's position based on the current direction.
         game.getSnake().update();
@@ -57,8 +60,8 @@ public final class PlayingState implements State {
     }
 
     @Override
-    public void mousePressed(Game game) {
-        controlStrategy.getSidePanelComponents().forEach(c -> c.handleMousePress(game));
+    public void mousePressed(int mouseX, int mouseY) {
+        // This state does not handle mouse presses, so this method can be empty.
     }
 
     /**

@@ -3,9 +3,8 @@ package com.github.sebasman.core.interfaces.engine;
 import com.github.sebasman.core.Game;
 import com.github.sebasman.core.interfaces.ui.UiProvider;
 import com.github.sebasman.core.interfaces.ui.UiComponent;
-import com.github.sebasman.core.interfaces.gamemodel.SnakeAPI;
+import com.github.sebasman.core.interfaces.model.SnakeAPI;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,8 +28,9 @@ public interface ControlStrategy extends UiProvider {
      */
     void keyPressed(Game game, SnakeAPI snake, int keyCode);
 
-    @Override
-    default List<UiComponent> getSidePanelComponents() {
-        return Collections.emptyList();
-    }
+    /**
+     * Returns the components to be rendered in the side panel.
+     * @return A list of UI components to be rendered in the side panel.
+     */
+    List<UiComponent> getSidePanelComponents();
 }

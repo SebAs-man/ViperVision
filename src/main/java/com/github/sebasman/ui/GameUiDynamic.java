@@ -33,7 +33,7 @@ public class GameUiDynamic implements UiRenderAPI {
 
     @Override
     public void initialize(PApplet context) {
-        //
+        // No initialization needed for dynamic UI elements
     }
 
     @Override

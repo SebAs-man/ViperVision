@@ -2,16 +2,16 @@ package com.github.sebasman.states;
 
 import com.github.sebasman.core.Game;
 import com.github.sebasman.core.interfaces.engine.State;
-import com.github.sebasman.core.interfaces.ui.UiComponent;
 import com.github.sebasman.ui.GameUiDynamic;
-import com.github.sebasman.ui.layout.VerticalLayout;
+import com.github.sebasman.ui.UiManager;
+import com.github.sebasman.core.interfaces.ui.Layout;
+import com.github.sebasman.ui.layouts.VerticalLayout;
 import com.github.sebasman.utils.GameConfig;
 import com.github.sebasman.strategies.FollowFoodStrategy;
 import com.github.sebasman.strategies.HumanControlStrategy;
 import com.github.sebasman.utils.Assets;
-import com.github.sebasman.ui.Button;
+import com.github.sebasman.ui.components.Button;
 import com.github.sebasman.utils.ColorPalette;
-import processing.core.PConstants;
 
 /**
  * The menu state of the game, where the player can see the main menu options.
@@ -20,12 +20,14 @@ public final class MenuState implements State {
     // This is a singleton class for the menu state of the game.
     private static final State INSTANCE = new MenuState();
     // List of UI components to be displayed in the menu state
-    private VerticalLayout layout;
+    private final UiManager uiManager;
 
     /**
      * Private constructor to prevent instantiation.
      */
-    private MenuState() {}
+    private MenuState() {
+        this.uiManager = new UiManager();
+    }
 
     /**
      * Returns the singleton instance of the MenuState.
@@ -37,13 +39,17 @@ public final class MenuState implements State {
 
     @Override
     public void onEnter(Game game) {
-        int layoutX = GameConfig.CENTER_GAME_X - (GameConfig.COMPONENT_WIDTH/2);
-        int layoutY = game.height / 2;
-        this.layout = new VerticalLayout(layoutX, layoutY);
-        this.layout.add(new Button("Play", Assets.playImage,
+        // Clear any existing UI components
+        this.uiManager.clear();
+        // Initialize the layout for the menu
+        Layout menuLayout = new VerticalLayout(GameConfig.CENTER_GAME_X - (GameConfig.COMPONENT_WIDTH/2),
+                game.height / 2);
+        menuLayout.add(new Button("Play", Assets.playImage,
                 () -> game.changeState(new PreparingState(HumanControlStrategy.getInstance()))));
-        this.layout.add(new Button("Watch AI Play", Assets.watchAIImage,
+        menuLayout.add(new Button("Watch AI Play", Assets.watchAIImage,
                 () -> game.changeState(new PreparingState(FollowFoodStrategy.getInstance()))));
+        this.uiManager.addLayout(menuLayout);
+        // Set the dynamic components for the game UI
         game.resetScore();
         game.setFood(null);
         game.setSnake(null);
@@ -51,9 +57,12 @@ public final class MenuState implements State {
 
     @Override
     public void update(Game game) {
-        if(layout != null) {
-            this.layout.update();
-        }
+        this.uiManager.update(game);
+    }
+
+    @Override
+    public void gameTickUpdate(Game game) {
+        // This state does not require game tick updates, so this method can be empty.
     }
 
     @Override
@@ -70,17 +79,7 @@ public final class MenuState implements State {
         game.textSize(gameWidth/9f);
         game.text("Snake Game", gameWidth / 2f, game.height / 4f);
         // Draw the buttons
-        boolean isHoveringComponent = false;
-        if(this.layout != null) {
-            for(UiComponent component : this.layout.getComponents()) {
-                if(component.isMouseOver(game.mouseX, game.mouseY)) {
-                    isHoveringComponent = true;
-                    break;
-                }
-            }
-            this.layout.draw(game);
-        }
-        game.cursor(isHoveringComponent ? PConstants.HAND : PConstants.ARROW);
+        this.uiManager.draw(game);
     }
 
     @Override
@@ -89,9 +88,7 @@ public final class MenuState implements State {
     }
 
     @Override
-    public void mousePressed(Game game) {
-        if(this.layout != null) {
-            this.layout.handleMousePress(game);
-        }
+    public void mousePressed(int mouseX, int mouseY) {
+        this.uiManager.handleMousePress(mouseX, mouseY);
     }
 }

@@ -1,5 +1,6 @@
-package com.github.sebasman.ui.layout;
+package com.github.sebasman.ui.layouts;
 
+import com.github.sebasman.core.interfaces.ui.Layout;
 import com.github.sebasman.core.interfaces.ui.UiComponent;
 import com.github.sebasman.utils.GameConfig;
 import processing.core.PApplet;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * Manages a list of components and draws them in a vertical layout.
  */
-public class VerticalLayout {
+public class VerticalLayout implements Layout {
     // The list of components to be drawn in the layout
     private final List<UiComponent> components;
     // The x and y coordinate where the layout starts
@@ -28,18 +29,12 @@ public class VerticalLayout {
         this.components = new LinkedList<>();
     }
 
-    /**
-     * Adds a component to the vertical layout.
-     * @param component the UiComponent to be added to the layout.
-     */
+    @Override
     public void add(UiComponent component){
         this.components.add(component);
     }
 
-    /**
-     * Draws all components in the vertical layout starting from the specified x and y coordinates.
-     * @param context the PApplet context where the components will be drawn.
-     */
+    @Override
     public void draw(PApplet context){
         float currentY = this.y;
         for (UiComponent component : components) {
@@ -48,24 +43,12 @@ public class VerticalLayout {
         }
     }
 
-    public void update() {
-        components.forEach(UiComponent::update);
+    @Override
+    public void handleMousePress(int mouseX, int mouseY) {
+        components.forEach(component ->  component.handleMousePress(mouseX, mouseY));
     }
 
-    /**
-     * Handles mouse press events for all components in the vertical layout.
-     * @param context the PApplet context in which the components are drawn.
-     */
-    public void handleMousePress(PApplet context) {
-        components.forEach(component -> component.handleMousePress(context));
-    }
-
-    // --- Getters ---
-
-    /**
-     * Returns the list of components in the vertical layout.
-     * @return a list of UiComponent objects that are part of the layout.
-     */
+    @Override
     public List<UiComponent> getComponents() {
         return components;
     }

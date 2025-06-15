@@ -1,4 +1,4 @@
-package com.github.sebasman.ui.actions;
+package com.github.sebasman.core.interfaces.ui;
 
 /**
  * Command Pattern: Represents an action or an operation that can be executed.

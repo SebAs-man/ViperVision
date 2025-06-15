@@ -1,6 +1,6 @@
 package com.github.sebasman.entities;
 
-import com.github.sebasman.core.interfaces.gamemodel.FoodAPI;
+import com.github.sebasman.core.interfaces.model.FoodAPI;
 import com.github.sebasman.core.vo.Position;
 import com.github.sebasman.utils.GameConfig;
 import com.github.sebasman.utils.Assets;

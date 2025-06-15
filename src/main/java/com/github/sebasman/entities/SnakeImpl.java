@@ -1,6 +1,6 @@
 package com.github.sebasman.entities;
 
-import com.github.sebasman.core.interfaces.gamemodel.SnakeAPI;
+import com.github.sebasman.core.interfaces.model.SnakeAPI;
 import com.github.sebasman.core.vo.Direction;
 import com.github.sebasman.core.vo.Position;
 import com.github.sebasman.utils.GameConfig;

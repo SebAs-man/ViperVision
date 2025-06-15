@@ -15,21 +15,18 @@ public interface UiComponent{
     void draw (PApplet context, float x, float y);
 
     /**
-     * Handles the mouse press event for the component.
-     * @param context The PApplet context in which the component is drawn.
+     * Handles mouse press events for the component.
+     * @param mouseX Coordinate of the mouse on the X axis.
+     * @param mouseY Coordinate of the mouse on the Y axis.
      */
-    void handleMousePress(PApplet context);
+    void handleMousePress(int mouseX, int mouseY);
+
+
+    void update(int mouseX, int mouseY, boolean isMousePressed);
 
     /**
-     * Handles the mouse release event for the component.
+     * Returns if the component is currently in a hovered state.
+     * @return true if the component is hovered, false otherwise.
      */
-    void update();
-
-    /**
-     * Checks if the mouse is over the component.
-     * @param mouseX Position of the mouse on the X axis.
-     * @param mouseY Position of the mouse on the Y axis.
-     * @return true if the mouse is over the component, false otherwise.
-     */
-    boolean isMouseOver(int mouseX, int mouseY);
+    boolean isHovered();
 }

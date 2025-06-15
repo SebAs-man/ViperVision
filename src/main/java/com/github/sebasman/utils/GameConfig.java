@@ -21,7 +21,7 @@ public final class GameConfig {
     public static final int COMPONENT_HEIGHT = (int) (BOX_SIZE * 1.5);
     public static final int RADIUS = 24;
     public static final int CENTER_GAME_X = ((GRID_WIDTH * BOX_SIZE) + GAME_AREA_PADDING*2)/2;
-    public static final int SIDE_PANEL_WIDTH = COMPONENT_WIDTH + GAME_AREA_PADDING * 2;
+    public static final int SIDE_PANEL_WIDTH = COMPONENT_WIDTH + (GAME_AREA_PADDING * 2);
 
     /**
      * Private constructor to prevent instantiation.

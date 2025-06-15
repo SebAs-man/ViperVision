@@ -1,10 +1,15 @@
 package com.github.sebasman.strategies;
 
-import com.github.sebasman.core.interfaces.gamemodel.SnakeAPI;
+import com.github.sebasman.core.interfaces.model.SnakeAPI;
+import com.github.sebasman.core.interfaces.ui.UiComponent;
 import com.github.sebasman.core.vo.Direction;
 import com.github.sebasman.core.Game;
 import com.github.sebasman.core.vo.Position;
 import com.github.sebasman.core.interfaces.engine.ControlStrategy;
+import com.github.sebasman.ui.components.Button;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A strategy for controlling the snake to follow the food.
@@ -54,5 +59,16 @@ public final class FollowFoodStrategy implements ControlStrategy {
     @Override
     public void keyPressed(Game game, SnakeAPI snake, int keyCode) {
         // The AI doesn't respond to the keyboard, so this method is empty.
+    }
+
+    @Override
+    public List<UiComponent> getSidePanelComponents() {
+        List<UiComponent> components = new LinkedList<>();
+        components.add(new Button("Velocidad IA", null, null));
+        components.add(new Button("Velocidad IA", null, null));
+        components.add(new Button("Velocidad IA", null, null));
+        components.add(new Button("Velocidad IA", null, null));
+        components.add(new Button("Velocidad IA", null, null));
+        return components;
     }
 }

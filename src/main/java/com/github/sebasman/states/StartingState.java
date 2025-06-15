@@ -36,6 +36,11 @@ public final class StartingState implements State {
     }
 
     @Override
+    public void gameTickUpdate(Game game) {
+        // This state does not require any game tick updates, so this method can be empty.
+    }
+
+    @Override
     public void draw(Game game, Float interpolation) {
         // Draw the background
         game.fill(0, 0, 0, 125); // Semi-transparent black background
@@ -57,7 +62,7 @@ public final class StartingState implements State {
     }
 
     @Override
-    public void mousePressed(Game game) {
+    public void mousePressed(int mouseX, int mouseY) {
         // This state does not handle mouse presses, so this method can be empty.
     }
 }

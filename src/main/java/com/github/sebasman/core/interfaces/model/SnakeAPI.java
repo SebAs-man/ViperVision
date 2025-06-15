@@ -1,4 +1,4 @@
-package com.github.sebasman.core.interfaces.gamemodel;
+package com.github.sebasman.core.interfaces.model;
 
 import com.github.sebasman.core.vo.Direction;
 import com.github.sebasman.core.vo.Position;

@@ -2,8 +2,8 @@ package com.github.sebasman.core;
 
 import com.github.sebasman.core.interfaces.engine.ControlStrategy;
 import com.github.sebasman.core.interfaces.engine.State;
-import com.github.sebasman.core.interfaces.gamemodel.FoodAPI;
-import com.github.sebasman.core.interfaces.gamemodel.SnakeAPI;
+import com.github.sebasman.core.interfaces.model.FoodAPI;
+import com.github.sebasman.core.interfaces.model.SnakeAPI;
 import com.github.sebasman.core.interfaces.ui.UiRenderAPI;
 import com.github.sebasman.utils.Assets;
 import com.github.sebasman.utils.ColorPalette;
@@ -72,24 +72,10 @@ public class Game extends PApplet {
 
     @Override
     public void draw() {
-        State currentState = this.peekState();
-        if(currentState == null) {
-            throw new IllegalStateException(
-                    "The current state of the game cannot be null and void."
-            );
-        }
-        long now = System.nanoTime();
-        delta += (now - lastTime) / nsPerTick;
-        lastTime = now;
-        // Loop to update logic at a fixed rate
-        // Ensures that logic is not speeded up on fast computers
-        while (delta >= 1) {
-            currentState.update(this);
-            delta--;
-        }
-        // Rendering occurs as fast as possible, with interpolation
-        // The 'delta' here is the percentage of progress towards the next tick (0.0 to 1.0).
-        currentState.draw(this, (float) delta);
+        // In each frame, we first update all the logic.
+        this.update();
+        // Then, we draw the result.
+        this.render();
     }
 
     @Override
@@ -111,7 +97,45 @@ public class Game extends PApplet {
                     "The current state of the game cannot be null and void."
             );
         }
-        currentState.mousePressed(this);
+        currentState.mousePressed(this.mouseX, this.mouseY);
+    }
+
+
+    /**
+     * Updates the game state and handles the game loop timing.
+     */
+    private void update() {
+        State currentState = this.peekState();
+        if(currentState == null) {
+            throw new IllegalStateException(
+                    "The current state of the game cannot be null and void."
+            );
+        }
+        // Update the logic of the current state
+        currentState.update(this);
+        // Update the game loop timing
+        long now = System.nanoTime();
+        delta += (now - lastTime) / nsPerTick;
+        lastTime = now;
+        while (delta >= 1) {
+            currentState.gameTickUpdate(this);
+            delta--;
+        }
+    }
+
+    /**
+     * Renders the current game state to the screen.
+     */
+    private void render() {
+        State currentState = this.peekState();
+        if(currentState == null) {
+            throw new IllegalStateException(
+                    "The current state of the game cannot be null and void."
+            );
+        }
+        // Rendering occurs as fast as possible, with interpolation
+        // The 'delta' here is the percentage of progress towards the next tick (0.0 to 1.0).
+        currentState.draw(this, (float) delta);
     }
 
     /**

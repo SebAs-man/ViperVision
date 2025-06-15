@@ -1,4 +1,4 @@
-package com.github.sebasman.core.interfaces.gamemodel;
+package com.github.sebasman.core.interfaces.model;
 
 import processing.core.PApplet;
 
