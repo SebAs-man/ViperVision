@@ -56,4 +56,10 @@ public final class HumanControlStrategy implements ControlStrategy {
     public List<UiComponent> getSidePanelComponents() {
         return Collections.emptyList();
     }
+
+    @Override
+    public boolean isGameStartAction(int keyCode) {
+        return keyCode == PConstants.UP || keyCode == PConstants.DOWN ||
+                keyCode == PConstants.LEFT || keyCode == PConstants.RIGHT;
+    }
 }

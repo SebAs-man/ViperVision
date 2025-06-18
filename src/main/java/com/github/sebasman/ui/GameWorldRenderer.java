@@ -1,42 +1,39 @@
 package com.github.sebasman.ui;
 
 import com.github.sebasman.core.Game;
-import com.github.sebasman.core.interfaces.ui.UiRenderAPI;
 import com.github.sebasman.entities.Board;
 import com.github.sebasman.utils.Assets;
 import com.github.sebasman.utils.ColorPalette;
 import com.github.sebasman.utils.GameConfig;
-import processing.core.PApplet;
 import processing.core.PConstants;
 
 /**
- * GameUiDynamic is a singleton class that implements the UiRenderAPI interface.
+ * GameWorldRenderer is a singleton class that implements the IStaticFrameRenderer interface.
  * It is responsible for rendering the dynamic UI elements of the game, such as the score,
  * high score, game title, and the game board with the snake and food.
  */
-public class GameUiDynamic implements UiRenderAPI {
-    // Singleton instance for the GameUiDynamic class
-    private static final GameUiDynamic INSTANCE = new GameUiDynamic();
+public class GameWorldRenderer {
+    // Singleton instance for the GameWorldRenderer class
+    private static final GameWorldRenderer INSTANCE = new GameWorldRenderer();
 
     /**
      * Private constructor to prevent instantiation.
      */
-    private GameUiDynamic() {}
+    private GameWorldRenderer() {}
 
     /**
-     * Returns the singleton instance of GameUiDynamic.
-     * @return The singleton instance of GameUiDynamic.
+     * Returns the singleton instance of GameWorldRenderer.
+     * @return The singleton instance of GameWorldRenderer.
      */
-    public static GameUiDynamic getInstance() {
+    public static GameWorldRenderer getInstance() {
         return INSTANCE;
     }
 
-    @Override
-    public void initialize(PApplet context) {
-        // No initialization needed for dynamic UI elements
-    }
-
-    @Override
+    /**
+     * Renders the UI elements of the game.
+     * @param game The main instance of the game (the context).
+     * @param interpolation The percentage of progress towards the next tick (0.0 to 1.0).
+     */
     public void render(Game game, Float interpolation) {
         game.pushStyle();
         // Draw the score and high score

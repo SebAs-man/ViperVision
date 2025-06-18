@@ -1,6 +1,7 @@
 package com.github.sebasman.states;
 
 import com.github.sebasman.core.Game;
+import com.github.sebasman.core.events.listeners.GameLogicCoordinator;
 import com.github.sebasman.core.interfaces.engine.ControlStrategy;
 import com.github.sebasman.core.interfaces.model.FoodAPI;
 import com.github.sebasman.core.interfaces.model.SnakeAPI;
@@ -9,8 +10,7 @@ import com.github.sebasman.core.interfaces.ui.UiComponent;
 import com.github.sebasman.core.vo.Position;
 import com.github.sebasman.entities.FoodImpl;
 import com.github.sebasman.entities.SnakeImpl;
-import com.github.sebasman.strategies.HumanControlStrategy;
-import com.github.sebasman.ui.GameUiDynamic;
+import com.github.sebasman.ui.GameWorldRenderer;
 import com.github.sebasman.ui.UiManager;
 import com.github.sebasman.core.interfaces.ui.Layout;
 import com.github.sebasman.ui.layouts.VerticalLayout;
@@ -29,6 +29,10 @@ public class PreparingState implements State {
     // The UI manager for handling user interface elements.
     private final UiManager uiManager;
 
+    /**
+     * Constructor for PreparingState.
+     * @param strategy the control strategy to be used in this state.
+     */
     public PreparingState(ControlStrategy strategy) {
         Objects.requireNonNull(strategy, "Control strategy cannot be null");
         this.strategy = strategy;
@@ -38,12 +42,7 @@ public class PreparingState implements State {
     @Override
     public void onEnter(Game game) {
         System.out.println("Entering PreparingState with control strategy: " + this.strategy.getClass().getSimpleName());
-        this.uiManager.clear();
-        Layout sidePanel = new VerticalLayout(game.width - GameConfig.SIDE_PANEL_WIDTH,
-                GameConfig.GAME_AREA_PADDING*2);
-        List<UiComponent> componentList = strategy.getSidePanelComponents();
-        componentList.forEach(sidePanel::add);
-        uiManager.addLayout(sidePanel);
+        this.buildUi(game);
         // Initialize the game components such as the snake and food.
         SnakeAPI snake = new SnakeImpl(new Position(GameConfig.GRID_WIDTH/4, GameConfig.GRID_HEIGHT/2), 3);
         FoodAPI food = new FoodImpl(1, new Position(3*GameConfig.GRID_WIDTH/4, GameConfig.GRID_HEIGHT/2));
@@ -53,6 +52,11 @@ public class PreparingState implements State {
         // Reset the game state and set the last played strategy.
         game.resetScore();
         game.setLastPlayedStrategy(this.strategy);
+    }
+
+    @Override
+    public void onExit(Game game) {
+
     }
 
     @Override
@@ -67,8 +71,8 @@ public class PreparingState implements State {
 
     @Override
     public void draw(Game game, Float interpolation) {
-        game.getStaticElementsRender().render(game, 0f);
-        GameUiDynamic.getInstance().render(game, 0f);
+        game.getStaticElementsRender().render(game);
+        GameWorldRenderer.getInstance().render(game, 0f);
 
         int gameWidth = (game.width - GameConfig.SIDE_PANEL_WIDTH);
         game.pushStyle();
@@ -76,21 +80,33 @@ public class PreparingState implements State {
         game.fill(0, 0, 0, 215); // Semi-transparent black background
         game.rect(gameWidth/2f, game.height/3f, GameConfig.BOX_SIZE*3.5f, GameConfig.BOX_SIZE*3, 16); // Draw a rectangle to cover the background
         game.popStyle();
-        // Draw the panel
+        // Draw the UI components
         this.uiManager.draw(game);
     }
 
     @Override
     public void keyPressed(Game game, int keyCode) {
-        if (strategy instanceof HumanControlStrategy) {
-            if (keyCode == PConstants.UP || keyCode == PConstants.DOWN || keyCode == PConstants.LEFT || keyCode == PConstants.RIGHT) {
-                game.changeState(new PlayingState(this.strategy));
-            }
+        if(this.strategy.isGameStartAction(keyCode)) {
+            game.changeState(new PlayingState(this.strategy));
         }
     }
 
     @Override
     public void mousePressed(int mouseX, int mouseY) {
         this.uiManager.handleMousePress(mouseX, mouseY);
+    }
+
+    /**
+     * Builds the UI for the preparing state of the game.
+     * @param game the game instance to build the UI for
+     */
+    private void buildUi(Game game) {
+        Layout sidePanel = new VerticalLayout(game.width - GameConfig.SIDE_PANEL_WIDTH,
+                GameConfig.GAME_AREA_PADDING*2);
+
+        List<UiComponent> componentList = strategy.getSidePanelComponents();
+        componentList.forEach(sidePanel::add);
+
+        this.uiManager.addLayout(sidePanel);
     }
 }

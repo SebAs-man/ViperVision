@@ -31,6 +31,11 @@ public final class StartingState implements State {
     }
 
     @Override
+    public void onExit(Game game) {
+
+    }
+
+    @Override
     public void update(Game game) {
         // This state does not require any updates, so this method can be empty.
     }

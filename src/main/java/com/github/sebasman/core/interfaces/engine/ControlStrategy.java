@@ -33,4 +33,12 @@ public interface ControlStrategy extends UiProvider {
      * @return A list of UI components to be rendered in the side panel.
      */
     List<UiComponent> getSidePanelComponents();
+
+    /**
+     * Determines whether a keystroke is to be interpreted as an action.
+     * To start the game from a ready state.
+     * @param keyCode The key code.
+     * @return true if the key should start the game, false otherwise.
+     */
+    boolean isGameStartAction(int keyCode);
 }

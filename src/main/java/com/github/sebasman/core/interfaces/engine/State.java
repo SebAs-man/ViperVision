@@ -16,6 +16,13 @@ public interface State {
     void onEnter(Game game);
 
     /**
+     * Called once just before this state is exited (popped from the stack).
+     * Ideal for cleanup, such as unsubscribing from events, to prevent memory leaks.
+     * @param game The main instance of the game (the context).
+     */
+    void onExit(Game game);
+
+    /**
      * Updates the state logic at each frame.
      * @param game The main instance of the game (the context).
      */

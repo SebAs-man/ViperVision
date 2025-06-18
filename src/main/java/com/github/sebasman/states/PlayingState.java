@@ -1,13 +1,18 @@
 package com.github.sebasman.states;
 
 import com.github.sebasman.core.*;
+import com.github.sebasman.core.events.EventManager;
+import com.github.sebasman.core.events.listeners.GameLogicCoordinator;
+import com.github.sebasman.core.events.messages.FoodEatenEvent;
+import com.github.sebasman.core.events.messages.SnakeDiedEvent;
 import com.github.sebasman.core.interfaces.engine.ControlStrategy;
 import com.github.sebasman.core.interfaces.engine.State;
 import com.github.sebasman.core.interfaces.model.FoodAPI;
 import com.github.sebasman.core.interfaces.model.SnakeAPI;
-import com.github.sebasman.ui.GameUiDynamic;
+import com.github.sebasman.ui.GameWorldRenderer;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * The playing state of the game, where the player controls the snake and interacts with food.
@@ -15,6 +20,11 @@ import java.util.Objects;
 public final class PlayingState implements State {
     // The control strategy for handling user input.
     private final ControlStrategy controlStrategy;
+    // Game messages coordinator
+    private GameLogicCoordinator logicCoordinator;
+    // References to listeners
+    private final Consumer<FoodEatenEvent> onFoodEatenListener;
+    private final Consumer<SnakeDiedEvent> onSnakeDiedListener;
 
     /**
      * Constructor for the PlayingState.
@@ -23,11 +33,24 @@ public final class PlayingState implements State {
     public PlayingState(ControlStrategy controlStrategy) {
         Objects.requireNonNull(controlStrategy, "Control strategy cannot be null");
         this.controlStrategy = controlStrategy;
+        this.onFoodEatenListener = event -> logicCoordinator.onFoodEaten(event);
+        this.onSnakeDiedListener = event -> logicCoordinator.onSnakeDied(event);
     }
 
     @Override
     public void onEnter(Game game) {
-        System.out.println("¡Good Look!");
+        System.out.println("¡Starting Game!");
+        this.logicCoordinator = new GameLogicCoordinator(game);
+        EventManager eventManager = EventManager.getInstance();
+        eventManager.subscribe(FoodEatenEvent.class, onFoodEatenListener);
+        eventManager.subscribe(SnakeDiedEvent.class, onSnakeDiedListener);
+    }
+
+    @Override
+    public void onExit(Game game) {
+        EventManager eventManager = EventManager.getInstance();
+        eventManager.unsubscribe(FoodEatenEvent.class, onFoodEatenListener);
+        eventManager.unsubscribe(SnakeDiedEvent.class, onSnakeDiedListener);
     }
 
     @Override
@@ -45,8 +68,8 @@ public final class PlayingState implements State {
 
     @Override
     public void draw(Game game, Float interpolation) {
-        game.getStaticElementsRender().render(game, interpolation);
-        GameUiDynamic.getInstance().render(game, interpolation);
+        game.getStaticElementsRender().render(game);
+        GameWorldRenderer.getInstance().render(game, interpolation);
     }
 
     @Override
@@ -73,14 +96,12 @@ public final class PlayingState implements State {
         FoodAPI food = game.getFood();
 
         if (snake.checkCollisionWithWall() || snake.checkCollisionWithSelf()) {
-            game.changeState(GameOverState.getInstance());
+            EventManager.getInstance().notify(new SnakeDiedEvent());
             return;
         }
 
         if (snake.getHead().equals(food.getPosition())) {
-            game.incrementScore(food.getScoreValue());
-            snake.grow();
-            food.spawn(snake.getBodySet());
+            EventManager.getInstance().notify(new FoodEatenEvent(food, snake));
         }
     }
 }

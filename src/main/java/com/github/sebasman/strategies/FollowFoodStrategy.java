@@ -71,4 +71,10 @@ public final class FollowFoodStrategy implements ControlStrategy {
         components.add(new Button("Velocidad IA", null, null));
         return components;
     }
+
+    @Override
+    public boolean isGameStartAction(int keyCode) {
+        // The AI does not start the game with a key, but with a UI button.
+        return false;
+    }
 }

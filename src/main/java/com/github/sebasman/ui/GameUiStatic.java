@@ -1,16 +1,16 @@
 package com.github.sebasman.ui;
 
 import com.github.sebasman.core.Game;
-import com.github.sebasman.core.interfaces.ui.UiRenderAPI;
+import com.github.sebasman.core.interfaces.ui.IStaticFrameRenderer;
 import com.github.sebasman.utils.ColorPalette;
 import com.github.sebasman.utils.GameConfig;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 
 /**
- * GameUiStatic is a singleton class that implements the UiRenderAPI interface.
+ * GameUiStatic is a singleton class that implements the IStaticFrameRenderer interface.
  */
-public final class GameUiStatic implements UiRenderAPI {
+public final class GameUiStatic implements IStaticFrameRenderer {
     // Singleton instance of GameUI
     private static final GameUiStatic INSTANCE = new GameUiStatic();
     // PGraphics buffer for pre-rendering UI elements
@@ -66,7 +66,7 @@ public final class GameUiStatic implements UiRenderAPI {
     }
 
     @Override
-    public void render(Game game, Float interpolation) {
+    public void render(Game game) {
         if (!isInitialized) {
             System.err.println("GameUI is not initialized, skipping render...");
             return; // UI is not initialized, skip drawing

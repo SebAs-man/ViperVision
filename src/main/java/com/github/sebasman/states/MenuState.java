@@ -2,7 +2,7 @@ package com.github.sebasman.states;
 
 import com.github.sebasman.core.Game;
 import com.github.sebasman.core.interfaces.engine.State;
-import com.github.sebasman.ui.GameUiDynamic;
+import com.github.sebasman.ui.GameWorldRenderer;
 import com.github.sebasman.ui.UiManager;
 import com.github.sebasman.core.interfaces.ui.Layout;
 import com.github.sebasman.ui.layouts.VerticalLayout;
@@ -20,14 +20,12 @@ public final class MenuState implements State {
     // This is a singleton class for the menu state of the game.
     private static final State INSTANCE = new MenuState();
     // List of UI components to be displayed in the menu state
-    private final UiManager uiManager;
+    private UiManager uiManager;
 
     /**
      * Private constructor to prevent instantiation.
      */
-    private MenuState() {
-        this.uiManager = new UiManager();
-    }
+    private MenuState() {}
 
     /**
      * Returns the singleton instance of the MenuState.
@@ -39,16 +37,10 @@ public final class MenuState implements State {
 
     @Override
     public void onEnter(Game game) {
-        // Clear any existing UI components
-        this.uiManager.clear();
-        // Initialize the layout for the menu
-        Layout menuLayout = new VerticalLayout(GameConfig.CENTER_GAME_X - (GameConfig.COMPONENT_WIDTH/2),
-                game.height / 2);
-        menuLayout.add(new Button("Play", Assets.playImage,
-                () -> game.changeState(new PreparingState(HumanControlStrategy.getInstance()))));
-        menuLayout.add(new Button("Watch AI Play", Assets.watchAIImage,
-                () -> game.changeState(new PreparingState(FollowFoodStrategy.getInstance()))));
-        this.uiManager.addLayout(menuLayout);
+        // Lazy initialization of the UI manager
+        if(this.uiManager == null){
+            this.uiManager = this.buildUi(game);
+        }
         // Set the dynamic components for the game UI
         game.resetScore();
         game.setFood(null);
@@ -56,8 +48,15 @@ public final class MenuState implements State {
     }
 
     @Override
+    public void onExit(Game game) {
+
+    }
+
+    @Override
     public void update(Game game) {
-        this.uiManager.update(game);
+        if(uiManager != null){
+            this.uiManager.update(game);
+        }
     }
 
     @Override
@@ -68,8 +67,8 @@ public final class MenuState implements State {
     @Override
     public void draw(Game game, Float interpolation) {
         // Draw static elements
-        game.getStaticElementsRender().render(game, 0f);
-        GameUiDynamic.getInstance().render(game, 0f);
+        game.getStaticElementsRender().render(game);
+        GameWorldRenderer.getInstance().render(game, 0f);
         // Draw the title
         int gameWidth = game.width - GameConfig.SIDE_PANEL_WIDTH - GameConfig.GAME_AREA_PADDING * 2;
         game.fill(0, 0, 0, 215); // Semi-transparent black background
@@ -78,8 +77,10 @@ public final class MenuState implements State {
         game.fill(ColorPalette.TEXT_QUATERNARY);
         game.textSize(gameWidth/9f);
         game.text("Snake Game", gameWidth / 2f, game.height / 4f);
-        // Draw the buttons
-        this.uiManager.draw(game);
+        // Draw the UI components
+        if(this.uiManager != null) {
+            this.uiManager.draw(game);
+        }
     }
 
     @Override
@@ -89,6 +90,31 @@ public final class MenuState implements State {
 
     @Override
     public void mousePressed(int mouseX, int mouseY) {
-        this.uiManager.handleMousePress(mouseX, mouseY);
+        if(this.uiManager != null){
+            this.uiManager.handleMousePress(mouseX, mouseY);
+        }
+    }
+
+    /**
+     * Builds the UI for the menu state of the game.
+     * @param game the game instance to build the UI for
+     * @return the UiManager containing the menu layout
+     */
+    private UiManager buildUi(Game game){
+        UiManager manager = new UiManager();
+
+        Layout menuLayout = new VerticalLayout(
+                GameConfig.CENTER_GAME_X - (GameConfig.COMPONENT_WIDTH/2),
+                game.height / 2);
+
+        menuLayout.add(new Button("Play", Assets.playImage,
+                () -> game.changeState(
+                        new PreparingState(HumanControlStrategy.getInstance()))));
+        menuLayout.add(new Button("Watch AI Play", Assets.watchAIImage,
+                () -> game.changeState(
+                        new PreparingState(FollowFoodStrategy.getInstance()))));
+
+        manager.addLayout(menuLayout);
+        return manager;
     }
 }

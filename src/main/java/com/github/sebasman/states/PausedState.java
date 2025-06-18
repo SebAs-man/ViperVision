@@ -2,7 +2,7 @@ package com.github.sebasman.states;
 
 import com.github.sebasman.core.Game;
 import com.github.sebasman.core.interfaces.engine.State;
-import com.github.sebasman.ui.GameUiDynamic;
+import com.github.sebasman.ui.GameWorldRenderer;
 import com.github.sebasman.ui.UiManager;
 import com.github.sebasman.core.interfaces.ui.Layout;
 import com.github.sebasman.ui.layouts.VerticalLayout;
@@ -19,14 +19,12 @@ public final class PausedState implements State {
     // This is a singleton class for the paused state of the game.
     private static final State INSTANCE = new PausedState();
     // List of UI components to be displayed in the paused state
-    private final UiManager uiManager;
+    private UiManager uiManager;
 
     /**
      * Private constructor to prevent instantiation.
      */
-    private PausedState() {
-        this.uiManager = new UiManager();
-    }
+    private PausedState() {}
 
     /**
      * Returns the singleton instance of the PausedGame state.
@@ -39,19 +37,21 @@ public final class PausedState implements State {
     @Override
     public void onEnter(Game game) {
         System.out.println("Paused game. Press 'p' or 'Space' to continue.");
-        this.uiManager.clear();
-        Layout menuLayout = new VerticalLayout((game.width/2) - (GameConfig.COMPONENT_WIDTH/2), (int) (game.height/1.25));
-        menuLayout.add(new Button("Main Menu", Assets.homeImage,
-                () -> {
-                    game.popState();
-                    game.changeState(MenuState.getInstance());
-                }));
-        this.uiManager.addLayout(menuLayout);
+        if(this.uiManager == null) {
+            this.uiManager = this.buildUi(game);
+        }
+    }
+
+    @Override
+    public void onExit(Game game) {
+
     }
 
     @Override
     public void update(Game game) {
-        this.uiManager.update(game);
+        if(this.uiManager != null) {
+            this.uiManager.update(game);
+        }
     }
 
     @Override
@@ -62,8 +62,8 @@ public final class PausedState implements State {
     @Override
     public void draw(Game game, Float interpolation) {
         // Draw static elements
-        game.getStaticElementsRender().render(game, 0f);
-        GameUiDynamic.getInstance().render(game, 0f);
+        game.getStaticElementsRender().render(game);
+        GameWorldRenderer.getInstance().render(game, 0f);
         // Draw the pause message
         game.fill(255, 255, 255, 160);
         game.rect(0, 0, game.width, game.height);
@@ -74,8 +74,10 @@ public final class PausedState implements State {
         game.textFont(Assets.textFont);
         game.textSize(game.width/24f);
         game.text("Press 'p' or SPACE to continue", game.width / 2f, game.height/7.5f);
-        // Draw the buttons
-        this.uiManager.draw(game);
+        // Draw the UI components
+        if(this.uiManager != null) {
+            this.uiManager.draw(game);
+        }
     }
 
     @Override
@@ -87,6 +89,28 @@ public final class PausedState implements State {
 
     @Override
     public void mousePressed(int mouseX, int mouseY) {
-        this.uiManager.handleMousePress(mouseX, mouseY);
+        if(this.uiManager != null) {
+            this.uiManager.handleMousePress(mouseX, mouseY);
+        }
+    }
+
+    /**
+     * Builds the UI for the paused state of the game.
+     * @param game the game instance to build the UI for
+     * @return the UiManager containing the UI components for the paused state
+     */
+    private UiManager buildUi(Game game) {
+        UiManager uiManager = new UiManager();
+
+        Layout menuLayout = new VerticalLayout((game.width/2) - (GameConfig.COMPONENT_WIDTH/2), (int) (game.height/1.25));
+
+        menuLayout.add(new Button("Main Menu", Assets.homeImage,
+                () -> {
+                    game.popState();
+                    game.changeState(MenuState.getInstance());
+                }));
+
+        uiManager.addLayout(menuLayout);
+        return uiManager;
     }
 }

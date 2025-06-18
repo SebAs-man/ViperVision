@@ -1,10 +1,12 @@
 package com.github.sebasman.core;
 
+import com.github.sebasman.core.events.EventManager;
+import com.github.sebasman.core.events.messages.ScoreChangedEvent;
 import com.github.sebasman.core.interfaces.engine.ControlStrategy;
 import com.github.sebasman.core.interfaces.engine.State;
 import com.github.sebasman.core.interfaces.model.FoodAPI;
 import com.github.sebasman.core.interfaces.model.SnakeAPI;
-import com.github.sebasman.core.interfaces.ui.UiRenderAPI;
+import com.github.sebasman.core.interfaces.ui.IStaticFrameRenderer;
 import com.github.sebasman.utils.Assets;
 import com.github.sebasman.utils.ColorPalette;
 import com.github.sebasman.utils.GameConfig;
@@ -25,7 +27,7 @@ public class Game extends PApplet {
     // The snake and food instances, which are part of the game state
     private SnakeAPI snake;
     private FoodAPI food;
-    private final UiRenderAPI staticElementsRender;
+    private final IStaticFrameRenderer staticElementsRender;
     // Variables for game loop timing
     private long lastTime;
     private double nsPerTick;
@@ -38,9 +40,9 @@ public class Game extends PApplet {
      * Constructor for the Game class.
      * @param initialState The initial state of the game to start with.
      */
-    public Game(State initialState, UiRenderAPI staticElementsRender) {
+    public Game(State initialState, IStaticFrameRenderer staticElementsRender) {
         this.states = new Stack<>();
-        this.staticElementsRender = Objects.requireNonNull(staticElementsRender, "Render cannot be null.");;
+        this.staticElementsRender = Objects.requireNonNull(staticElementsRender, "Render cannot be null.");
         this.pushState(Objects.requireNonNull(initialState, "Initial state cannot be null."));
     }
 
@@ -173,6 +175,7 @@ public class Game extends PApplet {
      */
     public void popState() {
         if (!states.isEmpty()) {
+            this.peekState().onExit(this);
             states.pop();
         }
     }
@@ -193,6 +196,7 @@ public class Game extends PApplet {
         if (this.score > this.highScore) {
             this.highScore = this.score;
         }
+        EventManager.getInstance().notify(new ScoreChangedEvent(this.score));
     }
 
     // --- Getters ---
@@ -239,9 +243,9 @@ public class Game extends PApplet {
 
     /**
      * Returns the render API used for UI rendering.
-     * @return The UiRenderAPI instance used for rendering the game UI.
+     * @return The IStaticFrameRenderer instance used for rendering the game UI.
      */
-    public UiRenderAPI getStaticElementsRender() {
+    public IStaticFrameRenderer getStaticElementsRender() {
         return staticElementsRender;
     }
 

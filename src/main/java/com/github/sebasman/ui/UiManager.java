@@ -68,11 +68,4 @@ public class UiManager {
             layout.handleMousePress(mouseX, mouseY);
         }
     }
-
-    /**
-     * Clears all layouts from the UiManager.
-     */
-    public void clear() {
-        this.layouts.clear();
-    }
 }
