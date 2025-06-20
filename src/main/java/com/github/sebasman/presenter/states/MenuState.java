@@ -12,7 +12,7 @@ import com.github.sebasman.presenter.strategies.FollowFoodStrategy;
 import com.github.sebasman.presenter.strategies.HumanControlStrategy;
 import com.github.sebasman.view.assets.Assets;
 import com.github.sebasman.view.components.Button;
-import com.github.sebasman.view.assets.ColorPalette;
+import com.github.sebasman.view.config.ColorPalette;
 import processing.core.PApplet;
 
 /**

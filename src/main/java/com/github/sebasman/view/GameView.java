@@ -8,7 +8,8 @@ import com.github.sebasman.model.GameSession;
 import com.github.sebasman.model.UserProfile;
 import com.github.sebasman.model.config.ModelConfig;
 import com.github.sebasman.view.assets.Assets;
-import com.github.sebasman.view.assets.ColorPalette;
+import com.github.sebasman.view.audio.SoundManager;
+import com.github.sebasman.view.config.ColorPalette;
 import com.github.sebasman.view.config.ViewConfig;
 import com.github.sebasman.view.render.GameUiStatic;
 import processing.core.PApplet;
@@ -62,6 +63,7 @@ public class GameView extends PApplet implements IGameContext {
         super.textAlign(CENTER, CENTER);
         // Load assets such as images and fonts
         Assets.load(this);
+        SoundManager.load(this);
         ColorPalette.load(this);
         GameUiStatic.getInstance().initialize(this);
     }

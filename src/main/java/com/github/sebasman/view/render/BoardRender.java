@@ -1,7 +1,7 @@
 package com.github.sebasman.view.render;
 
 import com.github.sebasman.model.config.ModelConfig;
-import com.github.sebasman.view.assets.ColorPalette;
+import com.github.sebasman.view.config.ColorPalette;
 import processing.core.PApplet;
 
 /**

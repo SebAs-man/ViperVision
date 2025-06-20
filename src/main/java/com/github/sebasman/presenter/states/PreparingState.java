@@ -1,5 +1,6 @@
 package com.github.sebasman.presenter.states;
 
+import com.github.sebasman.contracts.presenter.IHUDController;
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.contracts.view.IUiProvider;
 import com.github.sebasman.model.config.ModelConfig;
@@ -29,7 +30,7 @@ public final class PreparingState implements IState {
     // The UI manager for handling user interface elements.
     private final UiManager uiManager;
     // Game messages coordinator
-    private HUDController hudController;
+    private IHUDController hudController;
 
     /**
      * Constructor for PreparingState.

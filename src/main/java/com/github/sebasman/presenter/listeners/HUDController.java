@@ -1,6 +1,7 @@
 package com.github.sebasman.presenter.listeners;
 
 import com.github.sebasman.contracts.events.types.ScoreUpdatedEvent;
+import com.github.sebasman.contracts.presenter.IHUDController;
 
 
 /**
@@ -9,7 +10,7 @@ import com.github.sebasman.contracts.events.types.ScoreUpdatedEvent;
  * (such as score text) and provide methods for it to be updated
  * in response to game events. You do not subscribe to yourself.
  */
-public final class HUDController {
+public final class HUDController implements IHUDController {
     private String scoreText;
     private String highScoreText;
 
@@ -32,18 +33,12 @@ public final class HUDController {
         this.highScoreText = String.valueOf(event.highScore());
     }
 
-    /**
-     * Returns the current score text, ready to be rendered.
-     * @return The current score as a String.
-     */
+    @Override
     public String getScoreText() {
         return scoreText;
     }
 
-    /**
-     * Returns the text of the current high score, ready to be rendered.
-     * @return Highest score as a String.
-     */
+    @Override
     public String getHighScoreText() {
         return highScoreText;
     }

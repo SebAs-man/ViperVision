@@ -1,6 +1,6 @@
 package com.github.sebasman.view.render;
 
-import com.github.sebasman.view.assets.ColorPalette;
+import com.github.sebasman.view.config.ColorPalette;
 import com.github.sebasman.view.config.ViewConfig;
 import processing.core.PApplet;
 import processing.core.PGraphics;

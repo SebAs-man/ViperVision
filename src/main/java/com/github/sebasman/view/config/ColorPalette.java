@@ -1,4 +1,4 @@
-package com.github.sebasman.view.assets;
+package com.github.sebasman.view.config;
 
 import processing.core.PApplet;
 

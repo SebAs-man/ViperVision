@@ -6,7 +6,7 @@ import com.github.sebasman.contracts.view.IUiComponent;
 import com.github.sebasman.contracts.vo.ComponentState;
 import com.github.sebasman.contracts.view.ICommand;
 import com.github.sebasman.view.assets.Assets;
-import com.github.sebasman.view.assets.ColorPalette;
+import com.github.sebasman.view.config.ColorPalette;
 import com.github.sebasman.view.config.ViewConfig;
 import processing.core.PApplet;
 import processing.core.PConstants;

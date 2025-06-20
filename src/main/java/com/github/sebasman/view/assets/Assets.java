@@ -29,7 +29,7 @@ public final class Assets {
     /**
      * Loads all game assets. Must be called only once
      * at startup, from the main class that extends PApplet.
-     * @param p The instance of PApplet (our Game class) to use its load methods.
+     * @param p The instance of PApplet to use its load methods.
      */
     public static void load(PApplet p){
         if(isLoaded){
@@ -53,7 +53,6 @@ public final class Assets {
             System.out.println("Assets loaded successfully.");
         } catch (Exception e){
             System.err.println("Error loading resources: " + e.getMessage());
-            e.printStackTrace();
             p.exit(); // Exit the game if resources cannot be loaded
         }
     }

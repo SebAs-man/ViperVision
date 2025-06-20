@@ -1,5 +1,6 @@
 package com.github.sebasman.presenter.states;
 
+import com.github.sebasman.contracts.presenter.IHUDController;
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.presenter.listeners.HUDController;
 import com.github.sebasman.contracts.presenter.IState;
@@ -11,7 +12,7 @@ import com.github.sebasman.contracts.view.ILayout;
 import com.github.sebasman.view.layout.VerticalLayout;
 import com.github.sebasman.view.assets.Assets;
 import com.github.sebasman.view.components.Button;
-import com.github.sebasman.view.assets.ColorPalette;
+import com.github.sebasman.view.config.ColorPalette;
 import com.github.sebasman.view.render.HUDRenderer;
 import processing.core.PApplet;
 
@@ -25,7 +26,7 @@ public final class GameOverState implements IState {
     // List of UI components to be displayed in the game over state
     private UiManager uiManager;
     // Game messages coordinator
-    private HUDController hudController;
+    private IHUDController hudController;
 
     /**
      * Private constructor to prevent instantiation.

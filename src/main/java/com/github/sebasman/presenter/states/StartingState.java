@@ -3,7 +3,7 @@ package com.github.sebasman.presenter.states;
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.contracts.presenter.IState;
 import com.github.sebasman.view.assets.Assets;
-import com.github.sebasman.view.assets.ColorPalette;
+import com.github.sebasman.view.config.ColorPalette;
 import processing.core.PApplet;
 
 /**

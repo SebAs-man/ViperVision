@@ -1,9 +1,9 @@
 package com.github.sebasman.view.render;
 
+import com.github.sebasman.contracts.presenter.IHUDController;
 import com.github.sebasman.model.config.ModelConfig;
-import com.github.sebasman.presenter.listeners.HUDController;
 import com.github.sebasman.view.assets.Assets;
-import com.github.sebasman.view.assets.ColorPalette;
+import com.github.sebasman.view.config.ColorPalette;
 import com.github.sebasman.view.config.ViewConfig;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -34,7 +34,7 @@ public final class HUDRenderer {
      * @param context The PApplet context to draw.
      * @param controller The HUD controller containing the text to display.
      */
-    public void render(PApplet context, HUDController controller){
+    public void render(PApplet context, IHUDController controller){
         if (controller == null) return;
 
         context.pushStyle();
