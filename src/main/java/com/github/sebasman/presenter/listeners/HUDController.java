@@ -1,4 +1,4 @@
-package com.github.sebasman.presenter;
+package com.github.sebasman.presenter.listeners;
 
 import com.github.sebasman.contracts.events.types.ScoreUpdatedEvent;
 

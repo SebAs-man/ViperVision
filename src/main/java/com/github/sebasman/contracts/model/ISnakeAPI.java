@@ -3,6 +3,7 @@ package com.github.sebasman.contracts.model;
 import com.github.sebasman.contracts.vo.Direction;
 import com.github.sebasman.contracts.vo.Position;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -10,7 +11,7 @@ import java.util.Set;
  * It extends the Drawable and Updatable interfaces to allow the snake to be drawn on the game board
  * and updated during each game tick.
  */
-public interface ISnakeAPI extends IDrawable, IUpdatable {
+public interface ISnakeAPI extends IUpdatable {
     /**
      * Sets the direction of the snake's movement.
      * @param direction the direction to set for the snake
@@ -41,8 +42,26 @@ public interface ISnakeAPI extends IDrawable, IUpdatable {
     Position getHead();
 
     /**
+     * Return the current position occupied by the snake's body
+     * @return a list of positions representing the current snake's body
+     */
+    List<Position> getBody();
+
+    /**
+     * Return the previous positions occupied by the snake's body
+     * @return a list of position representing the previous snake's body
+     */
+    List<Position> getPreviousBody();
+
+    /**
      * Returns the set of positions occupied by the snake's body.
      * @return a set of positions representing the snake's body
      */
     Set<Position> getBodySet();
+
+    /**
+     * Returns the current direction in which the serpent is moving
+     * @return The current direction
+     */
+    Direction getDirection();
 }

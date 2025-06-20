@@ -3,9 +3,9 @@ package com.github.sebasman.presenter.listeners;
 
 import com.github.sebasman.contracts.events.EventManager;
 import com.github.sebasman.contracts.events.types.ScoreUpdatedEvent;
-import com.github.sebasman.model.GameSession;
-import com.github.sebasman.model.UserProfile;
-import com.github.sebasman.view.GameView;
+import com.github.sebasman.contracts.model.IGameSession;
+import com.github.sebasman.contracts.model.IUserProfile;
+import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.contracts.events.types.FoodEatenEvent;
 import com.github.sebasman.presenter.states.GameOverState;
 
@@ -15,13 +15,13 @@ import com.github.sebasman.presenter.states.GameOverState;
  * events as a result (e.g., ScoreUpdatedEvent).
  */
 public class GameLogicCoordinator {
-    private final GameView game;
+    private final IGameContext game;
 
     /**
      * Creates a logic coordinator for a specific game session.
      * @param game The main instance of the application, used as context.
      */
-    public GameLogicCoordinator(GameView game) {
+    public GameLogicCoordinator(IGameContext game) {
         if(game == null){
             throw new NullPointerException("Game cannot be null");
         }
@@ -34,8 +34,8 @@ public class GameLogicCoordinator {
      * @param event The event that contains the relevant data (although in this version it is not used).
      */
     public void onFoodEaten(FoodEatenEvent event) {
-        GameSession session = game.getSession();
-        UserProfile profile = game.getProfile();
+        IGameSession session = game.getSession();
+        IUserProfile profile = game.getProfile();
         if (session == null || profile == null) return;
         // Increases the score of the current session.
         session.incrementScore(event.food().getScoreValue());

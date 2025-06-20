@@ -1,8 +1,7 @@
 package com.github.sebasman.view.render;
 
-import com.github.sebasman.view.GameView;
 import com.github.sebasman.view.assets.ColorPalette;
-import com.github.sebasman.GameConfig;
+import com.github.sebasman.view.config.ViewConfig;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 
@@ -55,15 +54,15 @@ public final class GameUiStatic {
         buffer.noStroke();
         buffer.fill(ColorPalette.UI_FRAME);
         // Draw the top bar
-        buffer.rect(GameConfig.GAME_AREA_PADDING/2f, GameConfig.GAME_AREA_PADDING,
-                context.width - GameConfig.SIDE_PANEL_WIDTH - GameConfig.GAME_AREA_PADDING*3f, GameConfig.TOP_BAR_HEIGHT, 16);
+        buffer.rect(ViewConfig.GAME_AREA_PADDING/2f, ViewConfig.GAME_AREA_PADDING,
+                context.width - ViewConfig.SIDE_PANEL_WIDTH - ViewConfig.GAME_AREA_PADDING*3f, ViewConfig.TOP_BAR_HEIGHT, 16);
         // Draw the side panel
-        buffer.rect(context.width - GameConfig.GAME_AREA_PADDING - GameConfig.SIDE_PANEL_WIDTH, GameConfig.GAME_AREA_PADDING,
-                GameConfig.SIDE_PANEL_WIDTH,context.height - (GameConfig.GAME_AREA_PADDING*2), 16);
+        buffer.rect(context.width - ViewConfig.GAME_AREA_PADDING - ViewConfig.SIDE_PANEL_WIDTH, ViewConfig.GAME_AREA_PADDING,
+                ViewConfig.SIDE_PANEL_WIDTH,context.height - (ViewConfig.GAME_AREA_PADDING*2), 16);
         buffer.endDraw();
     }
 
-    public void render(GameView game) {
+    public void render(PApplet game) {
         if (!isInitialized) {
             System.err.println("GameUI is not initialized, skipping render...");
             return; // UI is not initialized, skip drawing

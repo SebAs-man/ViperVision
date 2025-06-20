@@ -1,7 +1,7 @@
 package com.github.sebasman.contracts.presenter;
 
 import com.github.sebasman.contracts.model.ISnakeAPI;
-import com.github.sebasman.view.GameView;
+import com.github.sebasman.contracts.view.IGameContext;
 
 /**
  * Interface for the Strategy pattern. Defines a contract for all snake control strategies (human, AI, etc.).
@@ -13,7 +13,7 @@ public interface IControlStrategy {
      * @param game The game instance to access global data.
      * @param snake The snake that this strategy should control.
      */
-    void update(GameView game, ISnakeAPI snake);
+    void update(IGameContext game, ISnakeAPI snake);
 
     /**
      * Called each time a key is pressed.
@@ -22,7 +22,7 @@ public interface IControlStrategy {
      * @param snake The snake to control.
      * @param keyCode The code of the key pressed.
      */
-    void keyPressed(GameView game, ISnakeAPI snake, int keyCode);
+    void keyPressed(IGameContext game, ISnakeAPI snake, int keyCode);
 
     /**
      * Determines whether a keystroke is to be interpreted as an action.

@@ -1,9 +1,9 @@
 package com.github.sebasman.view.render;
 
-import com.github.sebasman.model.GameSession;
-import com.github.sebasman.view.GameView;
-import com.github.sebasman.model.Board;
-import com.github.sebasman.GameConfig;
+import com.github.sebasman.contracts.model.IGameSession;
+import com.github.sebasman.contracts.view.IGameContext;
+import com.github.sebasman.view.config.ViewConfig;
+import processing.core.PApplet;
 
 /**
  * Singleton Renderer responsible EXCLUSIVELY for drawing the entities
@@ -13,11 +13,19 @@ import com.github.sebasman.GameConfig;
 public final class GameWorldRenderer {
     // Singleton instance for the GameWorldRenderer class
     private static final GameWorldRenderer INSTANCE = new GameWorldRenderer();
+    // Instances of the specific renderers.
+    private final BoardRender boardRender;
+    private final SnakeRender snakeRender;
+    private final FoodRender foodRender;
 
     /**
      * Private constructor to prevent instantiation.
      */
-    private GameWorldRenderer() {}
+    private GameWorldRenderer() {
+        this.boardRender = new BoardRender();
+        this.snakeRender = new SnakeRender();
+        this.foodRender = new FoodRender();
+    }
 
     /**
      * Returns the singleton instance of GameWorldRenderer.
@@ -32,16 +40,17 @@ public final class GameWorldRenderer {
      * @param game The PApplet context for drawing operations.
      * @param interpolation The factor for smooth snake movement.
      */
-    public void render(GameView game, Float interpolation) {
-        GameSession session = game.getSession();
+    public void render(IGameContext game, Float interpolation) {
+        PApplet renderer = game.getRenderer();
+        IGameSession session = game.getSession();
         // Draw the game board, snake, and food
-        game.pushMatrix();
-        game.translate(GameConfig.GAME_AREA_PADDING, GameConfig.GAME_AREA_PADDING*2 + GameConfig.TOP_BAR_HEIGHT);
-        Board.getInstance().draw(game, null);
+        renderer.pushMatrix();
+        renderer.translate(ViewConfig.GAME_AREA_PADDING, ViewConfig.GAME_AREA_PADDING*2 + ViewConfig.TOP_BAR_HEIGHT);
+        boardRender.draw(renderer);
         if(session != null){
-            session.getFood().draw(game, null);
-            session.getSnake().draw(game, interpolation);
+            snakeRender.draw(renderer, interpolation, session.getSnake());
+            foodRender.draw(renderer, session.getFood());
         }
-        game.popMatrix();
+        renderer.popMatrix();
     }
 }

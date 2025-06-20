@@ -1,10 +1,11 @@
 package com.github.sebasman.view.render;
 
-import com.github.sebasman.GameConfig;
-import com.github.sebasman.presenter.HUDController;
-import com.github.sebasman.view.GameView;
+import com.github.sebasman.model.config.ModelConfig;
+import com.github.sebasman.presenter.listeners.HUDController;
 import com.github.sebasman.view.assets.Assets;
 import com.github.sebasman.view.assets.ColorPalette;
+import com.github.sebasman.view.config.ViewConfig;
+import processing.core.PApplet;
 import processing.core.PConstants;
 
 /**
@@ -30,37 +31,37 @@ public final class HUDRenderer {
 
     /**
      * Draws the HUD using the formatted data from HUDController.
-     * @param game The PApplet context to draw.
+     * @param context The PApplet context to draw.
      * @param controller The HUD controller containing the text to display.
      */
-    public void render(GameView game, HUDController controller){
+    public void render(PApplet context, HUDController controller){
         if (controller == null) return;
 
-        game.pushStyle();
+        context.pushStyle();
 
-        float iconSize = GameConfig.TOP_BAR_HEIGHT*0.75f;
-        float iconX = iconSize + GameConfig.GAME_AREA_PADDING/2f;
-        float icon_X = game.width - GameConfig.GAME_AREA_PADDING*2 - GameConfig.SIDE_PANEL_WIDTH - iconX;
-        float iconY = GameConfig.GAME_AREA_PADDING + GameConfig.TOP_BAR_HEIGHT/2f;
+        float iconSize = ViewConfig.TOP_BAR_HEIGHT*0.75f;
+        float iconX = iconSize + ViewConfig.GAME_AREA_PADDING/2f;
+        float icon_X = context.width - ViewConfig.GAME_AREA_PADDING*2 - ViewConfig.SIDE_PANEL_WIDTH - iconX;
+        float iconY = ViewConfig.GAME_AREA_PADDING + ViewConfig.TOP_BAR_HEIGHT/2f;
         // Draw the score
-        game.textFont(Assets.textFont);
-        game.textSize(iconSize*0.85f);
-        game.fill(ColorPalette.TEXT_PRIMARY);
-        game.imageMode(PConstants.CENTER);
-        game.textAlign(PConstants.LEFT, PConstants.CENTER);
-        game.image(Assets.appleImage, iconX, iconY, iconSize, iconSize);
-        game.text(controller.getScoreText(), iconX + iconSize, iconY);
+        context.textFont(Assets.textFont);
+        context.textSize(iconSize*0.85f);
+        context.fill(ColorPalette.TEXT_PRIMARY);
+        context.imageMode(PConstants.CENTER);
+        context.textAlign(PConstants.LEFT, PConstants.CENTER);
+        context.image(Assets.appleImage, iconX, iconY, iconSize, iconSize);
+        context.text(controller.getScoreText(), iconX + iconSize, iconY);
         // Draw the High score
-        game.textAlign(PConstants.RIGHT, PConstants.CENTER);
-        game.image(Assets.trophyImage, icon_X, iconY, iconSize, iconSize);
-        game.text(controller.getHighScoreText(), icon_X - iconSize, iconY);
+        context.textAlign(PConstants.RIGHT, PConstants.CENTER);
+        context.image(Assets.trophyImage, icon_X, iconY, iconSize, iconSize);
+        context.text(controller.getHighScoreText(), icon_X - iconSize, iconY);
         // Draw the game title
-        game.textFont(Assets.titleFont);
-        game.textAlign(PConstants.CENTER, PConstants.CENTER);
-        game.textSize(GameConfig.TOP_BAR_HEIGHT*0.35f);
-        game.text("VIPER VISION", (GameConfig.GAME_AREA_PADDING/2f) + ((GameConfig.BOX_SIZE*GameConfig.GRID_WIDTH)/2f),
-                GameConfig.GAME_AREA_PADDING + GameConfig.TOP_BAR_HEIGHT / 2f);
+        context.textFont(Assets.titleFont);
+        context.textAlign(PConstants.CENTER, PConstants.CENTER);
+        context.textSize(ViewConfig.TOP_BAR_HEIGHT*0.35f);
+        context.text("VIPER VISION", (ViewConfig.GAME_AREA_PADDING/2f) + ((ModelConfig.BOX_SIZE * ModelConfig.GRID_WIDTH)/2f),
+                ViewConfig.GAME_AREA_PADDING + ViewConfig.TOP_BAR_HEIGHT / 2f);
 
-        game.popStyle();
+        context.popStyle();
     }
 }

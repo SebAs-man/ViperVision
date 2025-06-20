@@ -2,8 +2,9 @@ package com.github.sebasman.presenter.states;
 
 import com.github.sebasman.contracts.events.EventManager;
 import com.github.sebasman.contracts.events.types.ScoreUpdatedEvent;
-import com.github.sebasman.model.GameSession;
-import com.github.sebasman.presenter.HUDController;
+import com.github.sebasman.contracts.model.IGameSession;
+import com.github.sebasman.contracts.view.IGameContext;
+import com.github.sebasman.presenter.listeners.HUDController;
 import com.github.sebasman.presenter.listeners.GameLogicCoordinator;
 import com.github.sebasman.contracts.events.types.FoodEatenEvent;
 import com.github.sebasman.contracts.events.types.SnakeDiedEvent;
@@ -14,8 +15,8 @@ import com.github.sebasman.contracts.model.ISnakeAPI;
 import com.github.sebasman.view.UiManager;
 import com.github.sebasman.view.render.GameUiStatic;
 import com.github.sebasman.view.render.GameWorldRenderer;
-import com.github.sebasman.view.GameView;
 import com.github.sebasman.view.render.HUDRenderer;
+import processing.core.PApplet;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -48,7 +49,7 @@ public final class PlayingState implements IState {
     }
 
     @Override
-    public void onEnter(GameView game) {
+    public void onEnter(IGameContext game) {
         System.out.println("¡Starting Game!");
         this.hudController = new HUDController(game.getSession().getScore(), game.getProfile().getHighScore());
         this.logicCoordinator = new GameLogicCoordinator(game);
@@ -61,7 +62,7 @@ public final class PlayingState implements IState {
     }
 
     @Override
-    public void onExit(GameView game) {
+    public void onExit(IGameContext game) {
         // Listeners are unsubscribed to avoid “zombie listeners” and memory leaks.
         EventManager eventManager = EventManager.getInstance();
         eventManager.unsubscribe(FoodEatenEvent.class, onFoodEatenListener);
@@ -70,16 +71,16 @@ public final class PlayingState implements IState {
     }
 
     @Override
-    public void update(GameView game) {
+    public void update(IGameContext game) {
         // Delegates the update of the UI (cursor, hover effects) to the UiManager.
         if (uiManager != null) {
-            this.uiManager.update(game);
+            this.uiManager.update(game.getRenderer());
         }
     }
 
     @Override
-    public void gameTickUpdate(GameView game) {
-        GameSession session = game.getSession();
+    public void gameTickUpdate(IGameContext game) {
+        IGameSession session = game.getSession();
         this.controlStrategy.update(game, session.getSnake());
         // Update the snake's position based on the current direction.
         session.getSnake().update();
@@ -87,19 +88,21 @@ public final class PlayingState implements IState {
     }
 
     @Override
-    public void draw(GameView game, Float interpolation) {
-        GameUiStatic.getInstance().render(game);
+    public void draw(IGameContext game, Float interpolation) {
+        PApplet renderer = game.getRenderer();
+        GameUiStatic.getInstance().render(renderer);
         GameWorldRenderer.getInstance().render(game, interpolation);
-        HUDRenderer.getInstance().render(game, this.hudController);
+        HUDRenderer.getInstance().render(renderer, this.hudController);
         // Draw the UI components of this state
         if (uiManager != null) {
-            this.uiManager.draw(game);
+            this.uiManager.draw(renderer);
         }
     }
 
     @Override
-    public void keyPressed(GameView game, int keyCode) {
-        if (Character.toLowerCase(game.key) == 'p' || game.key == ' ') {
+    public void keyPressed(IGameContext game, int keyCode) {
+        PApplet renderer = game.getRenderer();
+        if (Character.toLowerCase(renderer.key) == 'p' || renderer.key == ' ') {
             game.pushState(PausedState.getInstance());
             return;
         }
@@ -118,8 +121,8 @@ public final class PlayingState implements IState {
      * Checks for collisions between the snake and the walls or itself,
      * @param game the current game instance
      */
-    private void checkCollisions(GameView game) {
-        GameSession session = game.getSession();
+    private void checkCollisions(IGameContext game) {
+        IGameSession session = game.getSession();
         if(session == null) return;
         ISnakeAPI snake = session.getSnake();
         IFoodAPI food = session.getFood();
@@ -134,7 +137,7 @@ public final class PlayingState implements IState {
         }
     }
 
-    private UiManager buildUi(GameView game) {
+    private UiManager buildUi(IGameContext game) {
         return new UiManager();
     }
 }

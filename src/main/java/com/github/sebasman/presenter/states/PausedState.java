@@ -1,8 +1,9 @@
 package com.github.sebasman.presenter.states;
 
-import com.github.sebasman.presenter.HUDController;
-import com.github.sebasman.view.GameView;
+import com.github.sebasman.contracts.view.IGameContext;
+import com.github.sebasman.presenter.listeners.HUDController;
 import com.github.sebasman.contracts.presenter.IState;
+import com.github.sebasman.view.config.ViewConfig;
 import com.github.sebasman.view.render.GameUiStatic;
 import com.github.sebasman.view.render.GameWorldRenderer;
 import com.github.sebasman.view.UiManager;
@@ -11,8 +12,8 @@ import com.github.sebasman.view.layout.VerticalLayout;
 import com.github.sebasman.view.assets.Assets;
 import com.github.sebasman.view.components.Button;
 import com.github.sebasman.view.assets.ColorPalette;
-import com.github.sebasman.GameConfig;
 import com.github.sebasman.view.render.HUDRenderer;
+import processing.core.PApplet;
 
 /**
  * The paused state of the game, where the player can see a pause message
@@ -40,7 +41,7 @@ public final class PausedState implements IState {
     }
 
     @Override
-    public void onEnter(GameView game) {
+    public void onEnter(IGameContext game) {
         this.hudController = new HUDController(game.getSession().getScore(), game.getProfile().getHighScore());
         // Lazy Initialization: The UI is built only the first time you enter pause.
         if(this.uiManager == null) {
@@ -49,48 +50,50 @@ public final class PausedState implements IState {
     }
 
     @Override
-    public void onExit(GameView game) {
+    public void onExit(IGameContext game) {
         // No cleaning is required when coming out of the break.
     }
 
     @Override
-    public void update(GameView game) {
+    public void update(IGameContext game) {
         // Delegates the update of the UI (cursor, hover) to the manager.
         if(this.uiManager != null) {
-            this.uiManager.update(game);
+            this.uiManager.update(game.getRenderer());
         }
     }
 
     @Override
-    public void gameTickUpdate(GameView game) {
+    public void gameTickUpdate(IGameContext game) {
         // Paused, the game logic is frozen. Nothing is done.
     }
 
     @Override
-    public void draw(GameView game, Float interpolation) {
+    public void draw(IGameContext game, Float interpolation) {
+        PApplet renderer  = game.getRenderer();
         // Draws the state of the game below, but static
-        GameUiStatic.getInstance().render(game);
+        GameUiStatic.getInstance().render(renderer);
         GameWorldRenderer.getInstance().render(game, 0f);
-        HUDRenderer.getInstance().render(game, this.hudController);
+        HUDRenderer.getInstance().render(renderer, this.hudController);
         // Draw the pause overlay
-        game.fill(255, 255, 255, 160);
-        game.rect(0, 0, game.width, game.height);
-        game.textFont(Assets.titleFont);
-        game.fill(ColorPalette.TEXT_SECONDARY);
-        game.textSize(game.width/12f);
-        game.text("PAUSE", game.width / 2f, game.height/2f);
-        game.textFont(Assets.textFont);
-        game.textSize(game.width/24f);
-        game.text("Press 'p' or SPACE to continue", game.width / 2f, game.height/7.5f);
+        renderer.fill(255, 255, 255, 160);
+        renderer.rect(0, 0, renderer.width, renderer.height);
+        renderer.textFont(Assets.titleFont);
+        renderer.fill(ColorPalette.TEXT_SECONDARY);
+        renderer.textSize(renderer.width/12f);
+        renderer.text("PAUSE", renderer.width / 2f, renderer.height/2f);
+        renderer.textFont(Assets.textFont);
+        renderer.textSize(renderer.width/24f);
+        renderer.text("Press 'p' or SPACE to continue", renderer.width / 2f, renderer.height/7.5f);
         // Draw UI components (buttons)
         if(this.uiManager != null) {
-            this.uiManager.draw(game);
+            this.uiManager.draw(renderer);
         }
     }
 
     @Override
-    public void keyPressed(GameView game, int keyCode) {
-        if(Character.toLowerCase(game.key) == 'p' || game.key == ' ') {
+    public void keyPressed(IGameContext game, int keyCode) {
+        PApplet renderer = game.getRenderer();
+        if(Character.toLowerCase(renderer.key) == 'p' || renderer.key == ' ') {
             game.popState(); // Pops the PausedState off the stack and returns to PlayingState.
         }
     }
@@ -108,10 +111,12 @@ public final class PausedState implements IState {
      * @param game the game instance to build the UI for
      * @return the UiManager containing the UI components for the paused state
      */
-    private UiManager buildUi(GameView game) {
+    private UiManager buildUi(IGameContext game) {
         UiManager uiManager = new UiManager();
+        PApplet  renderer  = game.getRenderer();
 
-        ILayout menuLayout = new VerticalLayout((game.width/2) - (GameConfig.COMPONENT_WIDTH/2), (int) (game.height/1.25));
+        ILayout menuLayout = new VerticalLayout((renderer.width/2) - (ViewConfig.COMPONENT_WIDTH/2),
+                (int) (renderer.height/1.25));
 
         // The "Main Menu" button has a two-step logic:
         // 1. popState(): Pops out the PausedState.

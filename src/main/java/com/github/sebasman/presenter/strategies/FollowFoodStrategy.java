@@ -1,10 +1,10 @@
 package com.github.sebasman.presenter.strategies;
 
 import com.github.sebasman.contracts.model.ISnakeAPI;
+import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.contracts.view.IUiComponent;
 import com.github.sebasman.contracts.view.IUiProvider;
 import com.github.sebasman.contracts.vo.Direction;
-import com.github.sebasman.view.GameView;
 import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.contracts.presenter.IControlStrategy;
 import com.github.sebasman.view.components.Button;
@@ -26,7 +26,7 @@ public final class FollowFoodStrategy implements IControlStrategy, IUiProvider {
     }
 
     @Override
-    public void update(GameView game, ISnakeAPI snake) {
+    public void update(IGameContext game, ISnakeAPI snake) {
         Position head = snake.getHead();
         if(game.getSession() == null) throw new RuntimeException("Game session is null");
         Position food = game.getSession().getFood().getPosition();
@@ -52,7 +52,7 @@ public final class FollowFoodStrategy implements IControlStrategy, IUiProvider {
     }
 
     @Override
-    public void keyPressed(GameView game, ISnakeAPI snake, int keyCode) {
+    public void keyPressed(IGameContext game, ISnakeAPI snake, int keyCode) {
         // The AI doesn't respond to the keyboard, so this method is empty.
     }
 

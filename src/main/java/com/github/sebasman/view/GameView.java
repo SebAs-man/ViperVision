@@ -1,12 +1,15 @@
 package com.github.sebasman.view;
 
+import com.github.sebasman.contracts.model.IGameSession;
+import com.github.sebasman.contracts.model.IUserProfile;
 import com.github.sebasman.contracts.presenter.IState;
-import com.github.sebasman.contracts.view.IGameView;
+import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.model.GameSession;
 import com.github.sebasman.model.UserProfile;
+import com.github.sebasman.model.config.ModelConfig;
 import com.github.sebasman.view.assets.Assets;
 import com.github.sebasman.view.assets.ColorPalette;
-import com.github.sebasman.GameConfig;
+import com.github.sebasman.view.config.ViewConfig;
 import com.github.sebasman.view.render.GameUiStatic;
 import processing.core.PApplet;
 
@@ -18,11 +21,11 @@ import java.util.Stack;
  * It owns the global state of the application (profile, current session) and the state manager (Presenter),
  * but delegates all logic to the current active state.
  */
-public class GameView extends PApplet implements IGameView {
+public class GameView extends PApplet implements IGameContext {
     // Current game profile
-    private final UserProfile profile;
+    private final IUserProfile profile;
     // Current game session
-    private GameSession session;
+    private IGameSession session;
     // The stack of game states, allowing for state management
     private final Stack<IState> states;
     // Fields for game loop timing
@@ -43,7 +46,7 @@ public class GameView extends PApplet implements IGameView {
     @Override
     public void settings() {
         // Set the size of the window based on the grid dimensions and box size
-        super.size(GameConfig.WINDOW_WIDTH, GameConfig.WINDOW_HEIGHT);
+        super.size(ViewConfig.WINDOW_WIDTH, ViewConfig.WINDOW_HEIGHT);
     }
 
     @Override
@@ -51,7 +54,7 @@ public class GameView extends PApplet implements IGameView {
         // Set the frame rate
         super.frameRate(60);
         // Initialize the timing variables for the game loop
-        int ticksPerSecond = GameConfig.STARTING_FRAME_RATE;
+        int ticksPerSecond = ModelConfig.STARTING_FRAME_RATE;
         this.nsPerTick = 1_000_000_000.0 / ticksPerSecond; // Convert ticks per second to nanoseconds per tick
         this.lastTime = System.nanoTime();
         this.delta = 0;
@@ -169,12 +172,18 @@ public class GameView extends PApplet implements IGameView {
     // --- Getters ---
 
     @Override
-    public UserProfile getProfile() {
+    public IUserProfile getProfile() {
         return profile;
     }
 
     @Override
-    public GameSession getSession() {
+    public IGameSession getSession() {
         return session;
+    }
+
+    @Override
+    public PApplet getRenderer() {
+        // Returns a reference to itself, since it is the instance of PApplet.
+        return this;
     }
 }

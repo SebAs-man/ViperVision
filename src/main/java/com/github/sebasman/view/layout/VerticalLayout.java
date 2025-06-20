@@ -2,7 +2,7 @@ package com.github.sebasman.view.layout;
 
 import com.github.sebasman.contracts.view.ILayout;
 import com.github.sebasman.contracts.view.IUiComponent;
-import com.github.sebasman.GameConfig;
+import com.github.sebasman.view.config.ViewConfig;
 import processing.core.PApplet;
 
 import java.util.LinkedList;
@@ -24,8 +24,8 @@ public class VerticalLayout implements ILayout {
      * @param y coordinate, where the layout starts on the y-axis.
      */
     public VerticalLayout(int x, int y){
-        this.x = Math.max(x + (GameConfig.COMPONENT_WIDTH/2), 0);
-        this.y = Math.max(y + (GameConfig.COMPONENT_HEIGHT/2), 0);
+        this.x = Math.max(x + (ViewConfig.COMPONENT_WIDTH/2), 0);
+        this.y = Math.max(y + (ViewConfig.COMPONENT_HEIGHT/2), 0);
         this.components = new LinkedList<>();
     }
 
@@ -39,7 +39,7 @@ public class VerticalLayout implements ILayout {
         float currentY = this.y;
         for (IUiComponent component : components) {
             component.draw(context, this.x, currentY);
-            currentY += (GameConfig.COMPONENT_HEIGHT*1.5f);
+            currentY += (ViewConfig.COMPONENT_HEIGHT*1.5f);
         }
     }
 

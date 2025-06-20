@@ -1,18 +1,18 @@
 package com.github.sebasman.contracts.view;
 
+import com.github.sebasman.contracts.model.IGameSession;
+import com.github.sebasman.contracts.model.IUserProfile;
 import com.github.sebasman.contracts.presenter.IState;
-import com.github.sebasman.model.GameSession;
-import com.github.sebasman.model.UserProfile;
+import processing.core.PApplet;
 
-import processing.core.PFont;
 
 /**
- * Defines the contract for the main Game View.
- * Exposes the methods that the Presenters (IState) can call to interact
- * with the application state and to perform PApplet drawing operations,
- * without coupling to the concrete GameView implementation.
+ * Defines the contract for the main context of the application.
+ * Provides the Presenters (States) with controlled access to the global state
+ * and to the application functionalities without coupling them to the
+ * concrete implementation of the View (GameView).
  */
-public interface IGameView {
+public interface IGameContext {
     // --- Application state management methods ---
 
     /**
@@ -29,13 +29,13 @@ public interface IGameView {
      * Gets a current game session.
      * @return An instance of the current game session or null.
      */
-    GameSession getSession();
+    IGameSession getSession();
 
     /**
      * Gets a current profile in the game.
      * @return An instance of the current profile.
      */
-    UserProfile getProfile();
+    IUserProfile getProfile();
 
     // --- State stack management (flow control) methods ---
 
@@ -61,4 +61,11 @@ public interface IGameView {
      * Removes the current state from the stack.
      */
     void popState();
+
+    /**
+     * Provides access to the PApplet rendering engine so that.
+     * View components and presenters to draw.
+     * @return The PApplet instance.
+     */
+    PApplet getRenderer();
 }

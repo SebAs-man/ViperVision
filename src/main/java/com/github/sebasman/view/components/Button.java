@@ -7,7 +7,7 @@ import com.github.sebasman.contracts.vo.ComponentState;
 import com.github.sebasman.contracts.view.ICommand;
 import com.github.sebasman.view.assets.Assets;
 import com.github.sebasman.view.assets.ColorPalette;
-import com.github.sebasman.GameConfig;
+import com.github.sebasman.view.config.ViewConfig;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PImage;
@@ -55,13 +55,14 @@ public class Button implements IUiComponent {
         // Draw the button rectangle
         p.stroke(ColorPalette.BUTTON_STROKE);
         p.strokeWeight(2);
-        p.rect(x, y, GameConfig.COMPONENT_WIDTH, GameConfig.COMPONENT_HEIGHT, GameConfig.RADIUS);
+        p.rect(x, y, ViewConfig.COMPONENT_WIDTH, ViewConfig.COMPONENT_HEIGHT, ViewConfig.RADIUS);
         // Draw the icon if it is not null
         float centerX = this.x;
         if(icon != null){
-            p.image(icon, this.x - (GameConfig.COMPONENT_WIDTH/3f), this.y, Math.min(32, GameConfig.COMPONENT_WIDTH*0.15f), Math.min(32, GameConfig.COMPONENT_HEIGHT*0.65f));
+            p.image(icon, this.x - (ViewConfig.COMPONENT_WIDTH/3f), this.y,
+                    Math.min(32, ViewConfig.COMPONENT_WIDTH*0.15f), Math.min(32, ViewConfig.COMPONENT_HEIGHT*0.65f));
         } else {
-            centerX -= Math.min(32, GameConfig.COMPONENT_WIDTH*0.15f);
+            centerX -= Math.min(32, ViewConfig.COMPONENT_WIDTH*0.15f);
         }
         // Draw the label text
         p.textFont(Assets.textFont);
@@ -101,7 +102,7 @@ public class Button implements IUiComponent {
      * @return true if the mouse is over the button, false otherwise
      */
     private boolean isMouseOver(int mouseX, int mouseY) {
-        return mouseX >= (this.x - (GameConfig.COMPONENT_WIDTH / 2f)) && mouseX <= (this.x + (GameConfig.COMPONENT_WIDTH / 2f)) &&
-                mouseY >= (this.y - (GameConfig.COMPONENT_HEIGHT / 2f)) && mouseY <= (this.y + (GameConfig.COMPONENT_HEIGHT / 2f));
+        return mouseX >= (this.x - (ViewConfig.COMPONENT_WIDTH / 2f)) && mouseX <= (this.x + (ViewConfig.COMPONENT_WIDTH / 2f)) &&
+                mouseY >= (this.y - (ViewConfig.COMPONENT_HEIGHT / 2f)) && mouseY <= (this.y + (ViewConfig.COMPONENT_HEIGHT / 2f));
     }
 }

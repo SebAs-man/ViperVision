@@ -1,8 +1,8 @@
 package com.github.sebasman.presenter.strategies;
 
 import com.github.sebasman.contracts.model.ISnakeAPI;
+import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.contracts.vo.Direction;
-import com.github.sebasman.view.GameView;
 import com.github.sebasman.contracts.presenter.IControlStrategy;
 import processing.core.PConstants;
 
@@ -18,13 +18,13 @@ public final class HumanControlStrategy implements IControlStrategy {
     public HumanControlStrategy() {}
 
     @Override
-    public void update(GameView game, ISnakeAPI snake) {
+    public void update(IGameContext game, ISnakeAPI snake) {
         // The human control does not need to do anything in the update loop.
         // All logic is reactive to keyboard events.
     }
 
     @Override
-    public void keyPressed(GameView game, ISnakeAPI snake, int keyCode) {
+    public void keyPressed(IGameContext game, ISnakeAPI snake, int keyCode) {
         if (keyCode == PConstants.UP) {
             snake.bufferDirection(Direction.UP);
         } else if (keyCode == PConstants.DOWN) {

@@ -2,10 +2,7 @@ package com.github.sebasman.model;
 
 import com.github.sebasman.contracts.model.IFoodAPI;
 import com.github.sebasman.contracts.vo.Position;
-import com.github.sebasman.GameConfig;
-import com.github.sebasman.view.assets.Assets;
-import processing.core.PApplet;
-import processing.core.PImage;
+import com.github.sebasman.model.config.ModelConfig;
 
 import java.util.*;
 
@@ -30,18 +27,9 @@ public class Food implements IFoodAPI {
     }
 
     @Override
-    public void draw(PApplet context, Float interpolation) {
-        if(this.position == null) return; // Ensure position is set before drawing
-        PImage appleImage = Assets.appleImage;
-        int x = this.position.x() * GameConfig.BOX_SIZE;
-        int y = this.position.y() * GameConfig.BOX_SIZE;
-        context.image(appleImage, x, y, GameConfig.BOX_SIZE, GameConfig.BOX_SIZE);
-    }
-
-    @Override
     public void spawn(Set<Position> snakeBody) {
-        int gridWidth = GameConfig.GRID_WIDTH;
-        int gridHeight = GameConfig.GRID_HEIGHT;
+        int gridWidth = ModelConfig.GRID_WIDTH;
+        int gridHeight = ModelConfig.GRID_HEIGHT;
         int totalSpots = gridWidth * gridHeight;
         int availableSpots = totalSpots - snakeBody.size();
 
