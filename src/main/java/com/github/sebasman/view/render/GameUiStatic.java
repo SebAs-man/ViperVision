@@ -29,21 +29,25 @@ public final class GameUiStatic {
         return INSTANCE;
     }
 
+    /**
+     * Pre-renders the static elements of the UI into the buffer.
+     * @param context The PApplet context used for rendering
+     */
     public void initialize(PApplet context){
-        if(isInitialized) {
-            System.err.println("GameUI is already initialized, skipping...");
+        if(this.isInitialized) {
+            System.err.println("The static elements is already initialized, skipping...");
             return; // UI is already initialized, skip initialization
         }
         // Set the flag to true to prevent re-initialization
-        isInitialized = true;
+        this.isInitialized = true;
         // Initialize the PGraphics buffer with the size of the game window
         this.buffer = context.createGraphics(context.width, context.height);
-        // Load the color palette for UI elements
+        // Load the elements
         preRenderElements(context);
     }
 
     /**
-     * Pre-renders the static elements of the UI into the buffer.
+     * Pre-rendering help method
      * @param context The PApplet context used for rendering.
      */
     private void preRenderElements(PApplet context) {
@@ -62,9 +66,13 @@ public final class GameUiStatic {
         buffer.endDraw();
     }
 
+    /**
+     * Draws the static elements in the UI
+     * @param game The context in which the drawing is to be made
+     */
     public void render(PApplet game) {
         if (!isInitialized) {
-            System.err.println("GameUI is not initialized, skipping render...");
+            System.err.println("The static elements is not initialized, skipping render...");
             return; // UI is not initialized, skip drawing
         }
         // Draw the pre-rendered buffer onto the main game canvas

@@ -13,10 +13,10 @@ public final class ColorPalette {
     public static int SNAKE_BODY;
     public static int SNAKE_EYES;
     // --- Colors for the UI elements ---
-    public static int BUTTON_FILL;
-    public static int BUTTON_HOVER_FILL;
-    public static int BUTTON_ACTIVE_FILL;
-    public static int BUTTON_STROKE;
+    public static int COMPONENT_FILL;
+    public static int COMPONENT_HOVER_FILL;
+    public static int COMPONENT_ACTIVE_FILL;
+    public static int COMPONENT_STROKE;
     public static int UI_BACKGROUND;
     public static int UI_FRAME;
     // --- Colors for text elements ---
@@ -35,10 +35,10 @@ public final class ColorPalette {
         BOARD_DARK = p.color(162, 209, 73);
         SNAKE_BODY = p.color(97, 74, 240);
         SNAKE_EYES = p.color(255); // Blanco
-        BUTTON_FILL = p.color(63, 15, 208, 200);
-        BUTTON_HOVER_FILL = p.color(90, 45, 230, 200);
-        BUTTON_ACTIVE_FILL = p.color(120, 70, 255, 200);
-        BUTTON_STROKE = p.color(120, 70, 255, 255);
+        COMPONENT_FILL = p.color(63, 15, 208, 200);
+        COMPONENT_HOVER_FILL = p.color(90, 45, 230, 200);
+        COMPONENT_ACTIVE_FILL = p.color(120, 70, 255, 200);
+        COMPONENT_STROKE = p.color(120, 70, 255, 255);
         UI_BACKGROUND = p.color(62, 150, 45);
         UI_FRAME = p.color(53, 115, 36);
         TEXT_PRIMARY = p.color(220, 220, 220, 255);

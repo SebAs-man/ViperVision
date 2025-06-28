@@ -11,6 +11,7 @@ import com.github.sebasman.view.assets.Assets;
 import com.github.sebasman.view.audio.SoundManager;
 import com.github.sebasman.view.config.ColorPalette;
 import com.github.sebasman.view.config.ViewConfig;
+import com.github.sebasman.view.render.BoardRender;
 import com.github.sebasman.view.render.GameUiStatic;
 import processing.core.PApplet;
 
@@ -66,6 +67,8 @@ public class GameView extends PApplet implements IGameContext {
         SoundManager.load(this);
         ColorPalette.load(this);
         GameUiStatic.getInstance().initialize(this);
+        // Initialize the static board
+        BoardRender.getInstance().initialize(this);
     }
 
     @Override

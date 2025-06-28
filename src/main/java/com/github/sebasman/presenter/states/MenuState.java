@@ -112,7 +112,7 @@ public final class MenuState implements IState {
         UiManager manager = new UiManager();
 
         ILayout menuLayout = new VerticalLayout(
-                ViewConfig.CENTER_GAME_X - (ViewConfig.COMPONENT_WIDTH/2),
+                ViewConfig.CENTER_GAME_X - (ViewConfig.BUTTON_WIDTH /2),
                 renderer.height / 2);
 
         menuLayout.add(new Button("Play", Assets.playImage,

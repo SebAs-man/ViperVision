@@ -14,9 +14,13 @@ public final class ViewConfig {
     public static final int RADIUS = 24;
 
     // --- Configuration of UI Components ---
-    public static final int COMPONENT_WIDTH = (int) (ModelConfig.BOX_SIZE * 6.25);
-    public static final int COMPONENT_HEIGHT = (int) (ModelConfig.BOX_SIZE * 1.5);
-    public static final int SIDE_PANEL_WIDTH = COMPONENT_WIDTH + (GAME_AREA_PADDING * 2);
+    public static final int BUTTON_WIDTH = (int) (ModelConfig.BOX_SIZE * 6.25);
+    public static final int BUTTON_HEIGHT = (int) (ModelConfig.BOX_SIZE * 1.5);
+    public static final int CHECKBOX_SIZE = (int) (ModelConfig.BOX_SIZE*0.85);
+    public static final int SLIDER_WIDTH = BUTTON_WIDTH;
+    public static final int SLIDER_HEIGHT = (int) (ModelConfig.BOX_SIZE/3.5);
+    public static final int SLIDER_SIZE_INDICATOR = SLIDER_HEIGHT*2;
+    public static final int SIDE_PANEL_WIDTH = BUTTON_WIDTH + (GAME_AREA_PADDING * 2);
 
     // --- Window Configuration (Calculated) ---
     private static final int BOARD_PIXEL_WIDTH = ModelConfig.GRID_WIDTH * ModelConfig.BOX_SIZE;

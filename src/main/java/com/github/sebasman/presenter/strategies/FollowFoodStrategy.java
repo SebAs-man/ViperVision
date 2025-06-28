@@ -1,13 +1,17 @@
 package com.github.sebasman.presenter.strategies;
 
+import com.github.sebasman.contracts.configuration.CheckBoxConfigParameter;
+import com.github.sebasman.contracts.configuration.IConfigParameter;
+import com.github.sebasman.contracts.configuration.SliderConfigParameter;
 import com.github.sebasman.contracts.model.ISnakeAPI;
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.contracts.view.IUiComponent;
-import com.github.sebasman.contracts.view.IUiProvider;
+import com.github.sebasman.contracts.presenter.IUiProvider;
 import com.github.sebasman.contracts.vo.Direction;
 import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.contracts.presenter.IControlStrategy;
 import com.github.sebasman.view.components.Button;
+import com.github.sebasman.view.components.CheckBox;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -16,14 +20,10 @@ import java.util.List;
  * A strategy for controlling the snake to follow the food.
  */
 public final class FollowFoodStrategy implements IControlStrategy, IUiProvider {
-    private float speedFactor;
-
     /**
      * Public builder. Each AI game will have its own strategy instance.
      */
-    public FollowFoodStrategy() {
-        this.speedFactor = 1.0f;
-    }
+    public FollowFoodStrategy() {}
 
     @Override
     public void update(IGameContext game, ISnakeAPI snake) {
@@ -57,10 +57,13 @@ public final class FollowFoodStrategy implements IControlStrategy, IUiProvider {
     }
 
     @Override
-    public List<IUiComponent> getUiComponents() {
-        List<IUiComponent> components = new LinkedList<>();
-        components.add(new Button("Placeholder Slider", null, () -> {}));
-        return components;
+    public List<IConfigParameter> getConfigurationParameters() {
+        return List.of(
+            new CheckBoxConfigParameter("AI_SHOW_PATH", "demo1", false),
+            new CheckBoxConfigParameter("AI_SHOW", "demo2", true),
+            new SliderConfigParameter("SPEED", "speed_snake", 1, 10, 2),
+                new SliderConfigParameter("SPEED", "food_snake", 5, 10, 8)
+        );
     }
 
     @Override

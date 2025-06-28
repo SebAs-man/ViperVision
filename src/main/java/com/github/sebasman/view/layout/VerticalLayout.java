@@ -24,8 +24,8 @@ public class VerticalLayout implements ILayout {
      * @param y coordinate, where the layout starts on the y-axis.
      */
     public VerticalLayout(int x, int y){
-        this.x = Math.max(x + (ViewConfig.COMPONENT_WIDTH/2), 0);
-        this.y = Math.max(y + (ViewConfig.COMPONENT_HEIGHT/2), 0);
+        this.x = Math.max(x, 0);
+        this.y = Math.max(y, 0);
         this.components = new LinkedList<>();
     }
 
@@ -38,8 +38,8 @@ public class VerticalLayout implements ILayout {
     public void draw(PApplet context){
         float currentY = this.y;
         for (IUiComponent component : components) {
-            component.draw(context, this.x, currentY);
-            currentY += (ViewConfig.COMPONENT_HEIGHT*1.5f);
+            float temp = component.draw(context, this.x, currentY);
+            currentY += (temp*1.5f);
         }
     }
 

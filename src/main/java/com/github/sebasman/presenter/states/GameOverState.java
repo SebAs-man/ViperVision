@@ -110,7 +110,7 @@ public final class GameOverState implements IState {
         PApplet renderer = game.getRenderer();
 
         ILayout menuLayout = new VerticalLayout(
-                (renderer.width/2) - (ViewConfig.COMPONENT_WIDTH/2),
+                (renderer.width/2) - (ViewConfig.BUTTON_WIDTH /2),
                 renderer.height/2);
 
         menuLayout.add(new Button("Retry", Assets.retryImage,

@@ -20,6 +20,7 @@ public final class Assets {
     public static PImage retryImage;
     public static PImage trophyImage;
     public static PImage backgroundPortalImage;
+    public static PImage checkImage;
 
     /**
      * Private constructor to prevent instantiation of this utility class.
@@ -50,6 +51,7 @@ public final class Assets {
             retryImage = p.loadImage("images/retry.png");
             trophyImage = p.loadImage("images/trophy.png");
             backgroundPortalImage = p.loadImage("images/background-portal.png");
+            checkImage = p.loadImage("images/check.png");
             System.out.println("Assets loaded successfully.");
         } catch (Exception e){
             System.err.println("Error loading resources: " + e.getMessage());

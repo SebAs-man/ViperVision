@@ -11,8 +11,9 @@ public interface IUiComponent {
      * @param context The PApplet context to draw.
      * @param x The X coordinate where the panel starts.
      * @param y The Y coordinate where this component should be drawn.
+     * @return the space that occupied this component.
      */
-    void draw (PApplet context, float x, float y);
+    float draw (PApplet context, float x, float y);
 
     /**
      * Handles mouse press events for the component.

@@ -1,13 +1,15 @@
 package com.github.sebasman.presenter.states;
 
+import com.github.sebasman.contracts.configuration.IConfigParameter;
 import com.github.sebasman.contracts.presenter.IHUDController;
 import com.github.sebasman.contracts.view.IGameContext;
-import com.github.sebasman.contracts.view.IUiProvider;
+import com.github.sebasman.contracts.presenter.IUiProvider;
 import com.github.sebasman.model.config.ModelConfig;
 import com.github.sebasman.presenter.listeners.HUDController;
 import com.github.sebasman.contracts.presenter.IControlStrategy;
 import com.github.sebasman.contracts.presenter.IState;
 import com.github.sebasman.contracts.view.IUiComponent;
+import com.github.sebasman.view.components.ComponentFactory;
 import com.github.sebasman.view.config.ViewConfig;
 import com.github.sebasman.view.render.GameUiStatic;
 import com.github.sebasman.view.render.GameWorldRenderer;
@@ -101,15 +103,19 @@ public final class PreparingState implements IState {
      * @param game the game instance to build the UI for
      */
     private void buildUi(IGameContext game) {
-        PApplet renderer = game.getRenderer();
-        List<IUiComponent> strategyComponents = List.of();
+        List<IConfigParameter> parameters = List.of();
         if(this.strategy instanceof IUiProvider){
-            strategyComponents = ((IUiProvider)this.strategy).getUiComponents();
+            parameters = ((IUiProvider)this.strategy).getConfigurationParameters();
         }
-        if(!strategyComponents.isEmpty()){
+        if(!parameters.isEmpty()){
+            ComponentFactory factory = new ComponentFactory();
+            PApplet renderer = game.getRenderer();
             ILayout sidePanel = new VerticalLayout(renderer.width - ViewConfig.SIDE_PANEL_WIDTH,
                     ViewConfig.GAME_AREA_PADDING*2);
-            strategyComponents.forEach(sidePanel::add);
+            for(IConfigParameter param : parameters){
+                IUiComponent component = param.accept(factory);
+                sidePanel.add(component);
+            }
             this.uiManager.addLayout(sidePanel);
         }
     }

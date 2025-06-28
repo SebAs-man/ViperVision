@@ -16,7 +16,7 @@ import processing.core.PImage;
  * Represents a button in the game's menu. It can display a label and an icon,
  * and it handles mouse hover effects.
  */
-public class Button implements IUiComponent {
+public final class Button implements IUiComponent {
     // Fields for the button's label, position, size, and icon
     private final String label;
     private final PImage icon;
@@ -40,37 +40,40 @@ public class Button implements IUiComponent {
     }
 
     @Override
-    public void draw(PApplet p, float x, float y){
+    public float draw(PApplet p, float x, float y){
         this.x = x;
         this.y = y;
 
         p.pushStyle();
-        p.rectMode(PConstants.CENTER);
+        p.rectMode(PConstants.CORNER);
         p.imageMode(PConstants.CENTER);
         switch (this.state){
-            case HOVER -> p.fill(ColorPalette.BUTTON_HOVER_FILL);
-            case ACTIVE -> p.fill(ColorPalette.BUTTON_ACTIVE_FILL);
-            case IDLE -> p.fill(ColorPalette.BUTTON_FILL);
+            case HOVER -> p.fill(ColorPalette.COMPONENT_HOVER_FILL);
+            case ACTIVE -> p.fill(ColorPalette.COMPONENT_ACTIVE_FILL);
+            case IDLE -> p.fill(ColorPalette.COMPONENT_FILL);
         }
         // Draw the button rectangle
-        p.stroke(ColorPalette.BUTTON_STROKE);
         p.strokeWeight(2);
-        p.rect(x, y, ViewConfig.COMPONENT_WIDTH, ViewConfig.COMPONENT_HEIGHT, ViewConfig.RADIUS);
+        p.stroke(ColorPalette.COMPONENT_STROKE);
+        p.rect(x, y, ViewConfig.BUTTON_WIDTH, ViewConfig.BUTTON_HEIGHT, ViewConfig.RADIUS);
         // Draw the icon if it is not null
-        float centerX = this.x;
+        float centerX = this.x + ViewConfig.BUTTON_WIDTH/2f;
+        float centerY = this.y + ViewConfig.BUTTON_HEIGHT/2f;
         if(icon != null){
-            p.image(icon, this.x - (ViewConfig.COMPONENT_WIDTH/3f), this.y,
-                    Math.min(32, ViewConfig.COMPONENT_WIDTH*0.15f), Math.min(32, ViewConfig.COMPONENT_HEIGHT*0.65f));
+            p.image(icon, centerX - (ViewConfig.BUTTON_WIDTH /3f), centerY,
+                    Math.min(32, ViewConfig.BUTTON_WIDTH * 0.15f), Math.min(32, ViewConfig.BUTTON_HEIGHT * 0.65f));
         } else {
-            centerX -= Math.min(32, ViewConfig.COMPONENT_WIDTH*0.15f);
+            centerX -= Math.min(32, ViewConfig.BUTTON_WIDTH *0.15f);
         }
         // Draw the label text
         p.textFont(Assets.textFont);
         p.fill(ColorPalette.TEXT_TERTIARY);
-        p.textSize(24);
-        p.text(label, centerX + 32, this.y);
+        p.textSize(ViewConfig.BUTTON_WIDTH/9f);
+        p.text(label, centerX + 32, centerY);
 
         p.popStyle();
+
+        return ViewConfig.BUTTON_HEIGHT;
     }
 
     @Override
@@ -102,7 +105,7 @@ public class Button implements IUiComponent {
      * @return true if the mouse is over the button, false otherwise
      */
     private boolean isMouseOver(int mouseX, int mouseY) {
-        return mouseX >= (this.x - (ViewConfig.COMPONENT_WIDTH / 2f)) && mouseX <= (this.x + (ViewConfig.COMPONENT_WIDTH / 2f)) &&
-                mouseY >= (this.y - (ViewConfig.COMPONENT_HEIGHT / 2f)) && mouseY <= (this.y + (ViewConfig.COMPONENT_HEIGHT / 2f));
+        return mouseX >= this.x && mouseX <= this.x + ViewConfig.BUTTON_WIDTH &&
+                mouseY >= this.y && mouseY <= this.y + ViewConfig.BUTTON_HEIGHT;
     }
 }

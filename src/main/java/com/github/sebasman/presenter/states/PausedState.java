@@ -116,7 +116,7 @@ public final class PausedState implements IState {
         UiManager uiManager = new UiManager();
         PApplet  renderer  = game.getRenderer();
 
-        ILayout menuLayout = new VerticalLayout((renderer.width/2) - (ViewConfig.COMPONENT_WIDTH/2),
+        ILayout menuLayout = new VerticalLayout((renderer.width/2) - (ViewConfig.BUTTON_WIDTH /2),
                 (int) (renderer.height/1.25));
 
         // The "Main Menu" button has a two-step logic:
