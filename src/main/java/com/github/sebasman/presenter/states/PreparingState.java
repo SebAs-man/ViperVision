@@ -9,6 +9,8 @@ import com.github.sebasman.presenter.listeners.HUDController;
 import com.github.sebasman.contracts.presenter.IControlStrategy;
 import com.github.sebasman.contracts.presenter.IState;
 import com.github.sebasman.contracts.view.IUiComponent;
+import com.github.sebasman.view.assets.Assets;
+import com.github.sebasman.view.components.Button;
 import com.github.sebasman.view.components.ComponentFactory;
 import com.github.sebasman.view.config.ViewConfig;
 import com.github.sebasman.view.render.GameUiStatic;
@@ -76,11 +78,12 @@ public final class PreparingState implements IState {
         GameWorldRenderer.getInstance().render(game, 0f);
         HUDRenderer.getInstance().render(renderer, this.hudController);
 
-        int gameWidth = (renderer.width - ViewConfig.SIDE_PANEL_WIDTH);
         renderer.pushStyle();
         renderer.rectMode(PConstants.CENTER);
+        renderer.imageMode(PConstants.CENTER);
         renderer.fill(0, 0, 0, 215); // Semi-transparent black background
-        renderer.rect(gameWidth/2f, renderer.height/3f, ModelConfig.BOX_SIZE*3.5f, ModelConfig.BOX_SIZE*3, 16); // Draw a rectangle to cover the background
+        renderer.rect( (renderer.width - ViewConfig.SIDE_PANEL_WIDTH)/2f, renderer.height/3f, ModelConfig.BOX_SIZE*3.5f, ModelConfig.BOX_SIZE*3, 16); // Draw a rectangle to cover the background
+        renderer.image(Assets.commandImage, (renderer.width - ViewConfig.SIDE_PANEL_WIDTH)/2f,  renderer.height/3f, ModelConfig.BOX_SIZE*3.5f, ModelConfig.BOX_SIZE*3);
         renderer.popStyle();
         // Draw the UI components
         this.uiManager.draw(renderer);
@@ -103,13 +106,13 @@ public final class PreparingState implements IState {
      * @param game the game instance to build the UI for
      */
     private void buildUi(IGameContext game) {
+        PApplet renderer = game.getRenderer();
         List<IConfigParameter> parameters = List.of();
         if(this.strategy instanceof IUiProvider){
             parameters = ((IUiProvider)this.strategy).getConfigurationParameters();
         }
         if(!parameters.isEmpty()){
             ComponentFactory factory = new ComponentFactory();
-            PApplet renderer = game.getRenderer();
             ILayout sidePanel = new VerticalLayout(renderer.width - ViewConfig.SIDE_PANEL_WIDTH,
                     ViewConfig.GAME_AREA_PADDING*2);
             for(IConfigParameter param : parameters){
@@ -118,5 +121,11 @@ public final class PreparingState implements IState {
             }
             this.uiManager.addLayout(sidePanel);
         }
+
+        ILayout centerLayout = new VerticalLayout(renderer.width - ViewConfig.SIDE_PANEL_WIDTH,
+                renderer.height-ViewConfig.GAME_AREA_PADDING*2-ViewConfig.BUTTON_HEIGHT);
+        centerLayout.add(new Button("¡Start!", null,
+                () -> game.changeState(new PlayingState(this.strategy))));
+        this.uiManager.addLayout(centerLayout);
     }
 }
