@@ -62,12 +62,7 @@ public final class MenuState implements IState {
     }
 
     @Override
-    public void gameTickUpdate(IGameContext game) {
-        // This state does not require game tick updates, so this method can be empty.
-    }
-
-    @Override
-    public void draw(IGameContext game, Float interpolation) {
+    public void draw(IGameContext game) {
         PApplet renderer = game.getRenderer();
         // Draw the static frame (background, side panel, top bar).
         GameUiStatic.getInstance().render(renderer);

@@ -29,17 +29,10 @@ public interface IState {
     void update(IGameContext game);
 
     /**
-     * Updates the game state at each tick.
-     * @param game The main instance of the game (the context).
-     */
-    void gameTickUpdate(IGameContext game);
-
-    /**
      * Draws the state elements on the screen.
      * @param game The main instance of the game (the context).
-     * @param interpolation The percentage of progress towards the next tick (0.0 to 1.0).
      */
-    void draw(IGameContext game, Float interpolation);
+    void draw(IGameContext game);
 
     /**
      * Handles keyboard input specific to this state.

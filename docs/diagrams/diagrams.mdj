@@ -2348,9 +2348,9 @@
 											},
 											"font": "Arial;13;0",
 											"parentStyle": true,
-											"left": 69.78271484375,
+											"left": 71.94091796875,
 											"top": 109,
-											"width": 71.474609375,
+											"width": 79.47900390625,
 											"height": 13,
 											"text": "StateDiagram"
 										},
@@ -2364,7 +2364,7 @@
 											"parentStyle": true,
 											"left": 45,
 											"top": 109,
-											"width": 18.78271484375,
+											"width": 20.94091796875,
 											"height": 13,
 											"text": "stm"
 										}

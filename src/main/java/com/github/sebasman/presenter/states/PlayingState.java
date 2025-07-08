@@ -4,6 +4,7 @@ import com.github.sebasman.contracts.events.EventManager;
 import com.github.sebasman.contracts.events.types.ScoreUpdatedEvent;
 import com.github.sebasman.contracts.model.IGameSession;
 import com.github.sebasman.contracts.view.IGameContext;
+import com.github.sebasman.presenter.engine.GameLoopTimer;
 import com.github.sebasman.presenter.listeners.HUDController;
 import com.github.sebasman.presenter.listeners.GameLogicCoordinator;
 import com.github.sebasman.contracts.events.types.FoodEatenEvent;
@@ -27,6 +28,7 @@ import java.util.function.Consumer;
 public final class PlayingState implements IState {
     // The control strategy for handling user input.
     private final IControlStrategy controlStrategy;
+    private GameLoopTimer timer;
     private UiManager uiManager;
     // Game messages coordinator
     private GameLogicCoordinator logicCoordinator;
@@ -53,6 +55,7 @@ public final class PlayingState implements IState {
         System.out.println("¡Starting Game!");
         this.hudController = new HUDController(game.getSession().getScore(), game.getProfile().getHighScore());
         this.logicCoordinator = new GameLogicCoordinator(game);
+        this.timer = new GameLoopTimer((int) controlStrategy.getDesiredSpeed());
         // Listeners are subscribed to the global EventManager.
         EventManager eventManager = EventManager.getInstance();
         eventManager.subscribe(FoodEatenEvent.class, onFoodEatenListener);
@@ -72,6 +75,15 @@ public final class PlayingState implements IState {
 
     @Override
     public void update(IGameContext game) {
+        this.timer.update();
+        // As long as there are pending ticks, we execute the game logic.
+        while(timer.shouldTick()){
+            IGameSession session = game.getSession();
+            this.controlStrategy.update(game, session.getSnake());
+            // Update the snake's position based on the current direction.
+            session.getSnake().update();
+            this.checkCollisions(game);
+        }
         // Delegates the update of the UI (cursor, hover effects) to the UiManager.
         if (uiManager != null) {
             this.uiManager.update(game.getRenderer());
@@ -79,18 +91,10 @@ public final class PlayingState implements IState {
     }
 
     @Override
-    public void gameTickUpdate(IGameContext game) {
-        IGameSession session = game.getSession();
-        this.controlStrategy.update(game, session.getSnake());
-        // Update the snake's position based on the current direction.
-        session.getSnake().update();
-        this.checkCollisions(game);
-    }
-
-    @Override
-    public void draw(IGameContext game, Float interpolation) {
+    public void draw(IGameContext game) {
         PApplet renderer = game.getRenderer();
         GameUiStatic.getInstance().render(renderer);
+        float interpolation = this.timer.getInterpolation();
         GameWorldRenderer.getInstance().render(game, interpolation);
         HUDRenderer.getInstance().render(renderer, this.hudController);
         // Draw the UI components of this state

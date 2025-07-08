@@ -112,14 +112,13 @@ public class Snake implements ISnakeAPI {
     }
 
     @Override
-    public List<Position> getBody() {
-        return body;
-    }
+    public Position getTail() { return this.body.getLast(); }
 
     @Override
-    public List<Position> getPreviousBody() {
-        return previousBody;
-    }
+    public List<Position> getBody() { return body; }
+
+    @Override
+    public List<Position> getPreviousBody() { return previousBody; }
 
     @Override
     public Set<Position> getBodySet() {
@@ -127,7 +126,5 @@ public class Snake implements ISnakeAPI {
     }
 
     @Override
-    public Direction getDirection() {
-        return currentDirection;
-    }
+    public Direction getDirection() { return currentDirection; }
 }

@@ -5,9 +5,9 @@ import com.github.sebasman.contracts.model.IFoodAPI;
 import com.github.sebasman.contracts.model.ISnakeAPI;
 
 /**
- *
- * @param food
- * @param snake
+ * Event published when the snake eats its food
+ * @param food The instance of the food consumed by the snake
+ * @param snake The instance of the snake
  */
 public record FoodEatenEvent(IFoodAPI food, ISnakeAPI snake) implements IGameEvent {
 }

@@ -42,6 +42,12 @@ public interface ISnakeAPI extends IUpdatable {
     Position getHead();
 
     /**
+     * Return the current position of the tail's snake
+     * @return The current position of the tail's snake
+     */
+    Position getTail();
+
+    /**
      * Return the current position occupied by the snake's body
      * @return a list of positions representing the current snake's body
      */

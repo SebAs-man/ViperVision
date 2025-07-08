@@ -4,6 +4,7 @@ import com.github.sebasman.contracts.model.ISnakeAPI;
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.contracts.vo.Direction;
 import com.github.sebasman.contracts.presenter.IControlStrategy;
+import com.github.sebasman.model.config.ModelConfig;
 import processing.core.PConstants;
 
 /**
@@ -40,5 +41,10 @@ public final class HumanControlStrategy implements IControlStrategy {
     public boolean isGameStartAction(int keyCode) {
         return keyCode == PConstants.UP || keyCode == PConstants.DOWN ||
                 keyCode == PConstants.LEFT || keyCode == PConstants.RIGHT;
+    }
+
+    @Override
+    public float getDesiredSpeed() {
+        return ModelConfig.STARTING_FRAME_RATE;
     }
 }

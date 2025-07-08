@@ -31,4 +31,10 @@ public interface IControlStrategy {
      * @return true if the key should start the game, false otherwise.
      */
     boolean isGameStartAction(int keyCode);
+
+    /**
+     * Gets the value of the game update rate.
+     * @return A value defining the update rate
+     */
+    float getDesiredSpeed();
 }

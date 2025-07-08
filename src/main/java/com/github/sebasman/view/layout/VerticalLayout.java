@@ -2,7 +2,6 @@ package com.github.sebasman.view.layout;
 
 import com.github.sebasman.contracts.view.ILayout;
 import com.github.sebasman.contracts.view.IUiComponent;
-import com.github.sebasman.view.config.ViewConfig;
 import processing.core.PApplet;
 
 import java.util.LinkedList;

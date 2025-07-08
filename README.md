@@ -28,19 +28,25 @@ ViperVision is a comprehensive implementation of the Snake game built from the g
 ---
 
 ## 🏗️ Architecture & Design
+ViperVision is engineered with a modern, decoupled architecture based on the Model-View-Presenter (MVP) pattern. This clean separation of concerns ensures the codebase is scalable, maintainable, and highly testable. The core of the architecture is a central contracts package that uses interfaces to prevent cyclical dependencies, adhering to the Dependency Inversion Principle.
 
-ViperVision is engineered with a modern, decoupled architecture focusing on the Single Responsibility Principle and Composition over Inheritance. This ensures the codebase is clean, scalable, and easy to maintain.  
-* **Core Principles**
-  * **Unidirectional Dependencies**: The architecture centers around a core package that defines the application's contracts (interfaces). All other packages (entities, states, strategies, ui) depend on core, but core does not depend on them. This prevents circular dependencies and creates a clean, plug-and-play structure.
-  * **Dependency Injection**: Dependencies are provided to objects rather than created by them. For instance, the PlayingState is injected with a ControlStrategy, allowing it to function without knowing the concrete type of the strategy.
-* **Design Patterns in Use**  
-The project heavily relies on established design patterns to solve common problems elegantly:  
-  * **State Pattern**: Manages the game's high-level flow (MenuState, PlayingState, PausedState, etc.). Each state encapsulates its own logic, and a Game class context seamlessly transitions between them using a state stack.
-  * **Strategy Pattern**: Decouples the snake's control logic from the main game loop. This allows switching between different control mechanisms (HumanControlStrategy, FollowFoodStrategy) without altering any core game code.
-  * **Command Pattern**: Decouples UI components (like Button) from the actions they perform. Buttons are given a Command object to execute on click, making them highly reusable and configurable.
-  * **Singleton Pattern**: Used for global, unique objects like GameRenderer or stateless objects like HumanControlStrategy to ensure a single instance exists throughout the application, saving resources.
-  * **Composite & Layout Manager**: The UI is built using a composite structure. UiComponent is the base interface for elements like buttons and labels. Layout classes (e.g., VerticalLayout) act as composite objects that manage and arrange collections of components. This creates a powerful, reusable, and declarative UI system.
-  * **Provider Pattern (a form of DI)**: The UiProvider interface allows objects like a ControlStrategy to provide a list of UI components to the current State without the state needing to know the strategy's concrete type. This is key to building dynamic UIs.
+### Architectural Layers
+
+* **contracts** (The Core API): This package contains only interfaces and data transfer objects (like events). It is the central pillar that all other layers depend on, but it depends on nothing. This guarantees a unidirectional dependency flow.
+* **model** (The Data and Business Logic): This layer contains the pure game state and rules. It is completely independent of the UI.
+* **view** (The Presentation Layer): This layer is responsible for everything the user sees and hears. It is "dumb" and only acts on the commands of the Presenter.
+* **presenter** (The Application Logic): This layer acts as the middleman. It responds to user input from the View, manipulates the Model, and tells the View what to display.
+
+### Design Patterns in Use
+
+* **Model-View-Presenter (MVP)**: The core architectural pattern separating data, presentation, and logic.
+* **State**: Manages the game's high-level flow (e.g., MenuState, PlayingState).
+* **Strategy**: Decouples the snake's control algorithm (HumanControlStrategy, FollowFoodStrategy) from the game logic.
+* **Observer (Event Bus)**: A global EventManager allows decoupled communication between different parts of the system (e.g., game logic notifying the sound system).
+* **Factory**: ComponentFactory centralizes the creation of UI components from configuration data. ApplicationFactory encapsulates the initial setup of the game.
+* **Singleton**: Used for stateless, global services like renderers and the EventManager.
+* **Composite**: The UI is built as a composite structure of Layouts and IUiComponents, managed by a UiManager.
+* **Command**: UI button actions are encapsulated as Command objects, decoupling the button from the action it performs.
 
 ### Key Diagrams
 

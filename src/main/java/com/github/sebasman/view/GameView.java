@@ -1,12 +1,13 @@
 package com.github.sebasman.view;
 
+import com.github.sebasman.contracts.events.EventManager;
+import com.github.sebasman.contracts.events.types.GameSessionEndedEvent;
 import com.github.sebasman.contracts.model.IGameSession;
 import com.github.sebasman.contracts.model.IUserProfile;
 import com.github.sebasman.contracts.presenter.IState;
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.model.GameSession;
 import com.github.sebasman.model.UserProfile;
-import com.github.sebasman.model.config.ModelConfig;
 import com.github.sebasman.view.assets.Assets;
 import com.github.sebasman.view.audio.SoundManager;
 import com.github.sebasman.view.config.ColorPalette;
@@ -30,10 +31,6 @@ public class GameView extends PApplet implements IGameContext {
     private IGameSession session;
     // The stack of game states, allowing for state management
     private final Stack<IState> states;
-    // Fields for game loop timing
-    private long lastTime;
-    private double nsPerTick;
-    private double delta;
 
     /**
      * Constructor for the Game class.
@@ -55,11 +52,6 @@ public class GameView extends PApplet implements IGameContext {
     public void setup() {
         // Set the frame rate
         super.frameRate(60);
-        // Initialize the timing variables for the game loop
-        int ticksPerSecond = ModelConfig.STARTING_FRAME_RATE;
-        this.nsPerTick = 1_000_000_000.0 / ticksPerSecond; // Convert ticks per second to nanoseconds per tick
-        this.lastTime = System.nanoTime();
-        this.delta = 0;
         // Set the alignment for the game
         super.textAlign(CENTER, CENTER);
         // Load assets such as images and fonts
@@ -80,9 +72,9 @@ public class GameView extends PApplet implements IGameContext {
             );
         }
         // In each frame, we first update all the logic.
-        this.update(currentState);
+        currentState.update(this);
         // Then, we draw the result.
-        this.render(currentState);
+        currentState.draw(this);
     }
 
     @Override
@@ -105,34 +97,6 @@ public class GameView extends PApplet implements IGameContext {
             );
         }
         currentState.mousePressed(this.mouseX, this.mouseY);
-    }
-
-
-    /**
-     * Updates the game state and handles the game loop timing.
-     * @param currentState the current state in the game
-     */
-    private void update(IState currentState) {
-        // Update the logic of the current state
-        currentState.update(this);
-        // Update the game loop timing
-        long now = System.nanoTime();
-        delta += (now - lastTime) / nsPerTick;
-        lastTime = now;
-        while (delta >= 1) {
-            currentState.gameTickUpdate(this);
-            delta--;
-        }
-    }
-
-    /**
-     * Renders the current game state to the screen.
-     * @param currentState the current state in the game
-     */
-    private void render(IState currentState) {
-        // Rendering occurs as fast as possible, with interpolation
-        // The 'delta' here is the percentage of progress towards the next tick (0.0 to 1.0).
-        currentState.draw(this, (float) delta);
     }
 
     @Override
@@ -172,6 +136,8 @@ public class GameView extends PApplet implements IGameContext {
     @Override
     public void endCurrentSession() {
         this.session = null;
+        // All systems are notified that the game has ended.
+        EventManager.getInstance().notify(new GameSessionEndedEvent());
     }
 
     // --- Getters ---

@@ -3,9 +3,7 @@ package com.github.sebasman.contracts.events.types;
 import com.github.sebasman.contracts.events.IGameEvent;
 import com.github.sebasman.contracts.vo.Position;
 
-/**
- *
- * @param position
- */
-public record FoodSpawnedEvent(Position position) implements IGameEvent {
+import java.util.List;
+
+public record AiPathUpdatedEvent(List<Position> path) implements IGameEvent {
 }

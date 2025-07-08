@@ -1,20 +1,16 @@
 package com.github.sebasman.presenter.states;
 
-import com.github.sebasman.contracts.presenter.IHUDController;
 import com.github.sebasman.contracts.view.IGameContext;
-import com.github.sebasman.presenter.listeners.HUDController;
 import com.github.sebasman.contracts.presenter.IState;
 import com.github.sebasman.view.config.ViewConfig;
-import com.github.sebasman.view.render.GameUiStatic;
-import com.github.sebasman.view.render.GameWorldRenderer;
 import com.github.sebasman.view.UiManager;
 import com.github.sebasman.contracts.view.ILayout;
 import com.github.sebasman.view.layout.VerticalLayout;
 import com.github.sebasman.view.assets.Assets;
 import com.github.sebasman.view.components.Button;
 import com.github.sebasman.view.config.ColorPalette;
-import com.github.sebasman.view.render.HUDRenderer;
 import processing.core.PApplet;
+import processing.core.PImage;
 
 /**
  * The paused state of the game, where the player can see a pause message
@@ -25,8 +21,7 @@ public final class PausedState implements IState {
     private static final IState INSTANCE = new PausedState();
     // List of UI components to be displayed in the paused state
     private UiManager uiManager;
-    // Game messages coordinator
-    private IHUDController hudController;
+    private PImage backgroundSnapshot;
 
     /**
      * Private constructor to prevent instantiation.
@@ -43,7 +38,7 @@ public final class PausedState implements IState {
 
     @Override
     public void onEnter(IGameContext game) {
-        this.hudController = new HUDController(game.getSession().getScore(), game.getProfile().getHighScore());
+        this.backgroundSnapshot = game.getRenderer().get();
         // Lazy Initialization: The UI is built only the first time you enter pause.
         if(this.uiManager == null) {
             this.uiManager = this.buildUi(game);
@@ -64,19 +59,15 @@ public final class PausedState implements IState {
     }
 
     @Override
-    public void gameTickUpdate(IGameContext game) {
-        // Paused, the game logic is frozen. Nothing is done.
-    }
-
-    @Override
-    public void draw(IGameContext game, Float interpolation) {
+    public void draw(IGameContext game) {
         PApplet renderer  = game.getRenderer();
-        // Draws the state of the game below, but static
-        GameUiStatic.getInstance().render(renderer);
-        GameWorldRenderer.getInstance().render(game, 0f);
-        HUDRenderer.getInstance().render(renderer, this.hudController);
-        // Draw the pause overlay
-        renderer.fill(255, 255, 255, 160);
+        // Draw the “picture” of the paused game as a background.
+        if(this.backgroundSnapshot != null) {
+            renderer.image(this.backgroundSnapshot, 0, 0);
+        }
+        // Draw the pause overlay (the color filter and the text).
+        renderer.pushStyle();
+        renderer.fill(255, 255, 255, 125);
         renderer.rect(0, 0, renderer.width, renderer.height);
         renderer.textFont(Assets.titleFont);
         renderer.fill(ColorPalette.TEXT_SECONDARY);
@@ -85,6 +76,7 @@ public final class PausedState implements IState {
         renderer.textFont(Assets.textFont);
         renderer.textSize(renderer.width/24f);
         renderer.text("Press 'p' or SPACE to continue", renderer.width / 2f, renderer.height/7.5f);
+        renderer.popStyle();
         // Draw UI components (buttons)
         if(this.uiManager != null) {
             this.uiManager.draw(renderer);

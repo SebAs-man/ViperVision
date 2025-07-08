@@ -54,11 +54,16 @@ public final class PreparingState implements IState {
         // Build the UI for this state.
         this.buildUi(game);
         this.hudController = new HUDController(game.getSession().getScore(), game.getProfile().getHighScore());
+        if(this.strategy instanceof IUiProvider){
+            ((IUiProvider) this.strategy).subscribeToEvents();
+        }
     }
 
     @Override
     public void onExit(IGameContext game) {
-
+        if(this.strategy instanceof IUiProvider){
+            ((IUiProvider) this.strategy).unsubscribeFromEvents();
+        }
     }
 
     @Override
@@ -67,12 +72,7 @@ public final class PreparingState implements IState {
     }
 
     @Override
-    public void gameTickUpdate(IGameContext game) {
-        // No game tick updates needed in preparing state
-    }
-
-    @Override
-    public void draw(IGameContext game, Float interpolation) {
+    public void draw(IGameContext game) {
         PApplet renderer = game.getRenderer();
         GameUiStatic.getInstance().render(renderer);
         GameWorldRenderer.getInstance().render(game, 0f);

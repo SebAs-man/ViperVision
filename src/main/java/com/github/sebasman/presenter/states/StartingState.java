@@ -42,12 +42,7 @@ public final class StartingState implements IState {
     }
 
     @Override
-    public void gameTickUpdate(IGameContext game) {
-        // This state does not require any game tick updates, so this method can be empty.
-    }
-
-    @Override
-    public void draw(IGameContext game, Float interpolation) {
+    public void draw(IGameContext game) {
         PApplet renderer = game.getRenderer();
         // Draw the background
         renderer.fill(0, 0, 0, 125); // Semi-transparent black background

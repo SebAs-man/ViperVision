@@ -3,9 +3,9 @@ package com.github.sebasman.contracts.events.types;
 import com.github.sebasman.contracts.events.IGameEvent;
 
 /**
- *
- * @param score
- * @param highScore
+ * Event published when the current or maximum score of the game is changed.
+ * @param score The current game score
+ * @param highScore The highest score achieved in the game
  */
 public record ScoreUpdatedEvent(int score, int highScore) implements IGameEvent {
     /**
@@ -15,6 +15,5 @@ public record ScoreUpdatedEvent(int score, int highScore) implements IGameEvent 
      */
     public ScoreUpdatedEvent {
         if (score < 0 || highScore < 0) throw new IllegalArgumentException("Score/High-score cannot be negative");
-
     }
 }
