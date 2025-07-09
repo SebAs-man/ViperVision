@@ -9,10 +9,12 @@ import java.util.Set;
  */
 public interface IFoodAPI {
     /**
-     * Spawns food at a random position on the grid, ensuring it does not overlap with the snake's body.
-     * @param snakeBody A list of positions representing the snake's body.
+     * Places the food in a new random position, avoiding all the provided
+     * occupiedSpots provided.
+     * @param occupiedSpots A set of all positions that the food must avoid.
+     * (including the snake's body and board obstacles).
      */
-    void spawn(Set<Position> snakeBody);
+    void spawn(Set<Position> occupiedSpots);
 
     /**
      * Retrieves the score value associated with the food.

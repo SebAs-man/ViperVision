@@ -15,6 +15,7 @@ public final class ModelConfig {
 
     // --- Game Logic Settings ---
     public static final int STARTING_FRAME_RATE = 10;
+    public static final int MAX_NOTIFICATIONS_SHOW = 2;
 
     /**
      * Private builder to prevent instantiation.

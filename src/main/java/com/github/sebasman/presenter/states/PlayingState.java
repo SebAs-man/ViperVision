@@ -1,6 +1,7 @@
 package com.github.sebasman.presenter.states;
 
 import com.github.sebasman.contracts.events.EventManager;
+import com.github.sebasman.contracts.model.IBoardAPI;
 import com.github.sebasman.contracts.model.IGameSession;
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.presenter.engine.GameLoopTimer;
@@ -109,8 +110,9 @@ public final class PlayingState implements IState {
         if(session == null) return;
         ISnakeAPI snake = session.getSnake();
         IFoodAPI food = session.getFood();
+        IBoardAPI board = session.getBoard();
 
-        if (snake.checkCollisionWithWall() || snake.checkCollisionWithSelf()) {
+        if (snake.checkCollisionWithWall() || snake.checkCollisionWithSelf() || board.isObstacle(snake.getHead())) {
             EventManager.getInstance().notify(new SnakeDiedEvent());
             return;
         }

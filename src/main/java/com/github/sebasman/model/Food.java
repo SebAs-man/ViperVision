@@ -1,6 +1,9 @@
 package com.github.sebasman.model;
 
+import com.github.sebasman.contracts.events.EventManager;
+import com.github.sebasman.contracts.events.types.NotificationRequestedEvent;
 import com.github.sebasman.contracts.model.IFoodAPI;
+import com.github.sebasman.contracts.vo.NotificationType;
 import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.model.config.ModelConfig;
 
@@ -27,14 +30,15 @@ public class Food implements IFoodAPI {
     }
 
     @Override
-    public void spawn(Set<Position> snakeBody) {
+    public void spawn(Set<Position> occupiedSpots) {
         int gridWidth = ModelConfig.GRID_WIDTH;
         int gridHeight = ModelConfig.GRID_HEIGHT;
         int totalSpots = gridWidth * gridHeight;
-        int availableSpots = totalSpots - snakeBody.size();
+        int availableSpots = totalSpots - occupiedSpots.size();
 
         if(availableSpots <= 0){
-            System.out.println("¡Victory! You have eaten all the food!");
+            EventManager.getInstance().notify(new NotificationRequestedEvent("Victory! There is no more room for food!",
+                    NotificationType.ACHIEVEMENT, 6000));
             this.position = null;
             return;
         }
@@ -45,7 +49,7 @@ public class Food implements IFoodAPI {
         for (int y = 0; y < gridHeight; y++) {
             for (int x = 0; x < gridWidth; x++) {
                 Position currentPos = new Position(x, y);
-                if (!snakeBody.contains(currentPos)) {
+                if (!occupiedSpots.contains(currentPos)) {
                     if (emptySpotCount == targetEmptySpot) {
                         this.position = currentPos;
                         return;

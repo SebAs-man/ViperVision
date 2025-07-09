@@ -73,15 +73,16 @@ public final class SearchAlgorithmStrategy implements IControlStrategy, IUiProvi
         Position head = snake.getHead();
         Position tail = snake.getTail();
         Position foodPos = game.getSession().getFood().getPosition();
-        Set<Position> bodyObstacles = snake.getBodySet();
+        Set<Position> allObstacles = new HashSet<>(snake.getBodySet());
+        allObstacles.addAll(game.getSession().getBoard().getObstacles());
         Direction currentDirection = snake.getDirection();
 
         // --- Calculation of Potential Pathways ---
 
         // Plan A: Find your way to the food.
-        List<Position> pathToFood = this.findPath(head, foodPos, bodyObstacles, currentDirection);
+        List<Position> pathToFood = this.findPath(head, foodPos, allObstacles, currentDirection);
         // Plan B: Find your way to the tail to survive.
-        Set<Position> obstaclesForTailPath = new HashSet<>(bodyObstacles);
+        Set<Position> obstaclesForTailPath = new HashSet<>(allObstacles);
         obstaclesForTailPath.remove(tail);
         List<Position> pathToTail = this.findPath(head, tail, obstaclesForTailPath, currentDirection);
 
@@ -106,7 +107,7 @@ public final class SearchAlgorithmStrategy implements IControlStrategy, IUiProvi
         // means we are trapped or in a very difficult situation. We make a panic move
         // to the safest adjacent square to avoid standing still.
         if(chosenDirection == null){
-            chosenDirection = this.findSafestPanicMove(head, bodyObstacles, currentDirection);
+            chosenDirection = this.findSafestPanicMove(head, allObstacles, currentDirection);
         }
         // Execution of the movement
         snake.bufferDirection(chosenDirection);

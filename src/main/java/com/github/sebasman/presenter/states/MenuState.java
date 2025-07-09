@@ -69,7 +69,7 @@ public final class MenuState implements IState {
         // Draw the static frame (background, side panel, top bar).
         GameUiStatic.getInstance().render(renderer);
         // Draw an empty “game world” as a background.
-        GameWorldRenderer.getInstance().render(game, 0f);
+        GameWorldRenderer.getInstance().render(game, null);
         // Draws the menu overlay (title, etc.).
         int gameWidth = renderer.width - ViewConfig.SIDE_PANEL_WIDTH - ViewConfig.GAME_AREA_PADDING * 2;
         renderer.fill(0, 0, 0, 215);

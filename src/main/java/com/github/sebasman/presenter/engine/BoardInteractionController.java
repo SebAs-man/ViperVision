@@ -51,7 +51,7 @@ public final class BoardInteractionController {
         // Check if the position is within the board limits
         if(gridX < 0 || gridX >= ModelConfig.GRID_WIDTH || gridY < 0 || gridY >= ModelConfig.GRID_HEIGHT) {
             EventManager.getInstance().notify(new NotificationRequestedEvent(
-                    "It is not possible to add obstacles at that location.", NotificationType.WARNING, 6000));
+                    "It is not possible to add obstacles at that location.", NotificationType.ERROR, 4500));
             return;
         }
         // Check that no obstacle can be placed over the snake or food
@@ -59,7 +59,7 @@ public final class BoardInteractionController {
         IFoodAPI food = session.getFood();
         if(snake.getBodySet().contains(clickPos) || food.getPosition().equals(clickPos)) {
             EventManager.getInstance().notify(new NotificationRequestedEvent(
-                    "It is not possible to add obstacles on entities.", NotificationType.ERROR, 6000));
+                    "It is not possible to add obstacles on entities.", NotificationType.WARNING, 4500));
             return;
         }
         // Add or remove the obstacle

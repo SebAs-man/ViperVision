@@ -19,7 +19,6 @@ import com.github.sebasman.view.UiManager;
 import com.github.sebasman.contracts.view.ILayout;
 import com.github.sebasman.view.layout.VerticalLayout;
 import com.github.sebasman.view.render.HUDRenderer;
-import com.github.sebasman.view.render.NotificationRenderer;
 import processing.core.PApplet;
 import processing.core.PConstants;
 
@@ -77,7 +76,7 @@ public final class PreparingState implements IState {
     public void draw(IGameContext game) {
         PApplet renderer = game.getRenderer();
         GameUiStatic.getInstance().render(renderer);
-        GameWorldRenderer.getInstance().render(game, 0f);
+        GameWorldRenderer.getInstance().render(game, null);
         HUDRenderer.getInstance().render(renderer);
 
         renderer.pushStyle();
@@ -110,7 +109,6 @@ public final class PreparingState implements IState {
         if(render.mouseButton == PConstants.RIGHT){
             BoardInteractionController.getInstance().handleRightClick(game, mouseX, mouseY);
         }
-        NotificationRenderer.getInstance().handleMousePress(mouseX, mouseY);
     }
 
     /**

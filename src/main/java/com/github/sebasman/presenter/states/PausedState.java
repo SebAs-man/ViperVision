@@ -3,6 +3,7 @@ package com.github.sebasman.presenter.states;
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.contracts.presenter.IState;
 import com.github.sebasman.presenter.engine.BoardInteractionController;
+import com.github.sebasman.presenter.listeners.HUDController;
 import com.github.sebasman.view.config.ViewConfig;
 import com.github.sebasman.view.UiManager;
 import com.github.sebasman.contracts.view.ILayout;
@@ -10,6 +11,9 @@ import com.github.sebasman.view.layout.VerticalLayout;
 import com.github.sebasman.view.assets.Assets;
 import com.github.sebasman.view.components.Button;
 import com.github.sebasman.view.config.ColorPalette;
+import com.github.sebasman.view.render.GameUiStatic;
+import com.github.sebasman.view.render.GameWorldRenderer;
+import com.github.sebasman.view.render.HUDRenderer;
 import com.github.sebasman.view.render.ObstacleRenderer;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -24,7 +28,6 @@ public final class PausedState implements IState {
     private static final IState INSTANCE = new PausedState();
     // List of UI components to be displayed in the paused state
     private UiManager uiManager;
-    private PImage backgroundSnapshot;
 
     /**
      * Private constructor to prevent instantiation.
@@ -41,7 +44,10 @@ public final class PausedState implements IState {
 
     @Override
     public void onEnter(IGameContext game) {
-        this.backgroundSnapshot = game.getRenderer().get();
+        HUDController.getInstance().initialize(
+                game.getSession().getScore(),
+                game.getProfile().getHighScore()
+        );
         // Lazy Initialization: The UI is built only the first time you enter pause.
         if(this.uiManager == null) {
             this.uiManager = this.buildUi(game);
@@ -64,10 +70,10 @@ public final class PausedState implements IState {
     @Override
     public void draw(IGameContext game) {
         PApplet renderer  = game.getRenderer();
-        // Draw the “picture” of the paused game as a background.
-        if(this.backgroundSnapshot != null) {
-            renderer.image(this.backgroundSnapshot, 0, 0);
-        }
+        GameUiStatic.getInstance().render(renderer);
+        GameWorldRenderer.getInstance().render(game, null);
+        HUDRenderer.getInstance().render(renderer);
+
         if(game.getSession() != null) {
             ObstacleRenderer.getInstance().draw(renderer, game.getSession().getBoard());
         }

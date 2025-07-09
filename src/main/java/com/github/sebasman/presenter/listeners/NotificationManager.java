@@ -4,12 +4,13 @@ import com.github.sebasman.contracts.events.EventManager;
 import com.github.sebasman.contracts.events.types.FrameUpdatedEvent;
 import com.github.sebasman.contracts.events.types.NotificationRequestedEvent;
 import com.github.sebasman.contracts.vo.NotificationType;
+import com.github.sebasman.model.config.ModelConfig;
 import processing.core.PApplet;
 
-import java.awt.geom.Rectangle2D;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Manages the logic of modal notifications. Listens for events and maintains
@@ -18,15 +19,15 @@ import java.util.Queue;
 public final class NotificationManager {
     private static final NotificationManager INSTANCE = new NotificationManager();
     private final Queue<Notification> notificationQueue;
-    private Notification currentNotification;
+    private final Queue<Notification> currentNotifications;
     private long lastUpdateTime;
 
     /**
      * Private constructor to prevent instantiation.
      */
     private NotificationManager() {
-        this.notificationQueue = new LinkedList<>();
-        this.currentNotification = null;
+        this.notificationQueue = new ArrayDeque<>();
+        this.currentNotifications = new ArrayBlockingQueue<>(ModelConfig.MAX_NOTIFICATIONS_SHOW);
         this.lastUpdateTime = System.currentTimeMillis();
         EventManager.getInstance().subscribe(NotificationRequestedEvent.class, this::addNotification);
         EventManager.getInstance().subscribe(FrameUpdatedEvent.class, _ -> this.update());
@@ -53,31 +54,23 @@ public final class NotificationManager {
      * This method must be called on each frame.
      */
     private void update(){
+        // Updates the queue of notifications shown to the user
+        while(true) {
+            Notification temp = this.notificationQueue.peek();
+            if(temp == null) break;
+            boolean added = this.currentNotifications.offer(temp);
+            if(!added) break;
+            this.notificationQueue.poll();
+        }
+        // Updates elapsed time of notifications
         long now = System.currentTimeMillis();
-        long elapsedTime = now - lastUpdateTime;
-        this.lastUpdateTime = now;
-        // If there is no current notification but there is in the queue, it displays the next one.
-        if(this.currentNotification == null && !this.notificationQueue.isEmpty()) {
-            this.currentNotification = this.notificationQueue.poll();
-        }
-        // If there is an active notification, it updates its timer.
-        if(this.currentNotification != null){
-            this.currentNotification.updateTimer(elapsedTime);
-            if(this.currentNotification.isExpired()){
-                this.currentNotification = null;
+        long elapsedTime = now - this.lastUpdateTime;
+        this.lastUpdateTime =  now;
+        for(Notification notification : this.currentNotifications) {
+            notification.updateTimer(elapsedTime);
+            if(notification.isExpired()){
+                this.currentNotifications.remove(notification);
             }
-        }
-    }
-
-    /**
-     * Handles mouse clicks. If the close button is clicked
-     * of the current notification, it discards it.
-     * @param mouseX x mouse coordinates
-     * @param mouseY y mouse coordinates
-     */
-    public void handleMousePress(int mouseX, int mouseY) {
-        if(this.currentNotification != null && this.currentNotification.isCloseButtonHovered(mouseX, mouseY)){
-            currentNotification = null;
         }
     }
 
@@ -85,8 +78,8 @@ public final class NotificationManager {
      * Returns the currently displayed notification.
      * @return A notification
      */
-    public Notification getActiveNotification() {
-        return this.currentNotification;
+    public Queue<Notification> getActiveNotification() {
+        return this.currentNotifications;
     }
 
     /**
@@ -96,7 +89,6 @@ public final class NotificationManager {
         private final String message;
         private final NotificationType type;
         private long timeLeft;
-        public Rectangle2D.Float closeButtonPounds; // Closing button click area
         // Constant
         private static final int FADE_DURATION_MS = 600;
 
@@ -133,10 +125,6 @@ public final class NotificationManager {
 
         public void updateTimer(long elapsedTimer){
             this.timeLeft -= elapsedTimer;
-        }
-
-        public boolean isCloseButtonHovered(int mouseX, int mouseY) {
-            return this.closeButtonPounds != null && this.closeButtonPounds.contains(mouseX, mouseY);
         }
 
         // --- Getters ---

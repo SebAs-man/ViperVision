@@ -7,7 +7,11 @@ import com.github.sebasman.contracts.model.IGameSession;
 import com.github.sebasman.contracts.model.IUserProfile;
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.contracts.events.types.FoodEatenEvent;
+import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.presenter.states.GameOverState;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Contains the business logic of the game that events trigger.
@@ -47,7 +51,10 @@ public final class GameLogicCoordinator {
         EventManager.getInstance().notify(new ScoreUpdatedEvent(session.getScore(), profile.getHighScore()));
         // Execute the rest of the game logic.
         session.getSnake().grow();
-        session.getFood().spawn(session.getSnake().getBodySet());
+        Set<Position> obstacles = game.getSession().getBoard().getObstacles();
+        Set<Position> allOccupiedSpots = new HashSet<>(session.getSnake().getBodySet());
+        allOccupiedSpots.addAll(obstacles);
+        session.getFood().spawn(allOccupiedSpots);
     }
 
     /**
