@@ -1,4 +1,4 @@
-package com.github.sebasman.presenter.listeners;
+package com.github.sebasman.presenter.engine;
 
 
 import com.github.sebasman.contracts.events.EventManager;
@@ -14,7 +14,7 @@ import com.github.sebasman.presenter.states.GameOverState;
  * Updates model state (GameSession, UserProfile) and publishes new
  * events as a result (e.g., ScoreUpdatedEvent).
  */
-public class GameLogicCoordinator {
+public final class GameLogicCoordinator {
     private final IGameContext game;
 
     /**

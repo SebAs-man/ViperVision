@@ -23,7 +23,14 @@ public interface IUiComponent {
     void handleMousePress(int mouseX, int mouseY);
 
 
-    void update(int mouseX, int mouseY, boolean isMousePressed);
+    /**
+     * Updates the component status
+     * @param mouseX Mouse X-position
+     * @param mouseY Mouse Y-position
+     * @param isMousePressed True if the mouse is pressed
+     * @param mouseButton The type of button pressed
+     */
+    void update(int mouseX, int mouseY, boolean isMousePressed, int mouseButton);
 
     /**
      * Returns if the component is currently in a hovered state.

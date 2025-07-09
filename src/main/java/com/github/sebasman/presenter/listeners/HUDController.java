@@ -1,5 +1,6 @@
 package com.github.sebasman.presenter.listeners;
 
+import com.github.sebasman.contracts.events.EventManager;
 import com.github.sebasman.contracts.events.types.ScoreUpdatedEvent;
 import com.github.sebasman.contracts.presenter.IHUDController;
 
@@ -11,24 +12,41 @@ import com.github.sebasman.contracts.presenter.IHUDController;
  * in response to game events. You do not subscribe to yourself.
  */
 public final class HUDController implements IHUDController {
+    private static final IHUDController INSTANCE = new HUDController();
+
     private String scoreText;
     private String highScoreText;
 
     /**
-     * Builds the HUD controller.
-     * @param initialHighScore The initial high score to display at startup.
+     * Private constructor to prevent instantiation.
      */
-    public HUDController(int initialScore, int initialHighScore) {
-        this.scoreText = String.valueOf(initialScore);
-        this.highScoreText = String.valueOf(initialHighScore);
+    private HUDController() {
+        this.scoreText = "0";
+        this.highScoreText = "0";
+        EventManager.getInstance().subscribe(ScoreUpdatedEvent.class, this::onScoreUpdate);
     }
+
+    /**
+     * Returns the single instance of the HUD driver.
+     * @return Singleton instance.
+     */
+    public static IHUDController getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public void initialize(int score, int highScore) {
+        this.scoreText = String.valueOf(score);
+        this.highScoreText = String.valueOf(highScore);
+    }
+
 
     /**
      * Public method that handles the logic when a score update event occurs.
      * This method will be called by the listener that the ‘PlayingState’ subscribes to.
      * @param event The event containing the new score data.
      */
-    public void onScoreUpdate(ScoreUpdatedEvent event) {
+    private void onScoreUpdate(ScoreUpdatedEvent event) {
         this.scoreText = String.valueOf(event.score());
         this.highScoreText = String.valueOf(event.highScore());
     }

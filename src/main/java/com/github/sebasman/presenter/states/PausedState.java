@@ -2,6 +2,7 @@ package com.github.sebasman.presenter.states;
 
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.contracts.presenter.IState;
+import com.github.sebasman.presenter.engine.BoardInteractionController;
 import com.github.sebasman.view.config.ViewConfig;
 import com.github.sebasman.view.UiManager;
 import com.github.sebasman.contracts.view.ILayout;
@@ -9,7 +10,9 @@ import com.github.sebasman.view.layout.VerticalLayout;
 import com.github.sebasman.view.assets.Assets;
 import com.github.sebasman.view.components.Button;
 import com.github.sebasman.view.config.ColorPalette;
+import com.github.sebasman.view.render.ObstacleRenderer;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PImage;
 
 /**
@@ -65,17 +68,23 @@ public final class PausedState implements IState {
         if(this.backgroundSnapshot != null) {
             renderer.image(this.backgroundSnapshot, 0, 0);
         }
+        if(game.getSession() != null) {
+            ObstacleRenderer.getInstance().draw(renderer, game.getSession().getBoard());
+        }
         // Draw the pause overlay (the color filter and the text).
+        float x_ = renderer.width - (ViewConfig.SIDE_PANEL_WIDTH/2f) - ViewConfig.GAME_AREA_PADDING;
         renderer.pushStyle();
-        renderer.fill(255, 255, 255, 125);
-        renderer.rect(0, 0, renderer.width, renderer.height);
+        renderer.noStroke();
+        renderer.fill(255, 255, 255);
+        renderer.rect(renderer.width - ViewConfig.GAME_AREA_PADDING - ViewConfig.SIDE_PANEL_WIDTH, ViewConfig.GAME_AREA_PADDING,
+                ViewConfig.SIDE_PANEL_WIDTH,renderer.height - (ViewConfig.GAME_AREA_PADDING*2), ViewConfig.RADIUS);
         renderer.textFont(Assets.titleFont);
         renderer.fill(ColorPalette.TEXT_SECONDARY);
-        renderer.textSize(renderer.width/12f);
-        renderer.text("PAUSE", renderer.width / 2f, renderer.height/2f);
+        renderer.textSize(ViewConfig.SLIDER_WIDTH/3f);
+        renderer.text("PAUSE", x_, renderer.height/2f);
         renderer.textFont(Assets.textFont);
-        renderer.textSize(renderer.width/24f);
-        renderer.text("Press 'p' or SPACE to continue", renderer.width / 2f, renderer.height/7.5f);
+        renderer.textSize(ViewConfig.SLIDER_WIDTH/11f);
+        renderer.text("Press 'p' or SPACE to continue", x_, renderer.height/7.5f);
         renderer.popStyle();
         // Draw UI components (buttons)
         if(this.uiManager != null) {
@@ -92,10 +101,16 @@ public final class PausedState implements IState {
     }
 
     @Override
-    public void mousePressed(int mouseX, int mouseY) {
+    public void mousePressed(IGameContext game, int mouseX, int mouseY) {
+        PApplet render = game.getRenderer();
         // Delegates clicks to the UI manager.
-        if(this.uiManager != null) {
+        if(render.mouseButton == PConstants.LEFT && this.uiManager != null) {
             this.uiManager.handleMousePress(mouseX, mouseY);
+            return;
+        }
+        // Right-click operation (to add/remove obstacles)
+        if(render.mouseButton == PConstants.RIGHT){
+            BoardInteractionController.getInstance().handleRightClick(game, mouseX, mouseY);
         }
     }
 
@@ -108,7 +123,7 @@ public final class PausedState implements IState {
         UiManager uiManager = new UiManager();
         PApplet  renderer  = game.getRenderer();
 
-        ILayout menuLayout = new VerticalLayout((renderer.width/2) - (ViewConfig.BUTTON_WIDTH /2),
+        ILayout menuLayout = new VerticalLayout(renderer.width - ViewConfig.SIDE_PANEL_WIDTH,
                 (int) (renderer.height/1.25));
 
         // The "Main Menu" button has a two-step logic:

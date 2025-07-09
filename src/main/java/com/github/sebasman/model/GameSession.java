@@ -1,5 +1,6 @@
 package com.github.sebasman.model;
 
+import com.github.sebasman.contracts.model.IBoardAPI;
 import com.github.sebasman.contracts.model.IFoodAPI;
 import com.github.sebasman.contracts.model.IGameSession;
 import com.github.sebasman.contracts.model.ISnakeAPI;
@@ -13,6 +14,7 @@ import com.github.sebasman.model.config.ModelConfig;
 public final class GameSession implements IGameSession {
     private final ISnakeAPI snake;
     private final IFoodAPI food;
+    private final Board board;
     private int score;
 
     /**
@@ -21,27 +23,28 @@ public final class GameSession implements IGameSession {
     public GameSession() {
         this.snake = new Snake(new Position(ModelConfig.GRID_WIDTH/4, ModelConfig.GRID_HEIGHT/2), 3);
         this.food = new Food(1, new Position(3*ModelConfig.GRID_WIDTH/4, ModelConfig.GRID_HEIGHT/2));
+        this.board = new Board();
         this.score = 0;
     }
 
     @Override
     public ISnakeAPI getSnake() {
-        return snake;
+        return this.snake;
     }
 
     @Override
     public IFoodAPI getFood() {
-        return food;
+        return this.food;
     }
+
+    @Override
+    public IBoardAPI getBoard(){ return this.board; }
 
     @Override
     public int getScore() {
-        return score;
+        return this.score;
     }
 
     @Override
-    public void incrementScore(int points) {
-        if(points < 0) throw new IllegalArgumentException("Points cannot be negative.");
-        this.score += points;
-    }
+    public void incrementScore(int points) { this.score += points; }
 }

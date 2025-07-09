@@ -85,9 +85,9 @@ public final class Button implements IUiComponent {
     }
 
     @Override
-    public void update(int mouseX, int mouseY, boolean isMousePressed) {
-        if(this.isMouseOver(mouseX, mouseY)){
-            this.state = isMousePressed ? ComponentState.ACTIVE : ComponentState.HOVER;
+    public void update(int mouseX, int mouseY, boolean isMousePressed, int mouseButton) {
+        if(this.isMouseOver(mouseX, mouseY)) {
+            this.state = (isMousePressed && mouseButton == PConstants.LEFT) ? ComponentState.ACTIVE : ComponentState.HOVER;
         } else{
             this.state = ComponentState.IDLE;
         }

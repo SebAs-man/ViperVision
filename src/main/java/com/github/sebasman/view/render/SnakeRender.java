@@ -10,7 +10,22 @@ import processing.core.PApplet;
  * Snake-specific renderer. Knows how to draw an object
  * that implements ISnakeAPI on the screen.
  */
-public class SnakeRender {
+public final class SnakeRender {
+    private static final SnakeRender INSTANCE = new SnakeRender();
+
+    /**
+     * Private constructor to prevent instantiation.
+     */
+    private SnakeRender() {}
+
+    /**
+     * Returns the singleton instance of SnakeRender.
+     * @return The singleton instance of SnakeRender.
+     */
+    public static SnakeRender getInstance() {
+        return INSTANCE;
+    }
+
     /**
      * Draws the object instance
      * @param p The context in which the drawing is to be made

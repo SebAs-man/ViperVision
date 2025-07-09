@@ -82,9 +82,9 @@ public final class CheckBox implements IUiComponent {
     }
 
     @Override
-    public void update(int mouseX, int mouseY, boolean isMousePressed) {
+    public void update(int mouseX, int mouseY, boolean isMousePressed, int mouseButton) {
         if (isMouseOver(mouseX, mouseY)) {
-            this.state = isMousePressed ? ComponentState.ACTIVE : ComponentState.HOVER;
+            this.state = (isMousePressed && mouseButton == PConstants.LEFT) ? ComponentState.ACTIVE : ComponentState.HOVER;
         } else {
             this.state = ComponentState.IDLE;
         }

@@ -1,10 +1,10 @@
 package com.github.sebasman.presenter.states;
 
 import com.github.sebasman.contracts.configuration.IConfigParameter;
-import com.github.sebasman.contracts.presenter.IHUDController;
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.contracts.presenter.IUiProvider;
 import com.github.sebasman.model.config.ModelConfig;
+import com.github.sebasman.presenter.engine.BoardInteractionController;
 import com.github.sebasman.presenter.listeners.HUDController;
 import com.github.sebasman.contracts.presenter.IControlStrategy;
 import com.github.sebasman.contracts.presenter.IState;
@@ -19,6 +19,7 @@ import com.github.sebasman.view.UiManager;
 import com.github.sebasman.contracts.view.ILayout;
 import com.github.sebasman.view.layout.VerticalLayout;
 import com.github.sebasman.view.render.HUDRenderer;
+import com.github.sebasman.view.render.NotificationRenderer;
 import processing.core.PApplet;
 import processing.core.PConstants;
 
@@ -33,8 +34,6 @@ public final class PreparingState implements IState {
     private final IControlStrategy strategy;
     // The UI manager for handling user interface elements.
     private final UiManager uiManager;
-    // Game messages coordinator
-    private IHUDController hudController;
 
     /**
      * Constructor for PreparingState.
@@ -53,7 +52,10 @@ public final class PreparingState implements IState {
         game.getProfile().setLastPlayedStrategy(this.strategy);
         // Build the UI for this state.
         this.buildUi(game);
-        this.hudController = new HUDController(game.getSession().getScore(), game.getProfile().getHighScore());
+        HUDController.getInstance().initialize(
+                game.getSession().getScore(),
+                game.getProfile().getHighScore()
+        );
         if(this.strategy instanceof IUiProvider){
             ((IUiProvider) this.strategy).subscribeToEvents();
         }
@@ -76,7 +78,7 @@ public final class PreparingState implements IState {
         PApplet renderer = game.getRenderer();
         GameUiStatic.getInstance().render(renderer);
         GameWorldRenderer.getInstance().render(game, 0f);
-        HUDRenderer.getInstance().render(renderer, this.hudController);
+        HUDRenderer.getInstance().render(renderer);
 
         renderer.pushStyle();
         renderer.rectMode(PConstants.CENTER);
@@ -97,8 +99,18 @@ public final class PreparingState implements IState {
     }
 
     @Override
-    public void mousePressed(int mouseX, int mouseY) {
-        this.uiManager.handleMousePress(mouseX, mouseY);
+    public void mousePressed(IGameContext game, int mouseX, int mouseY) {
+        PApplet render = game.getRenderer();
+        // Left Click Handling (for UI buttons)
+        if(render.mouseButton == PConstants.LEFT) {
+            this.uiManager.handleMousePress(mouseX, mouseY);
+            return;
+        }
+        // Right-click operation (to add/remove obstacles)
+        if(render.mouseButton == PConstants.RIGHT){
+            BoardInteractionController.getInstance().handleRightClick(game, mouseX, mouseY);
+        }
+        NotificationRenderer.getInstance().handleMousePress(mouseX, mouseY);
     }
 
     /**

@@ -6,7 +6,6 @@ import java.util.Set;
 
 /**
  * The FoodAPI interface defines the contract for food-related operations in the game.
- * It extends the Drawable interface to allow food to be drawn on the game board.
  */
 public interface IFoodAPI {
     /**

@@ -10,6 +10,7 @@ import com.github.sebasman.view.assets.Assets;
 import com.github.sebasman.view.components.Button;
 import com.github.sebasman.view.config.ColorPalette;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PImage;
 
 /**
@@ -86,8 +87,9 @@ public final class GameOverState implements IState {
     }
 
     @Override
-    public void mousePressed(int mouseX, int mouseY) {
-        if(this.uiManager != null) {
+    public void mousePressed(IGameContext game, int mouseX, int mouseY) {
+        PApplet renderer = game.getRenderer();
+        if(renderer.mouseButton == PConstants.LEFT && this.uiManager != null) {
             this.uiManager.handleMousePress(mouseX, mouseY);
         }
     }

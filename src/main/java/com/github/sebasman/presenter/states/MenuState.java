@@ -2,18 +2,20 @@ package com.github.sebasman.presenter.states;
 
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.contracts.presenter.IState;
+import com.github.sebasman.presenter.strategies.GeneticAlgorithmStrategy;
 import com.github.sebasman.view.config.ViewConfig;
 import com.github.sebasman.view.render.GameUiStatic;
 import com.github.sebasman.view.render.GameWorldRenderer;
 import com.github.sebasman.view.UiManager;
 import com.github.sebasman.contracts.view.ILayout;
 import com.github.sebasman.view.layout.VerticalLayout;
-import com.github.sebasman.presenter.strategies.FollowFoodStrategy;
+import com.github.sebasman.presenter.strategies.SearchAlgorithmStrategy;
 import com.github.sebasman.presenter.strategies.HumanControlStrategy;
 import com.github.sebasman.view.assets.Assets;
 import com.github.sebasman.view.components.Button;
 import com.github.sebasman.view.config.ColorPalette;
 import processing.core.PApplet;
+import processing.core.PConstants;
 
 /**
  * The menu state of the game, where the player can see the main menu options.
@@ -71,7 +73,7 @@ public final class MenuState implements IState {
         // Draws the menu overlay (title, etc.).
         int gameWidth = renderer.width - ViewConfig.SIDE_PANEL_WIDTH - ViewConfig.GAME_AREA_PADDING * 2;
         renderer.fill(0, 0, 0, 215);
-        renderer.rect(0, 0, gameWidth, renderer.height, 16);
+        renderer.rect(0, 0, gameWidth, renderer.height, 0, ViewConfig.RADIUS, ViewConfig.RADIUS, 0);
         renderer.textFont(Assets.titleFont);
         renderer.fill(ColorPalette.TEXT_QUATERNARY);
         renderer.textSize(gameWidth/9f);
@@ -88,9 +90,10 @@ public final class MenuState implements IState {
     }
 
     @Override
-    public void mousePressed(int mouseX, int mouseY) {
-        // Delegates the click event to the manager.
-        if(this.uiManager != null){
+    public void mousePressed(IGameContext game, int mouseX, int mouseY) {
+        PApplet renderer = game.getRenderer();
+            // Delegates the click event to the manager.
+        if(renderer.mouseButton == PConstants.LEFT && this.uiManager != null){
             this.uiManager.handleMousePress(mouseX, mouseY);
         }
     }
@@ -112,10 +115,13 @@ public final class MenuState implements IState {
 
         menuLayout.add(new Button("Play", Assets.playImage,
                 () -> game.changeState(
-                        new PreparingState(new HumanControlStrategy()))));
-        menuLayout.add(new Button("Watch AI Play", Assets.watchAIImage,
+                        new PreparingState(HumanControlStrategy.getInstance()))));
+        menuLayout.add(new Button("A* Search Play", Assets.searchAiImage,
                 () -> game.changeState(
-                        new PreparingState(new FollowFoodStrategy()))));
+                        new PreparingState(new SearchAlgorithmStrategy()))));
+        menuLayout.add(new Button("Genetic Play", Assets.geneticAiImage,
+                () -> game.changeState(
+                        new PreparingState(new GeneticAlgorithmStrategy()))));
 
         manager.addLayout(menuLayout);
         return manager;

@@ -8,6 +8,7 @@ import com.github.sebasman.view.assets.Assets;
 import com.github.sebasman.view.config.ColorPalette;
 import com.github.sebasman.view.config.ViewConfig;
 import processing.core.PApplet;
+import processing.core.PConstants;
 
 import java.util.Objects;
 
@@ -91,7 +92,7 @@ public final class Slider implements IUiComponent {
     }
 
     @Override
-    public void update(int mouseX, int mouseY, boolean isMousePressed) {
+    public void update(int mouseX, int mouseY, boolean isMousePressed, int mouseButton) {
         // If the user is dragging...
         if(this.isDragging) {
             if(isMousePressed) {
@@ -105,7 +106,7 @@ public final class Slider implements IUiComponent {
         }
         // Logic for visual state (hover/active)
         if (this.isMouseOverHandle(mouseX, mouseY) || this.isDragging) {
-            this.state = isMousePressed ? ComponentState.ACTIVE : ComponentState.HOVER;
+            this.state = (isMousePressed && mouseButton == PConstants.LEFT) ? ComponentState.ACTIVE : ComponentState.HOVER;
         } else {
             this.state = ComponentState.IDLE;
         }

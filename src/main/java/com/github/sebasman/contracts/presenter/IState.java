@@ -43,8 +43,9 @@ public interface IState {
 
     /**
      * Handles mouse pressed events specific to this state.
+     * @param game The main instance of the game (the context).
      * @param mouseX The x-coordinate of the mouse when pressed.
      * @param mouseY The y-coordinate of the mouse when pressed.
      */
-    void mousePressed(int mouseX, int mouseY);
+    void mousePressed(IGameContext game, int mouseX, int mouseY);
 }

@@ -64,7 +64,7 @@ public final class StartingState implements IState {
     }
 
     @Override
-    public void mousePressed(int mouseX, int mouseY) {
+    public void mousePressed(IGameContext game, int mouseX, int mouseY) {
         // This state does not handle mouse presses, so this method can be empty.
     }
 }

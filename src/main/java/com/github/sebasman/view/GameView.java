@@ -1,6 +1,7 @@
 package com.github.sebasman.view;
 
 import com.github.sebasman.contracts.events.EventManager;
+import com.github.sebasman.contracts.events.types.FrameUpdatedEvent;
 import com.github.sebasman.contracts.events.types.GameSessionEndedEvent;
 import com.github.sebasman.contracts.model.IGameSession;
 import com.github.sebasman.contracts.model.IUserProfile;
@@ -14,6 +15,7 @@ import com.github.sebasman.view.config.ColorPalette;
 import com.github.sebasman.view.config.ViewConfig;
 import com.github.sebasman.view.render.BoardRender;
 import com.github.sebasman.view.render.GameUiStatic;
+import com.github.sebasman.view.render.NotificationRenderer;
 import processing.core.PApplet;
 
 import java.util.Objects;
@@ -72,9 +74,11 @@ public class GameView extends PApplet implements IGameContext {
             );
         }
         // In each frame, we first update all the logic.
+        EventManager.getInstance().notify(new FrameUpdatedEvent());
         currentState.update(this);
         // Then, we draw the result.
         currentState.draw(this);
+        NotificationRenderer.getInstance().draw(this);
     }
 
     @Override
@@ -96,7 +100,7 @@ public class GameView extends PApplet implements IGameContext {
                     "The current state of the game cannot be null and void."
             );
         }
-        currentState.mousePressed(this.mouseX, this.mouseY);
+        currentState.mousePressed(this, this.mouseX, this.mouseY);
     }
 
     @Override

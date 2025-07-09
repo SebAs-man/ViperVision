@@ -13,17 +13,11 @@ import processing.core.PApplet;
 public final class GameWorldRenderer {
     // Singleton instance for the GameWorldRenderer class
     private static final GameWorldRenderer INSTANCE = new GameWorldRenderer();
-    // Instances of the specific renderers.
-    private final SnakeRender snakeRender;
-    private final FoodRender foodRender;
 
     /**
      * Private constructor to prevent instantiation.
      */
-    private GameWorldRenderer() {
-        this.snakeRender = new SnakeRender();
-        this.foodRender = new FoodRender();
-    }
+    private GameWorldRenderer() {}
 
     /**
      * Returns the singleton instance of GameWorldRenderer.
@@ -44,11 +38,12 @@ public final class GameWorldRenderer {
         // Draw the game board, snake, and food
         BoardRender.getInstance().draw(renderer);
         renderer.pushMatrix();
-        renderer.translate(ViewConfig.GAME_AREA_PADDING, ViewConfig.GAME_AREA_PADDING*2 + ViewConfig.TOP_BAR_HEIGHT);
         if(session != null){
+            ObstacleRenderer.getInstance().draw(renderer, session.getBoard());
+            renderer.translate(ViewConfig.GAME_AREA_PADDING, ViewConfig.GAME_AREA_PADDING*2 + ViewConfig.TOP_BAR_HEIGHT);
             PathRenderer.getInstance().draw(renderer);
-            snakeRender.draw(renderer, interpolation, session.getSnake());
-            foodRender.draw(renderer, session.getFood());
+            SnakeRender.getInstance().draw(renderer, interpolation, session.getSnake());
+            FoodRender.getInstance().draw(renderer, session.getFood());
         }
         renderer.popMatrix();
     }

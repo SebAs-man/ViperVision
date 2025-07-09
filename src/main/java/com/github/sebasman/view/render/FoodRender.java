@@ -10,7 +10,21 @@ import processing.core.PImage;
  * Food-specific renderer. Knows how to draw an object
  * that implements IFoodAPI on the screen.
  */
-public class FoodRender {
+public final class FoodRender {
+    private static final FoodRender INSTANCE = new FoodRender();
+
+    /**
+     * Private constructor to prevent instantiation.
+     */
+    private FoodRender() {}
+
+    /**
+     * Returns the singleton instance of FoodRender.
+     * @return The singleton instance of FoodRender.
+     */
+    public static FoodRender getInstance() {
+        return INSTANCE;
+    }
     /**
      * Draws the object instance
      * @param context The context in which the drawing is to be made

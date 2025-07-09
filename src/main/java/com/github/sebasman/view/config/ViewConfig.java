@@ -31,4 +31,5 @@ public final class ViewConfig {
 
     // --- Positioning Constants ---
     public static final int CENTER_GAME_X = (BOARD_PIXEL_WIDTH + GAME_AREA_PADDING * 2) / 2;
+    public static final int NOTIFICATION_HEIGHT = (int) (GAME_AREA_PADDING*4.25);
 }

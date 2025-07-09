@@ -1,19 +1,16 @@
 package com.github.sebasman.presenter.states;
 
 import com.github.sebasman.contracts.events.EventManager;
-import com.github.sebasman.contracts.events.types.ScoreUpdatedEvent;
 import com.github.sebasman.contracts.model.IGameSession;
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.presenter.engine.GameLoopTimer;
-import com.github.sebasman.presenter.listeners.HUDController;
-import com.github.sebasman.presenter.listeners.GameLogicCoordinator;
+import com.github.sebasman.presenter.engine.GameLogicCoordinator;
 import com.github.sebasman.contracts.events.types.FoodEatenEvent;
 import com.github.sebasman.contracts.events.types.SnakeDiedEvent;
 import com.github.sebasman.contracts.presenter.IControlStrategy;
 import com.github.sebasman.contracts.presenter.IState;
 import com.github.sebasman.contracts.model.IFoodAPI;
 import com.github.sebasman.contracts.model.ISnakeAPI;
-import com.github.sebasman.view.UiManager;
 import com.github.sebasman.view.render.GameUiStatic;
 import com.github.sebasman.view.render.GameWorldRenderer;
 import com.github.sebasman.view.render.HUDRenderer;
@@ -29,14 +26,11 @@ public final class PlayingState implements IState {
     // The control strategy for handling user input.
     private final IControlStrategy controlStrategy;
     private GameLoopTimer timer;
-    private UiManager uiManager;
     // Game messages coordinator
     private GameLogicCoordinator logicCoordinator;
-    private HUDController hudController;
     // References to listeners
     private final Consumer<FoodEatenEvent> onFoodEatenListener;
     private final Consumer<SnakeDiedEvent> onSnakeDiedListener;
-    private final Consumer<ScoreUpdatedEvent> onScoreUpdateListener;
 
     /**
      * Constructor for the PlayingState.
@@ -47,21 +41,17 @@ public final class PlayingState implements IState {
         this.controlStrategy = controlStrategy;
         this.onFoodEatenListener = event -> logicCoordinator.onFoodEaten(event);
         this.onSnakeDiedListener = _ -> logicCoordinator.onSnakeDied();
-        this.onScoreUpdateListener = event -> this.hudController.onScoreUpdate(event);
     }
 
     @Override
     public void onEnter(IGameContext game) {
         System.out.println("¡Starting Game!");
-        this.hudController = new HUDController(game.getSession().getScore(), game.getProfile().getHighScore());
         this.logicCoordinator = new GameLogicCoordinator(game);
         this.timer = new GameLoopTimer((int) controlStrategy.getDesiredSpeed());
         // Listeners are subscribed to the global EventManager.
         EventManager eventManager = EventManager.getInstance();
         eventManager.subscribe(FoodEatenEvent.class, onFoodEatenListener);
         eventManager.subscribe(SnakeDiedEvent.class, onSnakeDiedListener);
-        eventManager.subscribe(ScoreUpdatedEvent.class, onScoreUpdateListener);
-        this.uiManager = buildUi(game);
     }
 
     @Override
@@ -70,7 +60,6 @@ public final class PlayingState implements IState {
         EventManager eventManager = EventManager.getInstance();
         eventManager.unsubscribe(FoodEatenEvent.class, onFoodEatenListener);
         eventManager.unsubscribe(SnakeDiedEvent.class, onSnakeDiedListener);
-        eventManager.unsubscribe(ScoreUpdatedEvent.class, onScoreUpdateListener);
     }
 
     @Override
@@ -84,10 +73,6 @@ public final class PlayingState implements IState {
             session.getSnake().update();
             this.checkCollisions(game);
         }
-        // Delegates the update of the UI (cursor, hover effects) to the UiManager.
-        if (uiManager != null) {
-            this.uiManager.update(game.getRenderer());
-        }
     }
 
     @Override
@@ -96,11 +81,7 @@ public final class PlayingState implements IState {
         GameUiStatic.getInstance().render(renderer);
         float interpolation = this.timer.getInterpolation();
         GameWorldRenderer.getInstance().render(game, interpolation);
-        HUDRenderer.getInstance().render(renderer, this.hudController);
-        // Draw the UI components of this state
-        if (uiManager != null) {
-            this.uiManager.draw(renderer);
-        }
+        HUDRenderer.getInstance().render(renderer);
     }
 
     @Override
@@ -115,10 +96,8 @@ public final class PlayingState implements IState {
     }
 
     @Override
-    public void mousePressed(int mouseX, int mouseY) {
-        if (uiManager != null) {
-            this.uiManager.handleMousePress(mouseX, mouseY);
-        }
+    public void mousePressed(IGameContext game, int mouseX, int mouseY) {
+        // This state does not handle mouse presses, so this method can be empty.
     }
 
     /**
@@ -139,9 +118,5 @@ public final class PlayingState implements IState {
         if (snake.getHead().equals(food.getPosition())) {
             EventManager.getInstance().notify(new FoodEatenEvent(food, snake));
         }
-    }
-
-    private UiManager buildUi(IGameContext game) {
-        return new UiManager();
     }
 }

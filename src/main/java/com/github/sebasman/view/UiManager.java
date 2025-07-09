@@ -39,7 +39,7 @@ public class UiManager {
         boolean isHoveringAny = false;
         for(ILayout layout : this.layouts) {
             for(IUiComponent component : layout.getComponents()) {
-                component.update(context.mouseX, context.mouseY, context.mousePressed);
+                component.update(context.mouseX, context.mouseY, context.mousePressed, context.mouseButton);
                 if(component.isHovered()){
                     isHoveringAny = true;
                 }

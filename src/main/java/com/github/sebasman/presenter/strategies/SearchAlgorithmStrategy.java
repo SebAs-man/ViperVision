@@ -13,6 +13,7 @@ import com.github.sebasman.contracts.vo.Direction;
 import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.contracts.presenter.IControlStrategy;
 import com.github.sebasman.model.config.ModelConfig;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -21,7 +22,7 @@ import java.util.function.Consumer;
  * An advanced AI strategy that uses the A* algorithm to find the optimal route
  * to food and prioritizes survival to avoid lock-in.
  */
-public final class FollowFoodStrategy implements IControlStrategy, IUiProvider {
+public final class SearchAlgorithmStrategy implements IControlStrategy, IUiProvider {
     // --- Configurable AI Parameters ---
     private float aiSpeed = ModelConfig.STARTING_FRAME_RATE;
     private boolean showPath = false;
@@ -33,7 +34,7 @@ public final class FollowFoodStrategy implements IControlStrategy, IUiProvider {
     /**
      * Public builder. Each AI game will have its own strategy instance.
      */
-    public FollowFoodStrategy() {
+    public SearchAlgorithmStrategy() {
         this.configHandlers = Map.of(
                 "AI_SPEED", value -> this.setAiSpeed((Float) value),
                 "AI_SHOW_PATH", value -> this.setShowPath((Boolean) value)
@@ -313,5 +314,33 @@ public final class FollowFoodStrategy implements IControlStrategy, IUiProvider {
      */
     public void setShowPath(boolean showPath) {
         this.showPath = showPath;
+    }
+
+    /**
+     * Represents a node in the search of algorithm A*. Contains the position in the grid,
+     * the associated costs (g, h, f) and a reference to its parent node to reconstruct the path.
+     * Implements Comparable to be used directly in a PriorityQueue.
+     * @param position The (x, y) coordinate of this node in the grid.
+     * @param parent The node from which this node was arrived at.
+     * @param gCost The cost of the path from the start to this node.
+     * @param hCost The estimated heuristic cost from this node to the end.
+     */
+    private record Node(Position position, Node parent, double gCost, double hCost) implements Comparable<Node>{
+        /**
+         * Total cost (f_cost) is the sum of g_cost and h_cost.
+         * @return the estimated total cost of the path through this node.
+         */
+        public double getFCost() { return gCost + hCost; }
+
+        @Override
+        public int compareTo(@NotNull Node o) {
+            // It compares the nodes based on their f_cost. If they are equal, it uses the h_cost as a tie-breaker.
+            // This causes the algorithm to prioritize the nodes that are closest to the target.
+            int fCostCompare = Double.compare(this.getFCost(), o.getFCost());
+            if(fCostCompare == 0){
+                return Double.compare(this.hCost, o.hCost);
+            }
+            return fCostCompare;
+        }
     }
 }

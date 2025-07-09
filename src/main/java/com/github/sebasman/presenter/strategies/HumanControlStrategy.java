@@ -13,10 +13,20 @@ import processing.core.PConstants;
  * by pressing the arrow keys.
  */
 public final class HumanControlStrategy implements IControlStrategy {
+    private static final HumanControlStrategy INSTANCE = new HumanControlStrategy();
+
     /**
-     * Builder of a new Strategy.
+     * Private constructor to prevent instantiation.
      */
-    public HumanControlStrategy() {}
+    private HumanControlStrategy(){}
+
+    /**
+     * Returns the singleton instance of the HumanControlStrategy.
+     * @return the instance of HumanControlStrategy.
+     */
+    public static HumanControlStrategy getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public void update(IGameContext game, ISnakeAPI snake) {

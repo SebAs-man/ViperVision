@@ -15,7 +15,8 @@ public final class Assets {
     public static PFont textFont;
     public static PImage appleImage;
     public static PImage playImage;
-    public static PImage watchAIImage;
+    public static PImage searchAiImage;
+    public static PImage geneticAiImage;
     public static PImage homeImage;
     public static PImage retryImage;
     public static PImage trophyImage;
@@ -48,7 +49,8 @@ public final class Assets {
             appleImage = p.loadImage("images/apple.png");
             homeImage = p.loadImage("images/home.png");
             playImage = p.loadImage("images/play.png");
-            watchAIImage = p.loadImage("images/watch.png");
+            searchAiImage = p.loadImage("images/search.png");
+            geneticAiImage = p.loadImage("images/genetic.png");
             retryImage = p.loadImage("images/retry.png");
             trophyImage = p.loadImage("images/trophy.png");
             backgroundPortalImage = p.loadImage("images/background-portal.png");

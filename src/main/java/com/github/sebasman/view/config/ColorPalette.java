@@ -9,9 +9,10 @@ public final class ColorPalette {
     // --- Constants for color board ---
     public static int BOARD_LIGHT;
     public static int BOARD_DARK;
-    // --- Colors for the snake ---
+    // --- Colors for the entities ---
     public static int SNAKE_BODY;
     public static int SNAKE_EYES;
+    public static int OBSTACLE_COLOR;
     // --- Colors for the UI elements ---
     public static int COMPONENT_FILL;
     public static int COMPONENT_HOVER_FILL;
@@ -34,7 +35,8 @@ public final class ColorPalette {
         BOARD_LIGHT = p.color(170, 215, 81);
         BOARD_DARK = p.color(162, 209, 73);
         SNAKE_BODY = p.color(97, 74, 240);
-        SNAKE_EYES = p.color(255); // Blanco
+        SNAKE_EYES = p.color(255);
+        OBSTACLE_COLOR = p.color(63, 150, 44);
         COMPONENT_FILL = p.color(63, 15, 208, 200);
         COMPONENT_HOVER_FILL = p.color(90, 45, 230, 200);
         COMPONENT_ACTIVE_FILL = p.color(120, 70, 255, 200);

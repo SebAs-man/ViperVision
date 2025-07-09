@@ -59,10 +59,10 @@ public final class GameUiStatic {
         buffer.fill(ColorPalette.UI_FRAME);
         // Draw the top bar
         buffer.rect(ViewConfig.GAME_AREA_PADDING/2f, ViewConfig.GAME_AREA_PADDING,
-                context.width - ViewConfig.SIDE_PANEL_WIDTH - ViewConfig.GAME_AREA_PADDING*3f, ViewConfig.TOP_BAR_HEIGHT, 16);
+                context.width - ViewConfig.SIDE_PANEL_WIDTH - ViewConfig.GAME_AREA_PADDING*3f, ViewConfig.TOP_BAR_HEIGHT, ViewConfig.RADIUS);
         // Draw the side panel
         buffer.rect(context.width - ViewConfig.GAME_AREA_PADDING - ViewConfig.SIDE_PANEL_WIDTH, ViewConfig.GAME_AREA_PADDING,
-                ViewConfig.SIDE_PANEL_WIDTH,context.height - (ViewConfig.GAME_AREA_PADDING*2), 16);
+                ViewConfig.SIDE_PANEL_WIDTH,context.height - (ViewConfig.GAME_AREA_PADDING*2), ViewConfig.RADIUS);
         buffer.endDraw();
     }
 

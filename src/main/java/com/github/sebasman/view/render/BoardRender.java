@@ -9,7 +9,7 @@ import processing.core.PGraphics;
 /**
  * Specific renderer for the board. Knows how to draw a Board object
  */
-public class BoardRender {
+public final class BoardRender {
     // Singleton instance of BoardRender
     private static final BoardRender INSTANCE = new BoardRender();
     // PGraphics buffer for pre-rendering board

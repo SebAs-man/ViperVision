@@ -18,6 +18,12 @@ public interface IGameSession {
     IFoodAPI getFood();
 
     /**
+     * Return the current board instance in the game.
+     * @return The Board instance represente the board in the game.
+     */
+    IBoardAPI getBoard();
+
+    /**
      * Returns the current score of the game.
      * @return The current score as an integer.
      */

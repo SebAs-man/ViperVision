@@ -35,7 +35,6 @@ public final class GameLoopTimer {
         long elapsedTime = now - lastTime;
         // If too much time has passed, that lapse is ignored and the time starting point is simply reset.
         if(elapsedTime > MAX_FRAME_TICKS_NS){
-            System.out.println("WARN: Salto de tiempo detectado. Reseteando el temporizador para evitar 'catch-up'.");
             lastTime = now;
             return;
         }
