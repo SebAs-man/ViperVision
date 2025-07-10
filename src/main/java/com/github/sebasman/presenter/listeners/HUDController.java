@@ -1,6 +1,7 @@
 package com.github.sebasman.presenter.listeners;
 
 import com.github.sebasman.contracts.events.EventManager;
+import com.github.sebasman.contracts.events.types.NewHighScoreEvent;
 import com.github.sebasman.contracts.events.types.ScoreUpdatedEvent;
 import com.github.sebasman.contracts.presenter.IHUDController;
 
@@ -24,6 +25,7 @@ public final class HUDController implements IHUDController {
         this.scoreText = "0";
         this.highScoreText = "0";
         EventManager.getInstance().subscribe(ScoreUpdatedEvent.class, this::onScoreUpdate);
+        EventManager.getInstance().subscribe(NewHighScoreEvent.class, this::onHighScoreUpdate);
     }
 
     /**
@@ -43,11 +45,17 @@ public final class HUDController implements IHUDController {
 
     /**
      * Public method that handles the logic when a score update event occurs.
-     * This method will be called by the listener that the ‘PlayingState’ subscribes to.
      * @param event The event containing the new score data.
      */
     private void onScoreUpdate(ScoreUpdatedEvent event) {
         this.scoreText = String.valueOf(event.score());
+    }
+
+    /**
+     * Public method that handles the logic when a high score update event occurs.
+     * @param event The event containing the new high score data.
+     */
+    private void onHighScoreUpdate(NewHighScoreEvent event) {
         this.highScoreText = String.valueOf(event.highScore());
     }
 

@@ -9,6 +9,10 @@ import com.github.sebasman.view.layout.VerticalLayout;
 import com.github.sebasman.view.assets.Assets;
 import com.github.sebasman.view.components.Button;
 import com.github.sebasman.view.config.ColorPalette;
+import com.github.sebasman.view.render.GameUiStatic;
+import com.github.sebasman.view.render.GameWorldRenderer;
+import com.github.sebasman.view.render.HUDRenderer;
+import com.github.sebasman.view.render.ObstacleRenderer;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PImage;
@@ -22,7 +26,6 @@ public final class GameOverState implements IState {
     private static final IState INSTANCE = new GameOverState();
     // List of UI components to be displayed in the game over state
     private UiManager uiManager;
-    private PImage backgroundSnapshot;
 
     /**
      * Private constructor to prevent instantiation.
@@ -39,7 +42,6 @@ public final class GameOverState implements IState {
 
     @Override
     public void onEnter(IGameContext game) {
-        this.backgroundSnapshot = game.getRenderer().get();
         // Lazy initialization of the UI manager
         if(this.uiManager == null) {
             this.uiManager = this.buildUi(game);
@@ -62,9 +64,12 @@ public final class GameOverState implements IState {
     @Override
     public void draw(IGameContext game) {
         PApplet renderer = game.getRenderer();
-        // Draw the “picture” of the paused game as a background.
-        if(this.backgroundSnapshot != null) {
-            renderer.image(this.backgroundSnapshot, 0, 0);
+        GameUiStatic.getInstance().render(renderer);
+        GameWorldRenderer.getInstance().render(game, null);
+        HUDRenderer.getInstance().render(renderer);
+
+        if(game.getSession() != null) {
+            ObstacleRenderer.getInstance().draw(renderer, game.getSession().getBoard());
         }
         // Draw the game over background and text
         renderer.pushStyle();

@@ -1,11 +1,17 @@
 package com.github.sebasman.model;
 
-import com.github.sebasman.contracts.model.IBoardAPI;
-import com.github.sebasman.contracts.model.IFoodAPI;
+import com.github.sebasman.contracts.model.entities.IBoardAPI;
+import com.github.sebasman.contracts.model.entities.IFoodAPI;
 import com.github.sebasman.contracts.model.IGameSession;
-import com.github.sebasman.contracts.model.ISnakeAPI;
+import com.github.sebasman.contracts.model.entities.ISnakeAPI;
 import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.model.config.ModelConfig;
+import com.github.sebasman.model.entities.Board;
+import com.github.sebasman.model.entities.Snake;
+import com.github.sebasman.model.entities.foods.AppleFood;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Contains all relevant status for a single game session.
@@ -13,7 +19,7 @@ import com.github.sebasman.model.config.ModelConfig;
  */
 public final class GameSession implements IGameSession {
     private final ISnakeAPI snake;
-    private final IFoodAPI food;
+    private final Set<IFoodAPI> foods;
     private final Board board;
     private int score;
 
@@ -22,7 +28,8 @@ public final class GameSession implements IGameSession {
      */
     public GameSession() {
         this.snake = new Snake(new Position(ModelConfig.GRID_WIDTH/4, ModelConfig.GRID_HEIGHT/2), 3);
-        this.food = new Food(1, new Position(3*ModelConfig.GRID_WIDTH/4, ModelConfig.GRID_HEIGHT/2));
+        this.foods = new HashSet<>();
+        this.addFood(new AppleFood(new Position(3*ModelConfig.GRID_WIDTH/4, ModelConfig.GRID_HEIGHT/2)));
         this.board = new Board();
         this.score = 0;
     }
@@ -33,8 +40,8 @@ public final class GameSession implements IGameSession {
     }
 
     @Override
-    public IFoodAPI getFood() {
-        return this.food;
+    public Set<IFoodAPI> getFoods() {
+        return this.foods;
     }
 
     @Override
@@ -43,6 +50,16 @@ public final class GameSession implements IGameSession {
     @Override
     public int getScore() {
         return this.score;
+    }
+
+    @Override
+    public void addFood(IFoodAPI food) {
+        if(food != null) this.foods.add(food);
+    }
+
+    @Override
+    public void removeFood(IFoodAPI food) {
+        if(food != null) this.foods.remove(food);
     }
 
     @Override

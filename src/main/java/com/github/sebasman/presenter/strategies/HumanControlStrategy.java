@@ -1,6 +1,6 @@
 package com.github.sebasman.presenter.strategies;
 
-import com.github.sebasman.contracts.model.ISnakeAPI;
+import com.github.sebasman.contracts.model.entities.ISnakeAPI;
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.contracts.vo.Direction;
 import com.github.sebasman.contracts.presenter.IControlStrategy;

@@ -1,5 +1,11 @@
 package com.github.sebasman.contracts.model;
 
+import com.github.sebasman.contracts.model.entities.IBoardAPI;
+import com.github.sebasman.contracts.model.entities.IFoodAPI;
+import com.github.sebasman.contracts.model.entities.ISnakeAPI;
+
+import java.util.Set;
+
 /**
  * Defines the contract for a game session.
  * Sets out the methods necessary for the Presenter to interact with the game state.
@@ -12,10 +18,10 @@ public interface IGameSession {
     ISnakeAPI getSnake();
 
     /**
-     * Returns the current food instance in the game.
-     * @return The Food instance representing the food in the game.
+     * Returns the current list food instance in the game.
+     * @return The list of food instances representing the food in the game.
      */
-    IFoodAPI getFood();
+    Set<IFoodAPI> getFoods();
 
     /**
      * Return the current board instance in the game.
@@ -28,6 +34,18 @@ public interface IGameSession {
      * @return The current score as an integer.
      */
     int getScore();
+
+    /**
+     * Add a new food to the game
+     * @param food The food has added
+     */
+    void addFood(IFoodAPI food);
+
+    /**
+     * Removes an existing meal in the game
+     * @param food Food to be removed
+     */
+    void removeFood(IFoodAPI food);
 
     /**
      * Increments the score by a specified number of points.

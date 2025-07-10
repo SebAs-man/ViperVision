@@ -6,7 +6,9 @@ import com.github.sebasman.contracts.configuration.SliderConfigParameter;
 import com.github.sebasman.contracts.events.EventManager;
 import com.github.sebasman.contracts.events.types.AiPathUpdatedEvent;
 import com.github.sebasman.contracts.events.types.ConfigurationChangedEvent;
-import com.github.sebasman.contracts.model.ISnakeAPI;
+import com.github.sebasman.contracts.model.IGameSession;
+import com.github.sebasman.contracts.model.entities.IFoodAPI;
+import com.github.sebasman.contracts.model.entities.ISnakeAPI;
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.contracts.presenter.IUiProvider;
 import com.github.sebasman.contracts.vo.Direction;
@@ -67,12 +69,18 @@ public final class SearchAlgorithmStrategy implements IControlStrategy, IUiProvi
 
     @Override
     public void update(IGameContext game, ISnakeAPI snake) {
+        // --- Logic for Finding the Best Target ---
+
+        Position head = snake.getHead();
+        Set<IFoodAPI> foods = game.getSession().getFoods();
+        IFoodAPI targetFood = this.findClosestFood(head, foods);
+        if(targetFood == null) return;
+
         // --- Speed logic ---
 
         // Environmental Data Collection
-        Position head = snake.getHead();
         Position tail = snake.getTail();
-        Position foodPos = game.getSession().getFood().getPosition();
+        Position foodPos = targetFood.getPosition();
         Set<Position> allObstacles = new HashSet<>(snake.getBodySet());
         allObstacles.addAll(game.getSession().getBoard().getObstacles());
         Direction currentDirection = snake.getDirection();
@@ -111,6 +119,27 @@ public final class SearchAlgorithmStrategy implements IControlStrategy, IUiProvi
         }
         // Execution of the movement
         snake.bufferDirection(chosenDirection);
+    }
+
+    /**
+     * Finds the closest food object to a given position.
+     * Uses the Manhattan distance for efficient comparison.
+     * @param position The origin position (the head of the snake).
+     * @param foods The list of available foods.
+     * @return The nearest IFoodAPI object.
+     */
+    private IFoodAPI findClosestFood(Position position, Set<IFoodAPI> foods){
+        IFoodAPI closestFood = null;
+        double minDistance = Double.MAX_VALUE;
+        for(IFoodAPI food : foods){
+            double distance = Math.abs(position.x() - food.getPosition().x()) +
+                    Math.abs(position.y() - food.getPosition().y());
+            if(distance < minDistance){
+                minDistance = distance;
+                closestFood = food;
+            }
+        }
+        return closestFood;
     }
 
     /**

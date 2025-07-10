@@ -1,8 +1,13 @@
-Tarea 5.2 (Obstáculos y Entidades Dinámicas)
 Tarea 5.3 (Tipos de Comida)
 Tarea 6.2 (Configuración Global)
 
 Fase 7: El Algoritmo Genético
+
+Fase 8: Ideas:
+Tarea 8.1: checkbox para obstáculos randómicos.
+Tarea 8.2: Menú desplegable para colocar entidades.
+Tarea 8.3: Distintos tipos de entidades (portales, puertas, etc.)
+
 
 
 

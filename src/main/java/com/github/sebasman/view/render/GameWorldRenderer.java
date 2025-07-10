@@ -59,7 +59,7 @@ public final class GameWorldRenderer {
             renderer.translate(ViewConfig.GAME_AREA_PADDING, ViewConfig.GAME_AREA_PADDING*2 + ViewConfig.TOP_BAR_HEIGHT);
             PathRenderer.getInstance().draw(renderer);
             SnakeRender.getInstance().draw(renderer, this.interpolation, session.getSnake());
-            FoodRender.getInstance().draw(renderer, session.getFood());
+            FoodRender.getInstance().draw(renderer, session.getFoods());
         }
         renderer.popMatrix();
     }

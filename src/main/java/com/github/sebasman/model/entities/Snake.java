@@ -1,6 +1,6 @@
-package com.github.sebasman.model;
+package com.github.sebasman.model.entities;
 
-import com.github.sebasman.contracts.model.ISnakeAPI;
+import com.github.sebasman.contracts.model.entities.ISnakeAPI;
 import com.github.sebasman.contracts.vo.Direction;
 import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.model.config.ModelConfig;
@@ -90,7 +90,7 @@ public class Snake implements ISnakeAPI {
     }
 
     @Override
-    public void grow(){
+    public void grow(int amount){
         this.isGrowing = true;
     }
 

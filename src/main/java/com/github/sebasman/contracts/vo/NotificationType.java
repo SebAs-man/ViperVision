@@ -1,8 +1,5 @@
 package com.github.sebasman.contracts.vo;
 
-import com.github.sebasman.view.assets.Assets;
-import processing.core.PImage;
-
 /**
  * Enumeration defining the types of existing notices
  */
@@ -10,7 +7,7 @@ public enum NotificationType {
     INFO("Info"),
     ERROR("Error"),
     ACHIEVEMENT("Achievement"),
-    WARNING("Warning"),;
+    WARNING("Warning");
 
     private final String title;
 

@@ -1,4 +1,4 @@
-package com.github.sebasman.contracts.model;
+package com.github.sebasman.contracts.model.entities;
 
 import com.github.sebasman.contracts.vo.Position;
 

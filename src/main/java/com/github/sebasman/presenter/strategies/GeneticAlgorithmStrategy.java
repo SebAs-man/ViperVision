@@ -1,7 +1,7 @@
 package com.github.sebasman.presenter.strategies;
 
 import com.github.sebasman.contracts.configuration.IConfigParameter;
-import com.github.sebasman.contracts.model.ISnakeAPI;
+import com.github.sebasman.contracts.model.entities.ISnakeAPI;
 import com.github.sebasman.contracts.presenter.IControlStrategy;
 import com.github.sebasman.contracts.presenter.IUiProvider;
 import com.github.sebasman.contracts.view.IGameContext;

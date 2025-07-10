@@ -1,6 +1,6 @@
-package com.github.sebasman.model;
+package com.github.sebasman.model.entities;
 
-import com.github.sebasman.contracts.model.IBoardAPI;
+import com.github.sebasman.contracts.model.entities.IBoardAPI;
 import com.github.sebasman.contracts.vo.Position;
 
 import java.util.HashSet;

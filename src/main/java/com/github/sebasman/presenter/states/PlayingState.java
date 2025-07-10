@@ -1,24 +1,24 @@
 package com.github.sebasman.presenter.states;
 
 import com.github.sebasman.contracts.events.EventManager;
-import com.github.sebasman.contracts.model.IBoardAPI;
+import com.github.sebasman.contracts.model.entities.IBoardAPI;
 import com.github.sebasman.contracts.model.IGameSession;
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.presenter.engine.GameLoopTimer;
-import com.github.sebasman.presenter.engine.GameLogicCoordinator;
+import com.github.sebasman.presenter.listeners.GameLogicCoordinator;
 import com.github.sebasman.contracts.events.types.FoodEatenEvent;
 import com.github.sebasman.contracts.events.types.SnakeDiedEvent;
 import com.github.sebasman.contracts.presenter.IControlStrategy;
 import com.github.sebasman.contracts.presenter.IState;
-import com.github.sebasman.contracts.model.IFoodAPI;
-import com.github.sebasman.contracts.model.ISnakeAPI;
+import com.github.sebasman.contracts.model.entities.IFoodAPI;
+import com.github.sebasman.contracts.model.entities.ISnakeAPI;
+import com.github.sebasman.presenter.listeners.EffectManager;
 import com.github.sebasman.view.render.GameUiStatic;
 import com.github.sebasman.view.render.GameWorldRenderer;
 import com.github.sebasman.view.render.HUDRenderer;
 import processing.core.PApplet;
 
 import java.util.Objects;
-import java.util.function.Consumer;
 
 /**
  * The playing state of the game, where the player controls the snake and interacts with food.
@@ -27,11 +27,9 @@ public final class PlayingState implements IState {
     // The control strategy for handling user input.
     private final IControlStrategy controlStrategy;
     private GameLoopTimer timer;
-    // Game messages coordinator
+    // Game logic coordinator
     private GameLogicCoordinator logicCoordinator;
-    // References to listeners
-    private final Consumer<FoodEatenEvent> onFoodEatenListener;
-    private final Consumer<SnakeDiedEvent> onSnakeDiedListener;
+    private EffectManager effectManager;
 
     /**
      * Constructor for the PlayingState.
@@ -40,27 +38,23 @@ public final class PlayingState implements IState {
     public PlayingState(IControlStrategy controlStrategy) {
         Objects.requireNonNull(controlStrategy, "Control strategy cannot be null");
         this.controlStrategy = controlStrategy;
-        this.onFoodEatenListener = event -> logicCoordinator.onFoodEaten(event);
-        this.onSnakeDiedListener = _ -> logicCoordinator.onSnakeDied();
     }
 
     @Override
     public void onEnter(IGameContext game) {
         System.out.println("¡Starting Game!");
+        this.effectManager = new EffectManager(game.getSession());
+        this.effectManager.suscribeEvents();
         this.logicCoordinator = new GameLogicCoordinator(game);
+        this.logicCoordinator.subscribeToEvents();
         this.timer = new GameLoopTimer((int) controlStrategy.getDesiredSpeed());
-        // Listeners are subscribed to the global EventManager.
-        EventManager eventManager = EventManager.getInstance();
-        eventManager.subscribe(FoodEatenEvent.class, onFoodEatenListener);
-        eventManager.subscribe(SnakeDiedEvent.class, onSnakeDiedListener);
+
     }
 
     @Override
     public void onExit(IGameContext game) {
-        // Listeners are unsubscribed to avoid “zombie listeners” and memory leaks.
-        EventManager eventManager = EventManager.getInstance();
-        eventManager.unsubscribe(FoodEatenEvent.class, onFoodEatenListener);
-        eventManager.unsubscribe(SnakeDiedEvent.class, onSnakeDiedListener);
+        this.effectManager.unSuscribeEvents();
+        this.logicCoordinator.unsubscribeFromEvents();
     }
 
     @Override
@@ -108,17 +102,24 @@ public final class PlayingState implements IState {
     private void checkCollisions(IGameContext game) {
         IGameSession session = game.getSession();
         if(session == null) return;
-        ISnakeAPI snake = session.getSnake();
-        IFoodAPI food = session.getFood();
-        IBoardAPI board = session.getBoard();
 
+        ISnakeAPI snake = session.getSnake();
+        IBoardAPI board = session.getBoard();
+        // Checks for collision with walls, body and obstacles...
         if (snake.checkCollisionWithWall() || snake.checkCollisionWithSelf() || board.isObstacle(snake.getHead())) {
             EventManager.getInstance().notify(new SnakeDiedEvent());
             return;
         }
-
-        if (snake.getHead().equals(food.getPosition())) {
-            EventManager.getInstance().notify(new FoodEatenEvent(food, snake));
+        // Check for collision with ANY of the meals on the board.
+        IFoodAPI eatenFood = null;
+        for(IFoodAPI food : session.getFoods()) {
+            if(snake.getHead().equals(food.getPosition())){
+                eatenFood = food;
+                break;
+            }
+        }
+        if(eatenFood != null) {
+            EventManager.getInstance().notify(new FoodEatenEvent(eatenFood));
         }
     }
 }

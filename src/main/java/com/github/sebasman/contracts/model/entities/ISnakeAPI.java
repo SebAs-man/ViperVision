@@ -1,5 +1,6 @@
-package com.github.sebasman.contracts.model;
+package com.github.sebasman.contracts.model.entities;
 
+import com.github.sebasman.contracts.model.IUpdatable;
 import com.github.sebasman.contracts.vo.Direction;
 import com.github.sebasman.contracts.vo.Position;
 
@@ -20,8 +21,9 @@ public interface ISnakeAPI extends IUpdatable {
 
     /**
      * Grows the snake by one segment.
+     * @param amount the number of segments to grow from the snake
      */
-    void grow();
+    void grow(int amount);
 
     /**
      * Checks if the snake collides with a wall.

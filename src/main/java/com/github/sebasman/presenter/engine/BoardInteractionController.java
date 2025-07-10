@@ -2,15 +2,17 @@ package com.github.sebasman.presenter.engine;
 
 import com.github.sebasman.contracts.events.EventManager;
 import com.github.sebasman.contracts.events.types.NotificationRequestedEvent;
-import com.github.sebasman.contracts.model.IBoardAPI;
-import com.github.sebasman.contracts.model.IFoodAPI;
+import com.github.sebasman.contracts.model.entities.IBoardAPI;
+import com.github.sebasman.contracts.model.entities.IFoodAPI;
 import com.github.sebasman.contracts.model.IGameSession;
-import com.github.sebasman.contracts.model.ISnakeAPI;
+import com.github.sebasman.contracts.model.entities.ISnakeAPI;
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.contracts.vo.NotificationType;
 import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.model.config.ModelConfig;
 import com.github.sebasman.view.config.ViewConfig;
+
+import java.util.Set;
 
 /**
  * Manages the user's interaction logic with the game board,
@@ -56,8 +58,9 @@ public final class BoardInteractionController {
         }
         // Check that no obstacle can be placed over the snake or food
         ISnakeAPI snake = session.getSnake();
-        IFoodAPI food = session.getFood();
-        if(snake.getBodySet().contains(clickPos) || food.getPosition().equals(clickPos)) {
+        Set<IFoodAPI> foods = session.getFoods();
+        if(snake.getBodySet().contains(clickPos) ||
+                foods.stream().anyMatch(food -> food.getPosition().equals(clickPos))) {
             EventManager.getInstance().notify(new NotificationRequestedEvent(
                     "It is not possible to add obstacles on entities.", NotificationType.WARNING, 4500));
             return;

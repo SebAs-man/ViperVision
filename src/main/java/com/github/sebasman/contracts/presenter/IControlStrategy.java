@@ -1,6 +1,6 @@
 package com.github.sebasman.contracts.presenter;
 
-import com.github.sebasman.contracts.model.ISnakeAPI;
+import com.github.sebasman.contracts.model.entities.ISnakeAPI;
 import com.github.sebasman.contracts.view.IGameContext;
 
 /**

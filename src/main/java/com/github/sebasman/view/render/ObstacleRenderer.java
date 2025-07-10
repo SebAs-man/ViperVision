@@ -1,6 +1,6 @@
 package com.github.sebasman.view.render;
 
-import com.github.sebasman.contracts.model.IBoardAPI;
+import com.github.sebasman.contracts.model.entities.IBoardAPI;
 import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.model.config.ModelConfig;
 import com.github.sebasman.view.config.ColorPalette;

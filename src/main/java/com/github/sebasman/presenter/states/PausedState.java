@@ -3,7 +3,6 @@ package com.github.sebasman.presenter.states;
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.contracts.presenter.IState;
 import com.github.sebasman.presenter.engine.BoardInteractionController;
-import com.github.sebasman.presenter.listeners.HUDController;
 import com.github.sebasman.view.config.ViewConfig;
 import com.github.sebasman.view.UiManager;
 import com.github.sebasman.contracts.view.ILayout;
@@ -44,10 +43,6 @@ public final class PausedState implements IState {
 
     @Override
     public void onEnter(IGameContext game) {
-        HUDController.getInstance().initialize(
-                game.getSession().getScore(),
-                game.getProfile().getHighScore()
-        );
         // Lazy Initialization: The UI is built only the first time you enter pause.
         if(this.uiManager == null) {
             this.uiManager = this.buildUi(game);
