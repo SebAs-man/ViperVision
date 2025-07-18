@@ -3,8 +3,10 @@ package com.github.sebasman.model.entities.foods;
 import com.github.sebasman.contracts.events.EventManager;
 import com.github.sebasman.contracts.events.types.NotificationRequestedEvent;
 import com.github.sebasman.contracts.model.IGameSession;
+import com.github.sebasman.contracts.vo.FoodCategory;
 import com.github.sebasman.contracts.vo.NotificationType;
 import com.github.sebasman.contracts.vo.Position;
+import com.github.sebasman.model.entities.Food;
 import com.github.sebasman.view.assets.Assets;
 import processing.core.PImage;
 
@@ -12,7 +14,7 @@ import processing.core.PImage;
  * Represents a speed sheet food in the game that can be consumed,
  * this can be good or bad.
  */
-public class SpeedSheetFood extends Food {
+public final class SpeedSheetFood extends Food {
 
     private static final int MIN_RATE = 1;
     private static final int MAX_RATE = 5;
@@ -41,7 +43,12 @@ public class SpeedSheetFood extends Food {
     }
 
     @Override
+    public FoodCategory getCategory() {
+        return FoodCategory.NEUTRAL;
+    }
+
+    @Override
     public PImage getIcon() {
-        return Assets.appleImage;
+        return Assets.speedSheetImage;
     }
 }

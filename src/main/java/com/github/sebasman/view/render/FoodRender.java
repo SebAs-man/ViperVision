@@ -3,6 +3,8 @@ package com.github.sebasman.view.render;
 import com.github.sebasman.contracts.model.entities.IFoodAPI;
 import com.github.sebasman.model.config.ModelConfig;
 import processing.core.PApplet;
+import processing.core.PConstants;
+import processing.core.PImage;
 
 import java.util.Set;
 
@@ -36,8 +38,13 @@ public final class FoodRender {
         if(foods == null || foods.isEmpty()) return;
 
         context.pushStyle();
+        context.imageMode(PConstants.CORNER);
         for(IFoodAPI food : foods) {
             if(food == null || food.getPosition() == null) continue;
+
+            PImage icon = food.getIcon();
+            if(icon == null) continue;
+
             int x = food.getPosition().x() * ModelConfig.BOX_SIZE;
             int y = food.getPosition().y() * ModelConfig.BOX_SIZE;
             context.image(food.getIcon(), x, y, ModelConfig.BOX_SIZE, ModelConfig.BOX_SIZE);

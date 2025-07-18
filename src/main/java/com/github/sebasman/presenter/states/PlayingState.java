@@ -12,7 +12,6 @@ import com.github.sebasman.contracts.presenter.IControlStrategy;
 import com.github.sebasman.contracts.presenter.IState;
 import com.github.sebasman.contracts.model.entities.IFoodAPI;
 import com.github.sebasman.contracts.model.entities.ISnakeAPI;
-import com.github.sebasman.presenter.listeners.EffectManager;
 import com.github.sebasman.view.render.GameUiStatic;
 import com.github.sebasman.view.render.GameWorldRenderer;
 import com.github.sebasman.view.render.HUDRenderer;
@@ -29,7 +28,6 @@ public final class PlayingState implements IState {
     private GameLoopTimer timer;
     // Game logic coordinator
     private GameLogicCoordinator logicCoordinator;
-    private EffectManager effectManager;
 
     /**
      * Constructor for the PlayingState.
@@ -43,8 +41,6 @@ public final class PlayingState implements IState {
     @Override
     public void onEnter(IGameContext game) {
         System.out.println("¡Starting Game!");
-        this.effectManager = new EffectManager(game.getSession());
-        this.effectManager.suscribeEvents();
         this.logicCoordinator = new GameLogicCoordinator(game);
         this.logicCoordinator.subscribeToEvents();
         this.timer = new GameLoopTimer((int) controlStrategy.getDesiredSpeed());
@@ -53,7 +49,6 @@ public final class PlayingState implements IState {
 
     @Override
     public void onExit(IGameContext game) {
-        this.effectManager.unSuscribeEvents();
         this.logicCoordinator.unsubscribeFromEvents();
     }
 

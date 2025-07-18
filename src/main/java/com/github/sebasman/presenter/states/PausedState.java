@@ -16,7 +16,6 @@ import com.github.sebasman.view.render.HUDRenderer;
 import com.github.sebasman.view.render.ObstacleRenderer;
 import processing.core.PApplet;
 import processing.core.PConstants;
-import processing.core.PImage;
 
 /**
  * The paused state of the game, where the player can see a pause message

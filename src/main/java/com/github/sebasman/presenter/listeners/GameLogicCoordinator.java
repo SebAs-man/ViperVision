@@ -2,52 +2,48 @@ package com.github.sebasman.presenter.listeners;
 
 
 import com.github.sebasman.contracts.events.EventManager;
-import com.github.sebasman.contracts.events.types.NewHighScoreEvent;
-import com.github.sebasman.contracts.events.types.ScoreUpdatedEvent;
-import com.github.sebasman.contracts.events.types.SnakeDiedEvent;
+import com.github.sebasman.contracts.events.types.*;
+import com.github.sebasman.contracts.model.IExpirable;
 import com.github.sebasman.contracts.model.IGameSession;
 import com.github.sebasman.contracts.model.IUserProfile;
 import com.github.sebasman.contracts.model.entities.IFoodAPI;
 import com.github.sebasman.contracts.view.IGameContext;
-import com.github.sebasman.contracts.events.types.FoodEatenEvent;
+import com.github.sebasman.contracts.vo.FoodCategory;
 import com.github.sebasman.contracts.vo.Position;
-import com.github.sebasman.model.entities.foods.FoodFactory;
+import com.github.sebasman.model.FoodFactory;
 import com.github.sebasman.presenter.states.GameOverState;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
- * Contains the business logic of the game that events trigger.
- * Updates model state (GameSession, UserProfile) and publishes new
- * events as a result (e.g., ScoreUpdatedEvent).
+ * The central coordinator of the game logic.
+ * It subscribes to all business and effect events, and is solely
+ * responsible for modifying the model state (GameSession, UserProfile).
  */
 public final class GameLogicCoordinator {
     private final IGameContext game;
-    private final FoodFactory factory;
-    private final Random random;
+    private long lastUpdateTime;
     // Listeners
+    private final Consumer<FrameUpdatedEvent> onFrameUpdatedListener;
     private final Consumer<FoodEatenEvent> onFoodEatenListener;
     private final Consumer<SnakeDiedEvent> onSnakeDiedListener;
     private final Consumer<ScoreUpdatedEvent> onScoreUpdatedListener;
+    private final Consumer<EffectRequestedEvent> onEffectRequestedListener;
 
     /**
      * Creates a logic coordinator for a specific game session.
      * @param game The main instance of the application, used as context.
      */
     public GameLogicCoordinator(IGameContext game) {
-        if(game == null){
-            throw new NullPointerException("Game cannot be null");
-        }
-        this.game = game;
-        this.factory = new FoodFactory();
-        this.random = new Random();
+        this.game = Objects.requireNonNull(game, "The game must not be null.");
+        this.lastUpdateTime = System.currentTimeMillis();
         // Create instances of listeners
+        this.onFrameUpdatedListener = this::onUpdate;
         this.onFoodEatenListener = this::onFoodEaten;
-        this.onSnakeDiedListener = _ -> this.onSnakeDied();
+        this.onEffectRequestedListener =this::onEffectRequested;
         this.onScoreUpdatedListener = this::onSessionScoreUpdated;
+        this.onSnakeDiedListener = _ -> this.onSnakeDied();
     }
 
     /**
@@ -55,8 +51,10 @@ public final class GameLogicCoordinator {
      */
     public void subscribeToEvents() {
         EventManager manager = EventManager.getInstance();
+        manager.subscribe(FrameUpdatedEvent.class, this.onFrameUpdatedListener);
         manager.subscribe(FoodEatenEvent.class, this.onFoodEatenListener);
         manager.subscribe(SnakeDiedEvent.class, this.onSnakeDiedListener);
+        manager.subscribe(EffectRequestedEvent.class, this.onEffectRequestedListener);
         manager.subscribe(ScoreUpdatedEvent.class, this.onScoreUpdatedListener);
     }
 
@@ -65,9 +63,65 @@ public final class GameLogicCoordinator {
      */
     public void unsubscribeFromEvents() {
         EventManager manager = EventManager.getInstance();
+        manager.unsubscribe(FrameUpdatedEvent.class, this.onFrameUpdatedListener);
         manager.unsubscribe(FoodEatenEvent.class, this.onFoodEatenListener);
         manager.unsubscribe(SnakeDiedEvent.class, this.onSnakeDiedListener);
+        manager.unsubscribe(EffectRequestedEvent.class, this.onEffectRequestedListener);
         manager.unsubscribe(ScoreUpdatedEvent.class, this.onScoreUpdatedListener);
+    }
+
+    /**
+     * Called on every frame. Updates the timers for all expirable food items.
+     * Use an explicit Iterator to safely remove items from the list while iterating,
+     * thus preventing ConcurrentModificationException.
+     */
+    private void onUpdate(FrameUpdatedEvent event) {
+        IGameSession session = game.getSession();
+        if(session == null || session.getFoods().isEmpty()) return;
+
+        long now = System.currentTimeMillis();
+        long elapsedTime = now - this.lastUpdateTime;
+        this.lastUpdateTime = now;
+        // An explicit Iterator is used to traverse the list of meals.
+        Iterator<IFoodAPI> iterator = session.getFoods().iterator();
+        while (iterator.hasNext()) {
+            IFoodAPI food = iterator.next();
+            if(food instanceof IExpirable expirableFood){
+                expirableFood.update(elapsedTime);
+                if(expirableFood.isExpired()) iterator.remove();
+            }
+        }
+    }
+
+    /**
+     * Logic to be executed when the snake eats.
+     * Gets the current state of the session from the game context.
+     * @param event The event that contains the relevant data (although in this version it is not used).
+     */
+    private void onFoodEaten(FoodEatenEvent event) {
+        IGameSession session = game.getSession();
+        if (session == null) return;
+
+        // Apply the effect of the food that has just been eaten.
+        event.food().applyEffect(session);
+        // Removes consumed food from the game world list.
+        session.removeFood(event.food());
+        // It only generates a new batch if there are no positive food left.
+        boolean positiveFoodRemains = session.getFoods().stream()
+                .anyMatch(food -> food.getCategory() == FoodCategory.POSITIVE);
+        if(!positiveFoodRemains){
+            this.spawnFood();
+        }
+    }
+
+    /**
+     * Applies the effect of the event
+     * @param event The event listened
+     */
+    private void onEffectRequested(EffectRequestedEvent event) {
+        if(game.getSession() != null){
+            event.effect().apply(game.getSession());
+        }
     }
 
     /**
@@ -83,36 +137,22 @@ public final class GameLogicCoordinator {
     }
 
     /**
-     * Logic to be executed when the snake eats.
-     * Gets the current state of the session from the game context.
-     * @param event The event that contains the relevant data (although in this version it is not used).
-     */
-    private void onFoodEaten(FoodEatenEvent event) {
-        IGameSession session = game.getSession();
-        if (session == null) return;
-
-        IFoodAPI food = event.food();
-        // Apply the effect of the food that has just been eaten.
-        food.applyEffect(session);
-        // Removes consumed food from the game world list.
-        session.removeFood(food);
-        // Uses the factory to create new food.
-        Set<Position> allOccupiedSpots = new HashSet<>(session.getSnake().getBodySet());
-        allOccupiedSpots.addAll(session.getBoard().getObstacles());
-        if(session.getFoods().isEmpty()){
-            int amount = this.random.nextInt(3) + 1;
-            for(int i = 0; i < amount; i++){
-                IFoodAPI newFood = factory.createRandomFood(allOccupiedSpots);
-                if(newFood == null) break;
-                session.addFood(newFood);
-            }
-        }
-    }
-
-    /**
      * The logic to execute when the snake dies.
      */
     private void onSnakeDied() {
         game.changeState(GameOverState.getInstance());
+    }
+
+    /**
+     * Generates a new batch of random meals.
+     */
+    private void spawnFood(){
+        IGameSession session = game.getSession();
+
+        Set<Position> allOccupiedSpots = new HashSet<>(session.getSnake().getBodySet());
+        allOccupiedSpots.addAll(session.getBoard().getObstacles());
+
+        Set<IFoodAPI> newBatch = FoodFactory.getInstance().createFoodBatch(allOccupiedSpots, session.getFoods());
+        newBatch.forEach(session::addFood);
     }
 }

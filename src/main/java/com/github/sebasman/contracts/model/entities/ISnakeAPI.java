@@ -37,6 +37,8 @@ public interface ISnakeAPI extends IUpdatable {
      */
     boolean checkCollisionWithSelf();
 
+    // --- Getters ---
+
     /**
      * Returns the current direction of the snake.
      * @return the current direction of the snake

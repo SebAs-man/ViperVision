@@ -3,15 +3,17 @@ package com.github.sebasman.model.entities.foods;
 import com.github.sebasman.contracts.events.EventManager;
 import com.github.sebasman.contracts.events.types.NotificationRequestedEvent;
 import com.github.sebasman.contracts.model.IGameSession;
+import com.github.sebasman.contracts.vo.FoodCategory;
 import com.github.sebasman.contracts.vo.NotificationType;
 import com.github.sebasman.contracts.vo.Position;
+import com.github.sebasman.model.entities.Food;
 import com.github.sebasman.view.assets.Assets;
 import processing.core.PImage;
 
 /**
  * Represents an invulnerability star food in the game that can be consumed.
  */
-public class StarFood extends Food{
+public final class StarFood extends Food {
     /**
      * Creates an instance of the invulnerability star.
      * @param position The initial position of this invulnerability star.
@@ -28,7 +30,12 @@ public class StarFood extends Food{
     }
 
     @Override
+    public FoodCategory getCategory() {
+        return FoodCategory.POSITIVE;
+    }
+
+    @Override
     public PImage getIcon() {
-        return Assets.appleImage;
+        return Assets.starImage;
     }
 }

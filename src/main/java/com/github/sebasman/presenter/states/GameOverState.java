@@ -15,7 +15,6 @@ import com.github.sebasman.view.render.HUDRenderer;
 import com.github.sebasman.view.render.ObstacleRenderer;
 import processing.core.PApplet;
 import processing.core.PConstants;
-import processing.core.PImage;
 
 /**
  * The game over the state of the game, where the player sees the game over a message

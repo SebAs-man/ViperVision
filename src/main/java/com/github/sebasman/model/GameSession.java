@@ -10,17 +10,18 @@ import com.github.sebasman.model.entities.Board;
 import com.github.sebasman.model.entities.Snake;
 import com.github.sebasman.model.entities.foods.AppleFood;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Contains all relevant status for a single game session.
  * Acts as the single source of truth for an ongoing game.
  */
 public final class GameSession implements IGameSession {
+    // --- Entities ---
     private final ISnakeAPI snake;
     private final Set<IFoodAPI> foods;
     private final Board board;
+    // --- Statistics ---
     private int score;
 
     /**
@@ -29,9 +30,11 @@ public final class GameSession implements IGameSession {
     public GameSession() {
         this.snake = new Snake(new Position(ModelConfig.GRID_WIDTH/4, ModelConfig.GRID_HEIGHT/2), 3);
         this.foods = new HashSet<>();
-        this.addFood(new AppleFood(new Position(3*ModelConfig.GRID_WIDTH/4, ModelConfig.GRID_HEIGHT/2)));
         this.board = new Board();
+        // Define default values
+        this.addFood(new AppleFood(new Position(3*ModelConfig.GRID_WIDTH/4, ModelConfig.GRID_HEIGHT/2)));
         this.score = 0;
+
     }
 
     @Override

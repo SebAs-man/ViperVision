@@ -1,7 +1,12 @@
-package com.github.sebasman.model.entities.foods;
+package com.github.sebasman.model.entities;
 
+import com.github.sebasman.contracts.events.EventManager;
+import com.github.sebasman.contracts.events.types.EffectRequestedEvent;
+import com.github.sebasman.contracts.model.IGameSession;
 import com.github.sebasman.contracts.model.entities.IFoodAPI;
 import com.github.sebasman.contracts.vo.Position;
+import com.github.sebasman.model.effects.GrowthEffect;
+import com.github.sebasman.model.effects.ScoreEffect;
 
 /**
  * Abstract base class for all types of food in the game.
@@ -23,6 +28,16 @@ public abstract class Food implements IFoodAPI {
         this.scoreValue = scoreValue;
         this.position = position;
         this.growthValue = growthValue;
+    }
+
+    @Override
+    public void applyEffect(IGameSession session) {
+        EventManager.getInstance().notify(new EffectRequestedEvent(
+                new ScoreEffect(this.scoreValue)
+        ));
+        EventManager.getInstance().notify(new EffectRequestedEvent(
+                new GrowthEffect(this.growthValue)
+        ));
     }
 
     @Override

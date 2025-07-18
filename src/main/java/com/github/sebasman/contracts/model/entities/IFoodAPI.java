@@ -1,6 +1,7 @@
 package com.github.sebasman.contracts.model.entities;
 
 import com.github.sebasman.contracts.model.IGameSession;
+import com.github.sebasman.contracts.vo.FoodCategory;
 import com.github.sebasman.contracts.vo.Position;
 import processing.core.PImage;
 
@@ -9,16 +10,22 @@ import processing.core.PImage;
  */
 public interface IFoodAPI {
     /**
+     * Applies the special effect of this food for the active game session.
+     * @param session The game session on which the effect will be applied.
+     */
+    void applyEffect(IGameSession session);
+
+    /**
      * Retrieves the current position of the food.
      * @return The position of the food on the grid.
      */
     Position getPosition();
 
     /**
-     * Applies the special effect of this food for the active game session.
-     * @param session The game session on which the effect will be applied.
+     * Returns the category of this food item.
+     * @return The {@link FoodCategory} of the food.
      */
-    void applyEffect(IGameSession session);
+    FoodCategory getCategory();
 
     /**
      * Returns the specific image (asset) representing this type of food.

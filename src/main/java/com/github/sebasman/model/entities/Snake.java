@@ -11,10 +11,12 @@ import java.util.*;
 /**
  * The SnakeImpl class represents the snake in the game.
  */
-public class Snake implements ISnakeAPI {
+public final class Snake implements ISnakeAPI {
+    // --- Body ---
     private final List<Position> body;
     private final List<Position> previousBody; // Stores the position of the body in the previous logical frame.
     private final Set<Position> bodySet;
+    // --- Mobility ---
     private Direction currentDirection;
     private boolean isGrowing;
     private final Queue<Direction> inputQueue;
