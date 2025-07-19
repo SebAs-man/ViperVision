@@ -1,9 +1,11 @@
 package com.github.sebasman.contracts.model;
 
+import com.github.sebasman.contracts.model.effects.ITimedEffect;
 import com.github.sebasman.contracts.model.entities.IBoardAPI;
 import com.github.sebasman.contracts.model.entities.IFoodAPI;
 import com.github.sebasman.contracts.model.entities.ISnakeAPI;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -34,6 +36,18 @@ public interface IGameSession {
      * @return The current score as an integer.
      */
     int getScore();
+
+    /**
+     * Gets the list of active effects in the game session.
+     * @return A list of active effects.
+     */
+    List<ITimedEffect> getActiveEffects();
+
+    /**
+     * Adds new temporary effects to the session.
+     * @param effect The new active time effect.
+     */
+    void addTimedEffect(ITimedEffect effect);
 
     /**
      * Add a new food to the game

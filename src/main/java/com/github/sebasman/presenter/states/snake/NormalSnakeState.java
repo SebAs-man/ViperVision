@@ -1,12 +1,15 @@
-package com.github.sebasman.model.states;
+package com.github.sebasman.presenter.states.snake;
 
 import com.github.sebasman.contracts.events.EventManager;
 import com.github.sebasman.contracts.events.types.SnakeDiedEvent;
 import com.github.sebasman.contracts.model.IGameSession;
+import com.github.sebasman.contracts.model.effects.IEffect;
 import com.github.sebasman.contracts.model.entities.ISnakeAPI;
-import com.github.sebasman.contracts.model.states.ISnakeState;
+import com.github.sebasman.contracts.presenter.ISnakeState;
+import com.github.sebasman.contracts.view.ISnakeRenderStyle;
 import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.model.config.ModelConfig;
+import com.github.sebasman.view.config.ColorPalette;
 
 import java.util.Iterator;
 
@@ -37,6 +40,17 @@ public final class NormalSnakeState implements ISnakeState {
                 session.getBoard().isObstacle(snake.getHead())) {
             EventManager.getInstance().notify(new SnakeDiedEvent());
         }
+    }
+
+    @Override
+    public ISnakeRenderStyle getRenderStyle() {
+        return _ -> ColorPalette.SNAKE_BODY;
+    }
+
+    @Override
+    public IEffect processEffect(IEffect effect) {
+        // In the normal state, all effects are allowed to pass through unmodified.
+        return effect;
     }
 
     /**

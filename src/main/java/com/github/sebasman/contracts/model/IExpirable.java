@@ -1,4 +1,4 @@
-package com.github.sebasman.contracts.model.entities;
+package com.github.sebasman.contracts.model;
 
 /**
  * This is an interface that defines the contract for objects that expire in time.

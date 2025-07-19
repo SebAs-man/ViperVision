@@ -88,12 +88,13 @@ public final class FoodFactory {
         // --- Probability Logic ---
 
         double chance = random.nextDouble();  // A random value between 0.0 and 1.0
-        if(chance < 0.005) return new StarFood(spawnPosition);
-        else if(chance < 0.025) return new RoadBlockerFood(spawnPosition);
-        else if(chance < 0.055) return new SpeedSheetFood(spawnPosition);
-        else if (chance < 0.12) return new GoldenAppleFood(spawnPosition);
-        else if(chance < 0.405) return new PoisonFood(spawnPosition);
-        return new AppleFood(spawnPosition);
+        if(chance < 0.005) return new StarFood(spawnPosition); // 0.5% chance
+        else if(chance < 0.025) return new RoadBlockerFood(spawnPosition); // 2% chance
+        else if(chance < 0.05) return new CapsuleFood(spawnPosition); // 2% chance
+        else if(chance < 0.11) return new SpeedSheetFood(spawnPosition); // 3% chance
+        else if (chance < 0.22) return new GoldenAppleFood(spawnPosition); // 3% chance
+        else if(chance < 0.54) return new PoisonFood(spawnPosition); // 13% chance
+        return new AppleFood(spawnPosition); // 76.5% chance
     }
 
     /**

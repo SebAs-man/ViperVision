@@ -5,6 +5,8 @@ import com.github.sebasman.contracts.events.EventManager;
 import com.github.sebasman.contracts.events.types.*;
 import com.github.sebasman.contracts.model.IGameSession;
 import com.github.sebasman.contracts.model.IUserProfile;
+import com.github.sebasman.contracts.model.effects.IEffect;
+import com.github.sebasman.contracts.model.effects.ITimedEffect;
 import com.github.sebasman.contracts.model.entities.IFoodAPI;
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.contracts.vo.Position;
@@ -24,11 +26,16 @@ public final class GameLogicCoordinator {
     private final IGameContext game;
     private long lastUpdateTime;
     // Listeners
-    private final Consumer<FrameUpdatedEvent> onFrameUpdatedListener;
     private final Consumer<FoodEatenEvent> onFoodEatenListener;
     private final Consumer<SnakeDiedEvent> onSnakeDiedListener;
     private final Consumer<ScoreUpdatedEvent> onScoreUpdatedListener;
     private final Consumer<EffectRequestedEvent> onEffectRequestedListener;
+    /**
+     * The maximum time allowed for a frame in nanoseconds before it is considered
+     * an anomalous “jump.” If the elapsed time is greater than this,
+     * the timer will be reset to avoid the “catch-up.”
+     */
+    private static final long MAX_FRAME_TIME_NS = 100_000_000; // 100ms
 
     /**
      * Creates a logic coordinator for a specific game session.
@@ -38,7 +45,6 @@ public final class GameLogicCoordinator {
         this.game = Objects.requireNonNull(game, "The game must not be null.");
         this.lastUpdateTime = System.currentTimeMillis();
         // Create instances of listeners
-        this.onFrameUpdatedListener = this::onUpdate;
         this.onFoodEatenListener = this::onFoodEaten;
         this.onEffectRequestedListener =this::onEffectRequested;
         this.onScoreUpdatedListener = this::onSessionScoreUpdated;
@@ -50,7 +56,6 @@ public final class GameLogicCoordinator {
      */
     public void subscribeToEvents() {
         EventManager manager = EventManager.getInstance();
-        manager.subscribe(FrameUpdatedEvent.class, this.onFrameUpdatedListener);
         manager.subscribe(FoodEatenEvent.class, this.onFoodEatenListener);
         manager.subscribe(SnakeDiedEvent.class, this.onSnakeDiedListener);
         manager.subscribe(EffectRequestedEvent.class, this.onEffectRequestedListener);
@@ -62,7 +67,6 @@ public final class GameLogicCoordinator {
      */
     public void unsubscribeFromEvents() {
         EventManager manager = EventManager.getInstance();
-        manager.unsubscribe(FrameUpdatedEvent.class, this.onFrameUpdatedListener);
         manager.unsubscribe(FoodEatenEvent.class, this.onFoodEatenListener);
         manager.unsubscribe(SnakeDiedEvent.class, this.onSnakeDiedListener);
         manager.unsubscribe(EffectRequestedEvent.class, this.onEffectRequestedListener);
@@ -74,22 +78,64 @@ public final class GameLogicCoordinator {
      * Use an explicit Iterator to safely remove items from the list while iterating,
      * thus preventing ConcurrentModificationException.
      */
-    private void onUpdate(FrameUpdatedEvent event) {
+    public void update() {
         IGameSession session = game.getSession();
         if(session == null || session.getFoods().isEmpty()) return;
 
         long now = System.currentTimeMillis();
         long elapsedTime = now - this.lastUpdateTime;
+
+        if(elapsedTime > MAX_FRAME_TIME_NS / 1_000_000) {
+            this.lastUpdateTime = now;
+            return;
+        }
+
         this.lastUpdateTime = now;
-        // An explicit Iterator is used to traverse the list of meals.
+
+        // --- Temporary effects management ---
+
+        Iterator<ITimedEffect> effectIterator = session.getActiveEffects().iterator();
+        while(effectIterator.hasNext()){
+            ITimedEffect effect = effectIterator.next();
+            effect.update(elapsedTime);
+            if(effect.isExpired()){
+                effect.onFinish(session);
+                effectIterator.remove();
+            }
+        }
+
+        // --- Expired food management ---
+
         Iterator<IFoodAPI> iterator = session.getFoods().iterator();
         while (iterator.hasNext()) {
             IFoodAPI food = iterator.next();
             if(food instanceof ExpirableFood expirableFood){
                 expirableFood.update(elapsedTime);
-                if(expirableFood.isExpired()) iterator.remove();
+                if(expirableFood.isExpired()) {
+                    iterator.remove();
+                    boolean positiveFoodRemains = session.getFoods().stream()
+                            .anyMatch(IFoodAPI::countsForRespawn);
+                    if(!positiveFoodRemains){
+                        this.spawnFood();
+                    }
+                }
             }
         }
+    }
+
+    /**
+     * Applies the effect of the event
+     * @param event The event listened
+     */
+    private void onEffectRequested(EffectRequestedEvent event) {
+        IGameSession session = game.getSession();
+        if (session == null) return;
+
+        IEffect effect = event.effect();
+        if(effect instanceof ITimedEffect){
+            session.addTimedEffect((ITimedEffect) effect);
+        }
+        effect.apply(session);
     }
 
     /**
@@ -111,16 +157,6 @@ public final class GameLogicCoordinator {
                 .anyMatch(IFoodAPI::countsForRespawn);
         if(!positiveFoodRemains){
             this.spawnFood();
-        }
-    }
-
-    /**
-     * Applies the effect of the event
-     * @param event The event listened
-     */
-    private void onEffectRequested(EffectRequestedEvent event) {
-        if(game.getSession() != null){
-            event.effect().apply(game.getSession());
         }
     }
 

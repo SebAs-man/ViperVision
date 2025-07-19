@@ -45,7 +45,7 @@ public final class SnakeRender {
             drawEnd(p, 0, interpolation, true, snake); // Draw the head
         }
         if (bodySize > 1) {
-            drawEnd(p, snake.getBodySet().size() - 1, interpolation, false, snake); // Draw the tail
+            drawEnd(p, bodySize - 1, interpolation, false, snake); // Draw the tail
         }
 
         p.popStyle();
@@ -65,7 +65,8 @@ public final class SnakeRender {
         float renderX = PApplet.lerp(previousPos.x(), currentPos.x(), interpolation) * ModelConfig.BOX_SIZE;
         float renderY = PApplet.lerp(previousPos.y(), currentPos.y(), interpolation) * ModelConfig.BOX_SIZE;
 
-        p.fill(ColorPalette.SNAKE_BODY);
+        int fillColor = snake.getState().getRenderStyle().getFillColor(p);
+        p.fill(fillColor);
         p.rect(renderX, renderY, ModelConfig.BOX_SIZE, ModelConfig.BOX_SIZE);
     }
 
@@ -108,7 +109,8 @@ public final class SnakeRender {
             tl = cornerRadius; tr = cornerRadius;
         }
 
-        p.fill(ColorPalette.SNAKE_BODY);
+        int fillColor = snake.getState().getRenderStyle().getFillColor(p);
+        p.fill(fillColor);
         p.rect(renderX, renderY, ModelConfig.BOX_SIZE, ModelConfig.BOX_SIZE, tl, tr, br, bl);
 
         // Draw eyes only if it's the head

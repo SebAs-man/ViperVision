@@ -21,17 +21,13 @@ public final class RoadBlockerFood extends ExpirableFood {
      * @param position The initial position of this food.
      */
     public RoadBlockerFood(Position position) {
-        super(0, position, 0, LIFETIME);
+        super(1, position, 0, LIFETIME);
     }
 
     @Override
     public void applyEffect(IGameSession session) {
+        super.applyEffect(session);
         EventManager.getInstance().notify(new EffectRequestedEvent(new SpawnObstaclesEffect(MIN_VALUE, MAX_VALUE, session)));
-    }
-
-    @Override
-    public boolean countsForRespawn() {
-        return false;
     }
 
     @Override

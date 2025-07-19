@@ -30,17 +30,12 @@ public final class StarFood extends ExpirableFood {
         super.applyEffect(session);
         EventManager.getInstance().notify(new EffectRequestedEvent(new InvulnerabilityEffect(EFFECT_TIME)));
         EventManager.getInstance().notify(new NotificationRequestedEvent(
-                "Unstoppable!!!", NotificationType.ACHIEVEMENT, 2500
+                "Unstoppable!!!", NotificationType.ACHIEVEMENT, 3000
         ));
     }
 
     @Override
-    public boolean countsForRespawn() {
-        return true;
-    }
-
-    @Override
     public PImage getIcon() {
-        return Assets.speedSheetImage;
+        return Assets.starImage;
     }
 }

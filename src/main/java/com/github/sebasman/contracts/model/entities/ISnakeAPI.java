@@ -2,7 +2,7 @@ package com.github.sebasman.contracts.model.entities;
 
 import com.github.sebasman.contracts.model.IGameSession;
 import com.github.sebasman.contracts.model.IUpdatable;
-import com.github.sebasman.contracts.model.states.ISnakeState;
+import com.github.sebasman.contracts.presenter.ISnakeState;
 import com.github.sebasman.contracts.vo.Direction;
 import com.github.sebasman.contracts.vo.Position;
 

@@ -1,13 +1,13 @@
 package com.github.sebasman.model.entities;
 
 import com.github.sebasman.contracts.model.IGameSession;
-import com.github.sebasman.contracts.model.entities.IExpirable;
+import com.github.sebasman.contracts.model.IExpirable;
 import com.github.sebasman.contracts.model.entities.ISnakeAPI;
-import com.github.sebasman.contracts.model.states.ISnakeState;
+import com.github.sebasman.contracts.presenter.ISnakeState;
 import com.github.sebasman.contracts.vo.Direction;
 import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.model.config.ModelConfig;
-import com.github.sebasman.model.states.NormalSnakeState;
+import com.github.sebasman.presenter.states.snake.NormalSnakeState;
 
 import java.util.*;
 
@@ -22,7 +22,7 @@ public final class Snake implements ISnakeAPI {
     private final Set<Position> bodySet;
     // --- Mobility ---
     private Direction currentDirection;
-    private boolean isGrowing;
+    private int growthSegmentsPending;
     private final Queue<Direction> inputQueue;
     // --- Status ---
     private ISnakeState state;
@@ -34,7 +34,7 @@ public final class Snake implements ISnakeAPI {
      * @param start The initial position of the head.
      */
     public Snake(final Position start, int initialSize) {
-        this.isGrowing = false;
+        this.growthSegmentsPending = 0;
         this.state = NormalSnakeState.getInstance();
 
         this.body = new LinkedList<>();
@@ -70,9 +70,9 @@ public final class Snake implements ISnakeAPI {
         this.lastUpdateTime = now;
 
         ISnakeState state = this.state;
-        if(state instanceof IExpirable){
-            ((IExpirable) state).update(elapsedTime);
-            if(((IExpirable) state).isExpired()){
+        if(state instanceof IExpirable expirable){
+            expirable.update(elapsedTime);
+            if(expirable.isExpired()){
                 this.setState(NormalSnakeState.getInstance()); // Revert to normal state if finished
             }
         }
@@ -90,13 +90,24 @@ public final class Snake implements ISnakeAPI {
         // Calculate the new head position based on the current direction
         Position currentHead = this.getHead();
         Position newHead = currentHead.add(new Position(currentDirection.getDx(), currentDirection.getDy()));
-        // If the snake should grow, do not remove the tail.
-        // If not, remove it to simulate movement.
-        if(this.isGrowing){
-            this.isGrowing = false; // Reset the growth flag after growing
+
+        // --- Growth logic ---
+
+        if(this.growthSegmentsPending > 0){
+            // ...the tail is not removed (the snake grows), and one is deducted from the counter.
+            this.growthSegmentsPending--;
         } else {
-            Position tail = this.body.removeLast(); // Remove the tail segment to simulate movement
-            this.bodySet.remove(tail); // Remove the tail from the set
+            if (this.growthSegmentsPending < 0) {
+                // If the growth is negative (shrinkage)....
+                if(this.body.size() > 1){
+                    Position tail = this.body.removeLast();
+                    this.bodySet.remove(tail);
+                    this.growthSegmentsPending++;
+                }
+            }
+            // If there is no pending growth, the tail is removed to simulate movement.
+            Position tail = this.body.removeLast();
+            this.bodySet.remove(tail);
         }
         // Add the new head to the front of the body
         this.body.addFirst(newHead);
@@ -113,7 +124,7 @@ public final class Snake implements ISnakeAPI {
 
     @Override
     public void grow(int amount){
-        this.isGrowing = true;
+        this.growthSegmentsPending += amount;
     }
 
     @Override

@@ -78,7 +78,7 @@ public final class SearchAlgorithmStrategy implements IControlStrategy, IUiProvi
         // Environmental Data Collection
         Position tail = snake.getTail();
         Position foodPos = targetFood.getPosition();
-        Set<Position> allObstacles = new HashSet<>(snake.getBodySet());
+        Set<Position> allObstacles = new HashSet<>(snake.getBody());
         allObstacles.addAll(game.getSession().getBoard().getObstacles());
         Direction currentDirection = snake.getDirection();
 

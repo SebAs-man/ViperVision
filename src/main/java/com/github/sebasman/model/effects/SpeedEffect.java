@@ -10,7 +10,7 @@ import com.github.sebasman.model.config.ModelConfig;
  * A timed effect that requests a temporary change in the game's tick speed.
  * It publishes an event that the PlayingState listens to.
  */
-public class SpeedEffect implements ITimedEffect {
+public final class SpeedEffect implements ITimedEffect {
     private final float speed;
     private long timeLeft;
 
@@ -42,7 +42,7 @@ public class SpeedEffect implements ITimedEffect {
     }
 
     @Override
-    public boolean isFinished() {
+    public boolean isExpired() {
         return this.timeLeft <= 0;
     }
 }

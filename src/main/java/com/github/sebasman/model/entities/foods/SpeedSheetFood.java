@@ -37,11 +37,6 @@ public final class SpeedSheetFood extends ExpirableFood {
     }
 
     @Override
-    public boolean countsForRespawn() {
-        return false;
-    }
-
-    @Override
     public PImage getIcon() {
         return Assets.speedSheetImage;
     }

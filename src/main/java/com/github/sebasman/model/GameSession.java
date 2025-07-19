@@ -1,5 +1,6 @@
 package com.github.sebasman.model;
 
+import com.github.sebasman.contracts.model.effects.ITimedEffect;
 import com.github.sebasman.contracts.model.entities.IBoardAPI;
 import com.github.sebasman.contracts.model.entities.IFoodAPI;
 import com.github.sebasman.contracts.model.IGameSession;
@@ -23,6 +24,8 @@ public final class GameSession implements IGameSession {
     private final Board board;
     // --- Statistics ---
     private int score;
+    // --- Effects ---
+    private final List<ITimedEffect> activeEffects;
 
     /**
      * Build a new Game Session
@@ -31,6 +34,7 @@ public final class GameSession implements IGameSession {
         this.snake = new Snake(new Position(ModelConfig.GRID_WIDTH/4, ModelConfig.GRID_HEIGHT/2), 3);
         this.foods = new HashSet<>();
         this.board = new Board();
+        this.activeEffects = new LinkedList<>();
         // Define default values
         this.addFood(new AppleFood(new Position(3*ModelConfig.GRID_WIDTH/4, ModelConfig.GRID_HEIGHT/2)));
         this.score = 0;
@@ -53,6 +57,16 @@ public final class GameSession implements IGameSession {
     @Override
     public int getScore() {
         return this.score;
+    }
+
+    @Override
+    public List<ITimedEffect> getActiveEffects() {
+        return this.activeEffects;
+    }
+
+    @Override
+    public void addTimedEffect(ITimedEffect effect) {
+        if(effect != null) this.activeEffects.add(effect);
     }
 
     @Override

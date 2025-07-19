@@ -43,7 +43,7 @@ public final class Board implements IBoardAPI {
 
     @Override
     public void generateRandomObstacles(int amount, IGameSession session) {
-        Set<Position> occupiedCells = new HashSet<>(session.getSnake().getBodySet());
+        Set<Position> occupiedCells = new HashSet<>(session.getSnake().getBody());
         occupiedCells.addAll(session.getFoods().stream().map(IFoodAPI::getPosition).collect(Collectors.toSet()));
         occupiedCells.addAll(this.obstacles);
 

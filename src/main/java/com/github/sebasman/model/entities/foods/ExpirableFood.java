@@ -1,6 +1,6 @@
 package com.github.sebasman.model.entities.foods;
 
-import com.github.sebasman.contracts.model.entities.IExpirable;
+import com.github.sebasman.contracts.model.IExpirable;
 import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.model.entities.Food;
 
@@ -27,5 +27,10 @@ public abstract class ExpirableFood extends Food implements IExpirable {
     @Override
     public final boolean isExpired() {
         return this.timeLeft <= 0;
+    }
+
+    @Override
+    public boolean countsForRespawn() {
+        return false;
     }
 }

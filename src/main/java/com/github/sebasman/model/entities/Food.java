@@ -45,4 +45,9 @@ public abstract class Food implements IFoodAPI {
     public Position getPosition() {
         return this.position;
     }
+
+    @Override
+    public boolean countsForRespawn() {
+        return true;
+    }
 }

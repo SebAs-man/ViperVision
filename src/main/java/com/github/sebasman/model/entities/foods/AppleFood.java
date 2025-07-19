@@ -18,11 +18,6 @@ public final class AppleFood extends Food {
     }
 
     @Override
-    public boolean countsForRespawn() {
-        return true;
-    }
-
-    @Override
     public PImage getIcon() {
         return Assets.appleImage;
     }
