@@ -118,7 +118,7 @@ public final class MenuState implements IState {
                         new PreparingState(HumanControlStrategy.getInstance()))));
         menuLayout.add(new Button("A* Search Play", Assets.searchAiImage,
                 () -> game.changeState(
-                        new PreparingState(new SearchAlgorithmStrategy()))));
+                        new PreparingState(SearchAlgorithmStrategy.getInstance()))));
         menuLayout.add(new Button("Genetic Play", Assets.geneticAiImage,
                 () -> game.changeState(
                         new PreparingState(new GeneticAlgorithmStrategy()))));

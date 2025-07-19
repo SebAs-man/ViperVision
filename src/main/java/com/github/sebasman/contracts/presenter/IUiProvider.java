@@ -14,16 +14,4 @@ public interface IUiProvider {
      * @return a list of configuration descriptors.
      */
     List<IConfigParameter> getConfigurationParameters();
-
-    /**
-     * Subscribes this instance of the strategy to the configuration events.
-     * It must be called by the state that activates it.
-     */
-    void subscribeToEvents();
-
-    /**
-     * Describes this instance of the event strategy.
-     * It is crucial to call this method to prevent “zombie listeners.”
-     */
-    void unsubscribeFromEvents();
 }

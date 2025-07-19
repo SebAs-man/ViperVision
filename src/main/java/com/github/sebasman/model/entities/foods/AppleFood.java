@@ -1,6 +1,5 @@
 package com.github.sebasman.model.entities.foods;
 
-import com.github.sebasman.contracts.vo.FoodCategory;
 import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.model.entities.Food;
 import com.github.sebasman.view.assets.Assets;
@@ -19,8 +18,8 @@ public final class AppleFood extends Food {
     }
 
     @Override
-    public FoodCategory getCategory() {
-        return FoodCategory.POSITIVE;
+    public boolean countsForRespawn() {
+        return true;
     }
 
     @Override

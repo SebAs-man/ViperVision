@@ -1,5 +1,6 @@
 package com.github.sebasman.contracts.model.entities;
 
+import com.github.sebasman.contracts.model.IGameSession;
 import com.github.sebasman.contracts.vo.Position;
 
 import java.util.Set;
@@ -18,16 +19,21 @@ public interface IBoardAPI {
     /**
      * Attempts to add an obstacle at a specific position.
      * @param position The position where the obstacle will be added.
-     * @return true if the obstacle was added successfully, false if there was already one.
      */
-    boolean addObstacle(Position position);
+    void addObstacle(Position position);
 
     /**
      * Removes an obstacle from a specific position.
      * @param position The position of the obstacle to remove.
-     * @return true if the obstacle was removed, false if there was none.
      */
-    boolean removeObstacle(Position position);
+    void removeObstacle(Position position);
+
+    /**
+     * Generates obstacles in different random positions on the map
+     * @param amount The number of obstacles to be generated
+     * @param session The game session in which the obstacles will be generated.
+     */
+    void generateRandomObstacles(int amount, IGameSession session);
 
     /**
      * Returns a copy of the obstacle set for renderers or AI.

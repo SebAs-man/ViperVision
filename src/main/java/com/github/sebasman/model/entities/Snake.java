@@ -1,9 +1,13 @@
 package com.github.sebasman.model.entities;
 
+import com.github.sebasman.contracts.model.IGameSession;
+import com.github.sebasman.contracts.model.entities.IExpirable;
 import com.github.sebasman.contracts.model.entities.ISnakeAPI;
+import com.github.sebasman.contracts.model.states.ISnakeState;
 import com.github.sebasman.contracts.vo.Direction;
 import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.model.config.ModelConfig;
+import com.github.sebasman.model.states.NormalSnakeState;
 
 import java.util.*;
 
@@ -20,6 +24,9 @@ public final class Snake implements ISnakeAPI {
     private Direction currentDirection;
     private boolean isGrowing;
     private final Queue<Direction> inputQueue;
+    // --- Status ---
+    private ISnakeState state;
+    private long lastUpdateTime;
 
 
     /**
@@ -28,6 +35,7 @@ public final class Snake implements ISnakeAPI {
      */
     public Snake(final Position start, int initialSize) {
         this.isGrowing = false;
+        this.state = NormalSnakeState.getInstance();
 
         this.body = new LinkedList<>();
         this.previousBody = new LinkedList<>();
@@ -57,6 +65,18 @@ public final class Snake implements ISnakeAPI {
 
     @Override
     public void update() {
+        long now = System.currentTimeMillis();
+        long elapsedTime = now - this.lastUpdateTime;
+        this.lastUpdateTime = now;
+
+        ISnakeState state = this.state;
+        if(state instanceof IExpirable){
+            ((IExpirable) state).update(elapsedTime);
+            if(((IExpirable) state).isExpired()){
+                this.setState(NormalSnakeState.getInstance()); // Revert to normal state if finished
+            }
+        }
+
         // If there are buffered inputs, process the next one
         if(!inputQueue.isEmpty()){
             Direction nextDirection = inputQueue.poll();
@@ -97,16 +117,11 @@ public final class Snake implements ISnakeAPI {
     }
 
     @Override
-    public boolean checkCollisionWithWall() {
-        Position head = this.getHead();
-        return head.x() < 0 || head.x() >= ModelConfig.GRID_WIDTH ||
-               head.y() < 0 || head.y() >= ModelConfig.GRID_HEIGHT;
+    public void handleCollision(IGameSession session) {
+        this.state.handleCollision(this, session);
     }
 
-    @Override
-    public boolean checkCollisionWithSelf() {
-        return this.body.size() != this.bodySet.size();
-    }
+    // --- Getters ---
 
     @Override
     public Position getHead() {
@@ -129,4 +144,17 @@ public final class Snake implements ISnakeAPI {
 
     @Override
     public Direction getDirection() { return currentDirection; }
+
+    @Override
+    public ISnakeState getState() {
+        return this.state;
+    }
+
+    // --- Setters ---
+
+    @Override
+    public void setState(ISnakeState state) {
+        this.state = Objects.requireNonNull(state, "State cannot be null");
+        this.lastUpdateTime = System.currentTimeMillis();
+    }
 }

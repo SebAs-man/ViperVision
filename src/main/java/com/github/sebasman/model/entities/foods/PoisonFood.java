@@ -1,6 +1,5 @@
 package com.github.sebasman.model.entities.foods;
 
-import com.github.sebasman.contracts.vo.FoodCategory;
 import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.view.assets.Assets;
 import processing.core.PImage;
@@ -20,8 +19,8 @@ public final class PoisonFood extends ExpirableFood {
     }
 
     @Override
-    public FoodCategory getCategory() {
-        return FoodCategory.NEGATIVE;
+    public boolean countsForRespawn() {
+        return false;
     }
 
     @Override

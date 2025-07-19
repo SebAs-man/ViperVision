@@ -6,7 +6,7 @@ import com.github.sebasman.contracts.configuration.SliderConfigParameter;
 import com.github.sebasman.contracts.events.EventManager;
 import com.github.sebasman.contracts.events.types.AiPathUpdatedEvent;
 import com.github.sebasman.contracts.events.types.ConfigurationChangedEvent;
-import com.github.sebasman.contracts.model.IGameSession;
+import com.github.sebasman.contracts.events.types.GameSpeedChangedEvent;
 import com.github.sebasman.contracts.model.entities.IFoodAPI;
 import com.github.sebasman.contracts.model.entities.ISnakeAPI;
 import com.github.sebasman.contracts.view.IGameContext;
@@ -25,23 +25,30 @@ import java.util.function.Consumer;
  * to food and prioritizes survival to avoid lock-in.
  */
 public final class SearchAlgorithmStrategy implements IControlStrategy, IUiProvider {
+    private static final SearchAlgorithmStrategy INSTANCE = new SearchAlgorithmStrategy();
     // --- Configurable AI Parameters ---
     private float aiSpeed = ModelConfig.STARTING_FRAME_RATE;
     private boolean showPath = false;
     // --- Map of Configuration Handlers ---
     private final Map<String, Consumer<Object>> configHandlers;
-    // --- References to listeners ---
-    private final Consumer<ConfigurationChangedEvent> configChangeListener;
 
     /**
-     * Public builder. Each AI game will have its own strategy instance.
+     * Private builder to prevent its creation.
      */
-    public SearchAlgorithmStrategy() {
+    private SearchAlgorithmStrategy() {
         this.configHandlers = Map.of(
                 "AI_SPEED", value -> this.setAiSpeed((Float) value),
                 "AI_SHOW_PATH", value -> this.setShowPath((Boolean) value)
         );
-        this.configChangeListener = this::handleConfigurationChange;
+        EventManager.getInstance().subscribe(ConfigurationChangedEvent.class, this::handleConfigurationChange);
+    }
+
+    /**
+     * The single instance of the strategy returns.
+     * @return Its single instance
+     */
+    public static SearchAlgorithmStrategy getInstance() {
+        return INSTANCE;
     }
 
     /**
@@ -55,16 +62,6 @@ public final class SearchAlgorithmStrategy implements IControlStrategy, IUiProvi
         if(handler != null){
             handler.accept(event.value());
         }
-    }
-
-    @Override
-    public void subscribeToEvents(){
-        EventManager.getInstance().subscribe(ConfigurationChangedEvent.class, configChangeListener);
-    }
-
-    @Override
-    public void unsubscribeFromEvents(){
-        EventManager.getInstance().unsubscribe(ConfigurationChangedEvent.class, configChangeListener);
     }
 
     @Override
@@ -328,13 +325,15 @@ public final class SearchAlgorithmStrategy implements IControlStrategy, IUiProvi
         return this.aiSpeed;
     }
 
+
     // --- Setters ---
 
     /**
      * Change the speed snake
      * @param aiSpeed the new value for the speed
      */
-    public void setAiSpeed(float aiSpeed) {
+    private void setAiSpeed(float aiSpeed) {
+        EventManager.getInstance().notify(new GameSpeedChangedEvent(aiSpeed));
         this.aiSpeed = aiSpeed;
     }
 
@@ -342,7 +341,7 @@ public final class SearchAlgorithmStrategy implements IControlStrategy, IUiProvi
      * Change the show path of the snake
      * @param showPath true or false
      */
-    public void setShowPath(boolean showPath) {
+    private void setShowPath(boolean showPath) {
         this.showPath = showPath;
     }
 

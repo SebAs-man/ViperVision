@@ -1,5 +1,10 @@
 package com.github.sebasman.presenter.engine;
 
+import com.github.sebasman.contracts.events.EventManager;
+import com.github.sebasman.contracts.events.types.GameSpeedChangedEvent;
+
+import java.util.function.Consumer;
+
 /**
  * Manages the timing of the game loop to produce “ticks” at a constant rate.
  * This class encapsulates the delta-timing logic to decouple the game engine
@@ -9,6 +14,9 @@ public final class GameLoopTimer {
     private double nsPerTick;
     private long lastTime;
     private double delta;
+    // Listeners
+    private final Consumer<GameSpeedChangedEvent> onSpeedChangeListener;
+
     /**
      * The maximum time allowed for a frame in nanoseconds before it is considered
      * an anomalous “jump” (e.g., 200 ms). If the elapsed time is greater than this,
@@ -20,10 +28,25 @@ public final class GameLoopTimer {
      * Constructs a new timer with an initial ticks per second rate.
      * @param ticksPerSecond The number of times the game logic should be updated per second.
      */
-    public GameLoopTimer(int ticksPerSecond){
+    public GameLoopTimer(float ticksPerSecond){
         this.setTicksPerSecond(ticksPerSecond);
         this.lastTime = System.nanoTime();
         this.delta = 0;
+        this.onSpeedChangeListener = event -> this.setTicksPerSecond(event.speed());
+    }
+
+    /**
+     * Subscribe to the events it is going to listen to
+     */
+    public void subscribeToEvents(){
+        EventManager.getInstance().subscribe(GameSpeedChangedEvent.class, onSpeedChangeListener);
+    }
+
+    /**
+     * Unsubscribes the events it is going to listen to
+     */
+    public void unsubscribeToEvents(){
+        EventManager.getInstance().unsubscribe(GameSpeedChangedEvent.class, onSpeedChangeListener);
     }
 
     /**
@@ -63,8 +86,9 @@ public final class GameLoopTimer {
      * Changes the speed of the game timer.
      * @param ticksPerSecond The new rate of updates per second.
      */
-    public void setTicksPerSecond(int ticksPerSecond){
+    public void setTicksPerSecond(float ticksPerSecond){
         if(ticksPerSecond <= 0) return;
         this.nsPerTick = 1_000_000_000.0 / ticksPerSecond;
+        System.out.println("Ticks per second: " + ticksPerSecond);
     }
 }

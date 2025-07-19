@@ -1,7 +1,6 @@
 package com.github.sebasman.contracts.model.entities;
 
 import com.github.sebasman.contracts.model.IGameSession;
-import com.github.sebasman.contracts.vo.FoodCategory;
 import com.github.sebasman.contracts.vo.Position;
 import processing.core.PImage;
 
@@ -22,10 +21,11 @@ public interface IFoodAPI {
     Position getPosition();
 
     /**
-     * Returns the category of this food item.
-     * @return The {@link FoodCategory} of the food.
+     * Determines if this food item must be eaten to trigger a new batch of food.
+     * Typically, only "positive" or goal-oriented foods count.
+     * @return true if this food counts towards completing the level/batch.
      */
-    FoodCategory getCategory();
+    boolean countsForRespawn();
 
     /**
      * Returns the specific image (asset) representing this type of food.

@@ -55,16 +55,11 @@ public final class PreparingState implements IState {
                 game.getSession().getScore(),
                 game.getProfile().getHighScore()
         );
-        if(this.strategy instanceof IUiProvider){
-            ((IUiProvider) this.strategy).subscribeToEvents();
-        }
     }
 
     @Override
     public void onExit(IGameContext game) {
-        if(this.strategy instanceof IUiProvider){
-            ((IUiProvider) this.strategy).unsubscribeFromEvents();
-        }
+
     }
 
     @Override

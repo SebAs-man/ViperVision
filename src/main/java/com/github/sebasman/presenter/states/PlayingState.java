@@ -1,13 +1,12 @@
 package com.github.sebasman.presenter.states;
 
 import com.github.sebasman.contracts.events.EventManager;
-import com.github.sebasman.contracts.model.entities.IBoardAPI;
 import com.github.sebasman.contracts.model.IGameSession;
 import com.github.sebasman.contracts.view.IGameContext;
+import com.github.sebasman.model.config.ModelConfig;
 import com.github.sebasman.presenter.engine.GameLoopTimer;
 import com.github.sebasman.presenter.listeners.GameLogicCoordinator;
 import com.github.sebasman.contracts.events.types.FoodEatenEvent;
-import com.github.sebasman.contracts.events.types.SnakeDiedEvent;
 import com.github.sebasman.contracts.presenter.IControlStrategy;
 import com.github.sebasman.contracts.presenter.IState;
 import com.github.sebasman.contracts.model.entities.IFoodAPI;
@@ -25,8 +24,8 @@ import java.util.Objects;
 public final class PlayingState implements IState {
     // The control strategy for handling user input.
     private final IControlStrategy controlStrategy;
+    // Listeners
     private GameLoopTimer timer;
-    // Game logic coordinator
     private GameLogicCoordinator logicCoordinator;
 
     /**
@@ -34,8 +33,7 @@ public final class PlayingState implements IState {
      * @param controlStrategy the control strategy to use for handling user input
      */
     public PlayingState(IControlStrategy controlStrategy) {
-        Objects.requireNonNull(controlStrategy, "Control strategy cannot be null");
-        this.controlStrategy = controlStrategy;
+        this.controlStrategy = Objects.requireNonNull(controlStrategy, "Control strategy cannot be null");
     }
 
     @Override
@@ -43,13 +41,14 @@ public final class PlayingState implements IState {
         System.out.println("¡Starting Game!");
         this.logicCoordinator = new GameLogicCoordinator(game);
         this.logicCoordinator.subscribeToEvents();
-        this.timer = new GameLoopTimer((int) controlStrategy.getDesiredSpeed());
-
+        this.timer = new GameLoopTimer(controlStrategy.getDesiredSpeed());
+        this.timer.subscribeToEvents();
     }
 
     @Override
     public void onExit(IGameContext game) {
         this.logicCoordinator.unsubscribeFromEvents();
+        this.timer.unsubscribeToEvents();
     }
 
     @Override
@@ -61,7 +60,7 @@ public final class PlayingState implements IState {
             this.controlStrategy.update(game, session.getSnake());
             // Update the snake's position based on the current direction.
             session.getSnake().update();
-            this.checkCollisions(game);
+            this.checkCollisions(game.getSession());
         }
     }
 
@@ -92,19 +91,14 @@ public final class PlayingState implements IState {
 
     /**
      * Checks for collisions between the snake and the walls or itself,
-     * @param game the current game instance
+     * @param session the current game session instance
      */
-    private void checkCollisions(IGameContext game) {
-        IGameSession session = game.getSession();
+    private void checkCollisions(IGameSession session) {
         if(session == null) return;
 
         ISnakeAPI snake = session.getSnake();
-        IBoardAPI board = session.getBoard();
         // Checks for collision with walls, body and obstacles...
-        if (snake.checkCollisionWithWall() || snake.checkCollisionWithSelf() || board.isObstacle(snake.getHead())) {
-            EventManager.getInstance().notify(new SnakeDiedEvent());
-            return;
-        }
+        snake.handleCollision(session);
         // Check for collision with ANY of the meals on the board.
         IFoodAPI eatenFood = null;
         for(IFoodAPI food : session.getFoods()) {

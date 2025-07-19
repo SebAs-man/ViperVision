@@ -37,13 +37,14 @@ public final class SnakeRender {
         p.noStroke();
         // Draw each body part independently
         // The loop now only draws the INSIDE body segments.
-        for (int i = 1; i < snake.getBodySet().size() - 1; i++) {
+        int bodySize = snake.getBody().size();
+        for (int i = 1; i < bodySize - 1; i++) {
             drawSegment(p, i, interpolation, snake);
         }
-        if (!snake.getBodySet().isEmpty()) {
+        if (bodySize > 0) {
             drawEnd(p, 0, interpolation, true, snake); // Draw the head
         }
-        if (snake.getBodySet().size() > 1) {
+        if (bodySize > 1) {
             drawEnd(p, snake.getBodySet().size() - 1, interpolation, false, snake); // Draw the tail
         }
 

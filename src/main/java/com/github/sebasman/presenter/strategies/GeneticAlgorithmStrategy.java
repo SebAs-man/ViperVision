@@ -15,16 +15,6 @@ public final class GeneticAlgorithmStrategy implements IControlStrategy, IUiProv
     }
 
     @Override
-    public void subscribeToEvents() {
-
-    }
-
-    @Override
-    public void unsubscribeFromEvents() {
-
-    }
-
-    @Override
     public void update(IGameContext game, ISnakeAPI snake) {
 
     }
@@ -44,6 +34,7 @@ public final class GeneticAlgorithmStrategy implements IControlStrategy, IUiProv
     public float getDesiredSpeed() {
         return ModelConfig.STARTING_FRAME_RATE;
     }
+
 
     @Override
     public List<IConfigParameter> getConfigurationParameters() {

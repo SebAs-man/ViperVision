@@ -3,14 +3,13 @@ package com.github.sebasman.presenter.listeners;
 
 import com.github.sebasman.contracts.events.EventManager;
 import com.github.sebasman.contracts.events.types.*;
-import com.github.sebasman.contracts.model.IExpirable;
 import com.github.sebasman.contracts.model.IGameSession;
 import com.github.sebasman.contracts.model.IUserProfile;
 import com.github.sebasman.contracts.model.entities.IFoodAPI;
 import com.github.sebasman.contracts.view.IGameContext;
-import com.github.sebasman.contracts.vo.FoodCategory;
 import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.model.FoodFactory;
+import com.github.sebasman.model.entities.foods.ExpirableFood;
 import com.github.sebasman.presenter.states.GameOverState;
 
 import java.util.*;
@@ -86,7 +85,7 @@ public final class GameLogicCoordinator {
         Iterator<IFoodAPI> iterator = session.getFoods().iterator();
         while (iterator.hasNext()) {
             IFoodAPI food = iterator.next();
-            if(food instanceof IExpirable expirableFood){
+            if(food instanceof ExpirableFood expirableFood){
                 expirableFood.update(elapsedTime);
                 if(expirableFood.isExpired()) iterator.remove();
             }
@@ -102,13 +101,14 @@ public final class GameLogicCoordinator {
         IGameSession session = game.getSession();
         if (session == null) return;
 
+        IFoodAPI eatenFood = event.food();
         // Apply the effect of the food that has just been eaten.
-        event.food().applyEffect(session);
+        eatenFood.applyEffect(session);
         // Removes consumed food from the game world list.
-        session.removeFood(event.food());
+        session.removeFood(eatenFood);
         // It only generates a new batch if there are no positive food left.
         boolean positiveFoodRemains = session.getFoods().stream()
-                .anyMatch(food -> food.getCategory() == FoodCategory.POSITIVE);
+                .anyMatch(IFoodAPI::countsForRespawn);
         if(!positiveFoodRemains){
             this.spawnFood();
         }

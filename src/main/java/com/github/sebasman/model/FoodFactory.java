@@ -3,13 +3,10 @@ package com.github.sebasman.model;
 import com.github.sebasman.contracts.events.EventManager;
 import com.github.sebasman.contracts.events.types.NotificationRequestedEvent;
 import com.github.sebasman.contracts.model.entities.IFoodAPI;
-import com.github.sebasman.contracts.vo.FoodCategory;
 import com.github.sebasman.contracts.vo.NotificationType;
 import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.model.config.ModelConfig;
-import com.github.sebasman.model.entities.foods.AppleFood;
-import com.github.sebasman.model.entities.foods.GoldenAppleFood;
-import com.github.sebasman.model.entities.foods.PoisonFood;
+import com.github.sebasman.model.entities.foods.*;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -62,13 +59,13 @@ public final class FoodFactory {
 
         // --- RULE ENFORCEMENT ---
 
-        boolean hasPositiveFood = batch.stream().anyMatch(food -> food.getCategory() == FoodCategory.POSITIVE);
+        boolean hasPositiveFood = batch.stream().anyMatch(IFoodAPI::countsForRespawn);
         if(!hasPositiveFood){
-            boolean anyPositiveOnBoard = existingFoods.stream().anyMatch(food -> food.getCategory() == FoodCategory.POSITIVE);
+            boolean anyPositiveOnBoard = existingFoods.stream().anyMatch(IFoodAPI::countsForRespawn);
             if(!anyPositiveOnBoard){
                 while(true){
                     IFoodAPI emergencyApple = this.createRandomFood(allOccupiedSpots);
-                    if(emergencyApple != null && emergencyApple.getCategory() == FoodCategory.POSITIVE){
+                    if(emergencyApple != null && emergencyApple.countsForRespawn()){
                         batch.add(emergencyApple);
                         break;
                     }
@@ -91,8 +88,11 @@ public final class FoodFactory {
         // --- Probability Logic ---
 
         double chance = random.nextDouble();  // A random value between 0.0 and 1.0
-        if (chance < 0.05) return new GoldenAppleFood(spawnPosition);
-        else if(chance < 0.2) return new PoisonFood(spawnPosition);
+        if(chance < 0.005) return new StarFood(spawnPosition);
+        else if(chance < 0.025) return new RoadBlockerFood(spawnPosition);
+        else if(chance < 0.055) return new SpeedSheetFood(spawnPosition);
+        else if (chance < 0.12) return new GoldenAppleFood(spawnPosition);
+        else if(chance < 0.405) return new PoisonFood(spawnPosition);
         return new AppleFood(spawnPosition);
     }
 

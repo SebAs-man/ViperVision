@@ -1,6 +1,8 @@
 package com.github.sebasman.contracts.model.entities;
 
+import com.github.sebasman.contracts.model.IGameSession;
 import com.github.sebasman.contracts.model.IUpdatable;
+import com.github.sebasman.contracts.model.states.ISnakeState;
 import com.github.sebasman.contracts.vo.Direction;
 import com.github.sebasman.contracts.vo.Position;
 
@@ -26,16 +28,10 @@ public interface ISnakeAPI extends IUpdatable {
     void grow(int amount);
 
     /**
-     * Checks if the snake collides with a wall.
-     * @return true if there is a collision, false otherwise
+     * Method handling the shock effects of the snake.
+     * @param session The game session in which the collision may occur
      */
-    boolean checkCollisionWithWall();
-
-    /**
-     * Checks if the snake collides with itself.
-     * @return true if there is a collision, false otherwise
-     */
-    boolean checkCollisionWithSelf();
+    void handleCollision(IGameSession session);
 
     // --- Getters ---
 
@@ -74,4 +70,16 @@ public interface ISnakeAPI extends IUpdatable {
      * @return The current direction
      */
     Direction getDirection();
+
+    /**
+     * Returns the current status of the snake.
+     * @return the current status.
+     */
+    ISnakeState getState();
+
+    /**
+     * Set the current status. That cannot be null
+     * @param state The new state of the snake.
+     */
+    void setState(ISnakeState state);
 }

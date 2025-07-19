@@ -3,6 +3,8 @@ package com.github.sebasman.model.entities;
 import com.github.sebasman.contracts.events.EventManager;
 import com.github.sebasman.contracts.events.types.EffectRequestedEvent;
 import com.github.sebasman.contracts.model.IGameSession;
+import com.github.sebasman.contracts.model.effects.CompositeEffect;
+import com.github.sebasman.contracts.model.effects.IEffect;
 import com.github.sebasman.contracts.model.entities.IFoodAPI;
 import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.model.effects.GrowthEffect;
@@ -32,12 +34,11 @@ public abstract class Food implements IFoodAPI {
 
     @Override
     public void applyEffect(IGameSession session) {
-        EventManager.getInstance().notify(new EffectRequestedEvent(
-                new ScoreEffect(this.scoreValue)
-        ));
-        EventManager.getInstance().notify(new EffectRequestedEvent(
+        IEffect combinedEffect = new CompositeEffect(
+                new ScoreEffect(this.scoreValue),
                 new GrowthEffect(this.growthValue)
-        ));
+        );
+        EventManager.getInstance().notify(new  EffectRequestedEvent(combinedEffect));
     }
 
     @Override

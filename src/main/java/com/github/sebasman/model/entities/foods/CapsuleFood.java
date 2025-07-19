@@ -3,7 +3,6 @@ package com.github.sebasman.model.entities.foods;
 import com.github.sebasman.contracts.events.EventManager;
 import com.github.sebasman.contracts.events.types.NotificationRequestedEvent;
 import com.github.sebasman.contracts.model.IGameSession;
-import com.github.sebasman.contracts.vo.FoodCategory;
 import com.github.sebasman.contracts.vo.NotificationType;
 import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.model.entities.Food;
@@ -27,8 +26,8 @@ public final class CapsuleFood extends Food {
     }
 
     @Override
-    public FoodCategory getCategory() {
-        return FoodCategory.NEUTRAL;
+    public boolean countsForRespawn() {
+        return true;
     }
 
     @Override

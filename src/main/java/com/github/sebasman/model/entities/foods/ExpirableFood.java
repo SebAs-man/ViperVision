@@ -1,6 +1,6 @@
 package com.github.sebasman.model.entities.foods;
 
-import com.github.sebasman.contracts.model.IExpirable;
+import com.github.sebasman.contracts.model.entities.IExpirable;
 import com.github.sebasman.contracts.vo.Position;
 import com.github.sebasman.model.entities.Food;
 
