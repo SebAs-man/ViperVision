@@ -34,7 +34,7 @@ public final class PathRenderer {
     private void suscribeToEvents(){
         EventManager eventManager = EventManager.getInstance();
         eventManager.subscribe(AiPathUpdatedEvent.class, this::onPathUpdate);
-        eventManager.subscribe(GameSessionEndedEvent.class, _ -> this.clearPath());
+        eventManager.subscribe(GameSessionEndedEvent.class, event -> this.clearPath());
     }
 
     /**

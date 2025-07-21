@@ -30,7 +30,7 @@ public final class NotificationManager {
         this.currentNotifications = new ArrayBlockingQueue<>(ModelConfig.MAX_NOTIFICATIONS_SHOW);
         this.lastUpdateTime = System.currentTimeMillis();
         EventManager.getInstance().subscribe(NotificationRequestedEvent.class, this::addNotification);
-        EventManager.getInstance().subscribe(FrameUpdatedEvent.class, _ -> this.update());
+        EventManager.getInstance().subscribe(FrameUpdatedEvent.class, event -> this.update());
     }
 
     /**

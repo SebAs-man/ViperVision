@@ -56,9 +56,9 @@ public final class SoundManager {
      */
     private static void subscribeToEvents() {
         EventManager eventManager = EventManager.getInstance();
-        eventManager.subscribe(ButtonPressedEvent.class, _ -> onButtonPressed());
-        eventManager.subscribe(FoodEatenEvent.class, _ -> onFoodEaten());
-        eventManager.subscribe(SnakeDiedEvent.class, _ -> onSnakeDied());
+        eventManager.subscribe(ButtonPressedEvent.class, event -> onButtonPressed());
+        eventManager.subscribe(FoodEatenEvent.class, event -> onFoodEaten());
+        eventManager.subscribe(SnakeDiedEvent.class, event -> onSnakeDied());
     }
 
     /**

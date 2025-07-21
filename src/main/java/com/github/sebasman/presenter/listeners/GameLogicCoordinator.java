@@ -48,7 +48,7 @@ public final class GameLogicCoordinator {
         this.onFoodEatenListener = this::onFoodEaten;
         this.onEffectRequestedListener =this::onEffectRequested;
         this.onScoreUpdatedListener = this::onSessionScoreUpdated;
-        this.onSnakeDiedListener = _ -> this.onSnakeDied();
+        this.onSnakeDiedListener = event -> this.onSnakeDied();
     }
 
     /**

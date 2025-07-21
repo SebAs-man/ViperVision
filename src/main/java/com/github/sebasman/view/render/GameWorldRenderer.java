@@ -22,7 +22,7 @@ public final class GameWorldRenderer {
      */
     private GameWorldRenderer() {
         this.reboot();
-        EventManager.getInstance().subscribe(GameSessionEndedEvent.class, _ -> reboot());
+        EventManager.getInstance().subscribe(GameSessionEndedEvent.class, event -> reboot());
     }
 
     /**

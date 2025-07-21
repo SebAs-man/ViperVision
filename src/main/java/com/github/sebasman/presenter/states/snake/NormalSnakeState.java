@@ -44,7 +44,7 @@ public final class NormalSnakeState implements ISnakeState {
 
     @Override
     public ISnakeRenderStyle getRenderStyle() {
-        return _ -> ColorPalette.SNAKE_BODY;
+        return pApplet -> ColorPalette.SNAKE_BODY;
     }
 
     @Override

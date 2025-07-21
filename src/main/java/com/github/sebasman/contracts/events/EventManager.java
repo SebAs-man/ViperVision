@@ -40,7 +40,7 @@ public class EventManager {
      */
     public <T extends IGameEvent> void subscribe(Class<T> eventType, Consumer<T> listener) {
         // computeIfAbsent gets the existing list or creates a new one if it does not exist.
-        List<Consumer<?>> eventListeners = this.listeners.computeIfAbsent(eventType, _ -> new LinkedList<>());
+        List<Consumer<?>> eventListeners = this.listeners.computeIfAbsent(eventType, var -> new LinkedList<>());
         eventListeners.add(listener);
     }
 

@@ -51,7 +51,7 @@ A structured plan to evolve the ViperVision project from its current alpha state
 
 ## Phase 2: UI/UX and Feature Polish
 > [!NOTE]
-> Enhance the user experience with a polished interface, better feedback, and quality-of-life features.)
+> Enhance the user experience with a polished interface, better feedback, and quality-of-life features.
 
 * [ ] Task 2.1: UI Enhancements
     * Add smooth transitions between game states (e.g., fade-in/fade-out).
@@ -72,7 +72,7 @@ A structured plan to evolve the ViperVision project from its current alpha state
 
 ## Phase 3: Documentation and Deployment
 > [!NOTE]
-> Finalize all documentation and package the application for easy distribution.)
+> Finalize all documentation and package the application for easy distribution.
 
 * [ ] Task 3.1: Code Documentation
     * Review and complete all Javadocs for public classes and methods. Ensure they are clear and consistent.
