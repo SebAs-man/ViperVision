@@ -16,6 +16,12 @@ import java.util.Set;
  */
 public interface ISnakeAPI extends IUpdatable {
     /**
+     * Checks if the snake collides with itself.
+     * @return true if there is a collision, false otherwise
+     */
+    boolean isSelfColliding();
+
+    /**
      * Sets the direction of the snake's movement.
      * @param direction the direction to set for the snake
      */
@@ -23,15 +29,16 @@ public interface ISnakeAPI extends IUpdatable {
 
     /**
      * Grows the snake by one segment.
-     * @param amount the number of segments to grow from the snake
+     * @param amount the number of segments to grow from the snake.
      */
     void grow(int amount);
 
     /**
      * Method handling the shock effects of the snake.
-     * @param session The game session in which the collision may occur
+     * @param snake The snake to be verified.
+     * @param board The board where the snake is.
      */
-    void handleCollision(IGameSession session);
+    void handleCollision(ISnakeAPI snake, IBoardAPI board);
 
     // --- Getters ---
 

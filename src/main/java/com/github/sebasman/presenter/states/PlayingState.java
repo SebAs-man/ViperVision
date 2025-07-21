@@ -2,6 +2,7 @@ package com.github.sebasman.presenter.states;
 
 import com.github.sebasman.contracts.events.EventManager;
 import com.github.sebasman.contracts.model.IGameSession;
+import com.github.sebasman.contracts.model.entities.IBoardAPI;
 import com.github.sebasman.contracts.view.IGameContext;
 import com.github.sebasman.presenter.engine.GameLoopTimer;
 import com.github.sebasman.presenter.listeners.GameLogicCoordinator;
@@ -100,8 +101,9 @@ public final class PlayingState implements IState {
         if(session == null) return;
 
         ISnakeAPI snake = session.getSnake();
+        IBoardAPI board = session.getBoard();
         // Checks for collision with walls, body and obstacles...
-        snake.handleCollision(session);
+        snake.handleCollision(snake, board);
         // Check for collision with ANY of the meals on the board.
         IFoodAPI eatenFood = null;
         for(IFoodAPI food : session.getFoods()) {

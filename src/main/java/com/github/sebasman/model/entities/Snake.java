@@ -2,6 +2,7 @@ package com.github.sebasman.model.entities;
 
 import com.github.sebasman.contracts.model.IGameSession;
 import com.github.sebasman.contracts.model.IExpirable;
+import com.github.sebasman.contracts.model.entities.IBoardAPI;
 import com.github.sebasman.contracts.model.entities.ISnakeAPI;
 import com.github.sebasman.contracts.presenter.ISnakeState;
 import com.github.sebasman.contracts.vo.Direction;
@@ -115,6 +116,18 @@ public final class Snake implements ISnakeAPI {
     }
 
     @Override
+    public boolean isSelfColliding() {
+        Position head = this.getHead();
+        // Start loop from 1 to skip checking the head against itself.
+        for (int i = 1; i < this.body.size(); i++) {
+            if (head.equals(body.get(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void bufferDirection(Direction newDirection){
         Objects.requireNonNull(newDirection, "New direction cannot be null");
         if(inputQueue.size() < ModelConfig.INPUT_BUFFER_LIMIT){
@@ -128,8 +141,8 @@ public final class Snake implements ISnakeAPI {
     }
 
     @Override
-    public void handleCollision(IGameSession session) {
-        this.state.handleCollision(this, session);
+    public void handleCollision(ISnakeAPI snake, IBoardAPI board) {
+        this.state.handleCollision(snake, board);
     }
 
     // --- Getters ---

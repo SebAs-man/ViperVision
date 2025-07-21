@@ -10,6 +10,13 @@ import java.util.Set;
  */
 public interface IBoardAPI {
     /**
+     * Checks if the snake collides with a wall.
+     * @param pos The position to verify.
+     * @return true if there is a collision, false otherwise
+     */
+    boolean isWallCollision(Position pos);
+
+    /**
      * Checks if an obstacle occupies a specific box.
      * @param position The position to check.
      * @return true if the box contains an obstacle, false otherwise.

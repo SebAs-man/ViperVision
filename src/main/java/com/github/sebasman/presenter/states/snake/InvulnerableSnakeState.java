@@ -3,6 +3,7 @@ package com.github.sebasman.presenter.states.snake;
 import com.github.sebasman.contracts.model.IGameSession;
 import com.github.sebasman.contracts.model.IExpirable;
 import com.github.sebasman.contracts.model.effects.IEffect;
+import com.github.sebasman.contracts.model.entities.IBoardAPI;
 import com.github.sebasman.contracts.model.entities.ISnakeAPI;
 import com.github.sebasman.contracts.presenter.ISnakeState;
 import com.github.sebasman.contracts.view.ISnakeRenderStyle;
@@ -29,7 +30,7 @@ public final class InvulnerableSnakeState implements ISnakeState, IExpirable {
     }
 
     @Override
-    public void handleCollision(ISnakeAPI snake, IGameSession session) {
+    public void handleCollision(ISnakeAPI snake, IBoardAPI board) {
         // In the invulnerable state, collisions are ignored.
     }
 

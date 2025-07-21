@@ -27,6 +27,12 @@ public final class Board implements IBoardAPI {
     }
 
     @Override
+    public boolean isWallCollision(Position pos) {
+        return pos.x() < 0 || pos.x() >= ModelConfig.GRID_WIDTH ||
+                pos.y() < 0 || pos.y() >= ModelConfig.GRID_HEIGHT;
+    }
+
+    @Override
     public boolean isObstacle(Position position) {
         return this.obstacles.contains(position);
     }

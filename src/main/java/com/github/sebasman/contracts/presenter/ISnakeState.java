@@ -1,7 +1,7 @@
 package com.github.sebasman.contracts.presenter;
 
-import com.github.sebasman.contracts.model.IGameSession;
 import com.github.sebasman.contracts.model.effects.IEffect;
+import com.github.sebasman.contracts.model.entities.IBoardAPI;
 import com.github.sebasman.contracts.model.entities.ISnakeAPI;
 import com.github.sebasman.contracts.view.ISnakeRenderStyle;
 
@@ -14,10 +14,10 @@ public interface ISnakeState {
     /**
      * Handles the logic for when a collision is detected.
      * The behavior will differ depending on the state.
-     * @param snake The snake instance to which the state belongs.
-     * @param session The current game session.
+     * @param snake The snake to be verified
+     * @param board The board on which the snake is
      */
-    void handleCollision(ISnakeAPI snake, IGameSession session);
+    void handleCollision(ISnakeAPI snake, IBoardAPI board);
 
     /**
      * Returns the rendering style associated with this state.
